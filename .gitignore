@@ -4,9 +4,11 @@ env/
 __pycache__/
 *.pyc
 
+
 # Variables sensibles (Seguridad Ley 1581)
 .env
 
 # Archivos de base de datos local y evidencias
 *.sqlite3
 evidencias/
+.vscode/
