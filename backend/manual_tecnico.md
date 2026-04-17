@@ -1,4 +1,4 @@
-# 📘 Manual de Integración API - SIPRA v1.0
+# Manual de Integración API - SIPRA v1.0
 
 Este documento contiene los endpoints principales para que el equipo de Frontend conecte las interfaces.
 
@@ -27,3 +27,14 @@ Este documento contiene los endpoints principales para que el equipo de Frontend
 ## Reglas de Seguridad (Auditoría)
 1. **Validación de Roles:** Si un Estudiante intenta usar un endpoint de Tutor, recibirá un `403 Forbidden`.
 2. **Soft-Delete:** Los registros eliminados no desaparecen de la DB, solo se marcan como ocultos por seguridad legal.
+## Seguridad y Roles (RBAC)
+- **Estudiante:** Crea seguimientos.
+- **Tutor/Coordinador:** Valida/Rechaza y genera reportes.
+
+## Endpoints de Misión Crítica
+1. **Login (POST `/token`):** Devuelve el JWT con el rol incrustado.
+2. **Crear Seguimiento (POST `/seguimientos/`):** - *Restricción:* Máximo 12h por reporte.
+   - *Validación:* Descripción mín. 15 caracteres.
+3. **Validar (PATCH `/seguimientos/{id}/validar`):**
+   - *Auditoría:* Registra IP y ID del tutor automáticamente.
+4. **Reporte PDF (GET `/reportes/pdf`):** Genera el formato oficial.

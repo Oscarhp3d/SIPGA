@@ -53,7 +53,7 @@ def get_current_user(db: Session = Depends(database.get_db), token: str = Depend
 # --- LA MEJORA DE EXCELENCIA: CONTROL DE ROLES ---
 def verificar_rol(roles_permitidos: list):
     def role_checker(user: models.Usuario = Depends(get_current_user)):
-        if user.rol not in roles_permitidos:
+        if user.rol.value not in roles_permitidos:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN, 
                 detail="No tienes permisos suficientes para realizar esta acción"
