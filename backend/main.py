@@ -5,6 +5,12 @@ import logging
 import os
 import time
 
+import sys
+import os
+
+# Añadir el directorio actual al path para que los imports funcionen en Render
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
 # Importaciones locales
 import models
 from database import engine
