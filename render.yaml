@@ -7,7 +7,7 @@ services:
     startCommand: gunicorn main:app -w 4 -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:$PORT
     envVars:
       - key: DATABASE_URL
-        value: "postgresql://postgres:+U$YTAd8Cu?vMt@db.uudznxnhgypgmetqfoun.supabase.co:5432/postgres"
+        value: "postgresql://postgres.uudznxnhgypgmetqfoun:%2BU%24YTAd8Cu%3FvMt@aws-1-us-east-2.pooler.supabase.com:5432/postgres"
       - key: SECRET_KEY
         generateValue: true
       - key: ACCESS_TOKEN_EXPIRE_MINUTES
