@@ -40,7 +40,11 @@
     </button>
     </div>
     <script>
-        const API_URL = "http://127.0.0.1:8000";
+        // CONFIGURACIÓN: Cambia esta URL por la de tu backend desplegado (ej: Render)
+        const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+            ? "http://127.0.0.1:8000" 
+            : "https://sipra-backend.onrender.com"; // <-- REEMPLAZAR CON TU URL DE RENDER
+
 
         // Verificar si el backend está vivo
         async function checkStatus() {

@@ -1,19 +1,11 @@
-import os
-from dotenv import load_dotenv # Cargador oficial de variables de entorno
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-
-# --- CONFIGURACIÓN DE ENTORNO ---
-# Carga las variables definidas
-load_dotenv() 
-
-
-SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL")
+from config import settings
 
 # --- CONFIGURACIÓN DE SQLALCHEMY ---
-# Creamos el motor de la base de datos
-engine = create_engine(SQLALCHEMY_DATABASE_URL)
+# Creamos el motor de la base de datos usando la URL de la configuración
+engine = create_engine(settings.DATABASE_URL)
 
 # Creamos la fábrica de sesiones para interactuar con la DB
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
@@ -28,3 +20,4 @@ def get_db():
         yield db
     finally:
         db.close()
+
