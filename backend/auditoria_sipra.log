@@ -1,0 +1,4 @@
+2026-05-04 14:48:26,110 - INFO - Path: / | Method: GET | IP: 127.0.0.1 | Time: 0.0045s
+2026-05-04 14:48:26,850 - INFO - Path: /favicon.ico | Method: GET | IP: 127.0.0.1 | Time: 0.0020s
+2026-05-04 14:48:35,888 - INFO - Path: /docs | Method: GET | IP: 127.0.0.1 | Time: 0.0026s
+2026-05-04 14:48:36,218 - INFO - Path: /openapi.json | Method: GET | IP: 127.0.0.1 | Time: 0.0720s

@@ -31,8 +31,6 @@ class Settings(BaseSettings):
         return ["*"]
     
     # File Storage
-
-
     UPLOAD_DIR: str = "evidencias"
     MAX_FILE_SIZE: int = 5 * 1024 * 1024  # 5MB
     

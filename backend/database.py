@@ -3,14 +3,19 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from config import settings
 
-# --- CONFIGURACIÓN DE SQLALCHEMY ---
-# Creamos el motor de la base de datos usando la URL de la configuración
-engine = create_engine(settings.DATABASE_URL)
+# --- CONFIGURACIÓN DE SQLALCHEMY PARA NEON ---
+# Neon requiere SSL y un pool de conexiones especial
+engine = create_engine(
+    settings.DATABASE_URL,
+    connect_args={"sslmode": "require"},  # Obligatorio para Neon
+    pool_pre_ping=True,                   # Verifica conexión antes de usarla
+    pool_recycle=300,                     # Recicla conexiones cada 5 minutos
+)
 
-# Creamos la fábrica de sesiones para interactuar con la DB
+# Fábrica de sesiones para interactuar con la DB
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-# Base para los modelos (Tablas de la base de datos)
+# Base para los modelos
 Base = declarative_base()
 
 # Dependencia para obtener la sesión en los endpoints de FastAPI
@@ -20,4 +25,3 @@ def get_db():
         yield db
     finally:
         db.close()
-
