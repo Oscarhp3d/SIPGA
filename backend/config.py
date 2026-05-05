@@ -16,7 +16,11 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
     
     # CORS
-    ALLOWED_ORIGINS: Any = ["*"]
+    # ✅ CORREGIDO: era ["*"] — CORS abierto a cualquier origen es un riesgo de seguridad.
+    # Define los orígenes permitidos en el .env como:
+    #   ALLOWED_ORIGINS=https://tu-frontend.onrender.com,https://otro-origen.com
+    # Si no se define, solo se permite localhost para desarrollo.
+    ALLOWED_ORIGINS: Any = ["http://localhost:5500", "http://127.0.0.1:5500", "http://localhost:3000"]
     
     @field_validator("ALLOWED_ORIGINS", mode="before")
     @classmethod
@@ -28,7 +32,7 @@ class Settings(BaseSettings):
         elif isinstance(v, str) and v.startswith("["):
             import json
             return json.loads(v)
-        return ["*"]
+        return ["http://localhost:5500", "http://127.0.0.1:5500"]
     
     # File Storage
     UPLOAD_DIR: str = "evidencias"

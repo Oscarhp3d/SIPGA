@@ -74,7 +74,7 @@ def registrar_seguimiento(db: Session, seguimiento: schemas.SeguimientoCreate) -
         descripcion=seguimiento.descripcion,
         horas_realizadas=seguimiento.horas_realizadas,
         fecha_actividad=seguimiento.fecha_actividad,
-        estado=models.StatusEnum.ENVIADO # Por defecto al crear se envía
+        estado=models.StatusEnum.enviado  # ✅ CORREGIDO: era StatusEnum.ENVIADO
     )
     db.add(db_seguimiento)
     db.commit()
@@ -113,13 +113,14 @@ def validar_seguimiento(
     # Sincronización de validaciones según el rol del revisor
     revisor = db.query(models.Usuario).filter(models.Usuario.id == revisor_id).first()
     if revisor:
-        if revisor.rol == models.UserRole.TUTOR:
-            db_seg.validado_tutor = (estado == models.StatusEnum.APROBADO)
-        elif revisor.rol == models.UserRole.SUPERVISOR:
-            db_seg.validado_supervisor = (estado == models.StatusEnum.APROBADO)
-        elif revisor.rol == models.UserRole.COORDINADOR:
-            db_seg.validado_tutor = (estado == models.StatusEnum.APROBADO)
-            db_seg.validado_supervisor = (estado == models.StatusEnum.APROBADO)
+        # ✅ CORREGIDO: era UserRole.TUTOR / .SUPERVISOR / .COORDINADOR (mayúsculas)
+        if revisor.rol == models.UserRole.tutor:
+            db_seg.validado_tutor = (estado == models.StatusEnum.aprobado)
+        elif revisor.rol == models.UserRole.supervisor:
+            db_seg.validado_supervisor = (estado == models.StatusEnum.aprobado)
+        elif revisor.rol == models.UserRole.coordinador:
+            db_seg.validado_tutor = (estado == models.StatusEnum.aprobado)
+            db_seg.validado_supervisor = (estado == models.StatusEnum.aprobado)
 
     db.commit()
     db.refresh(db_seg)
@@ -162,4 +163,3 @@ def crear_empresa(db: Session, empresa: schemas.EmpresaCreate) -> models.Empresa
 def obtener_empresas(db: Session) -> List[models.Empresa]:
     """Lista todas las empresas."""
     return db.query(models.Empresa).all()
-

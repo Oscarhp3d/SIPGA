@@ -1,5 +1,5 @@
 from pydantic import BaseModel, EmailStr, Field, field_validator
-from typing import Optional, List
+from typing import Optional
 from datetime import datetime
 from models import UserRole, StatusEnum
 
@@ -7,11 +7,16 @@ from models import UserRole, StatusEnum
 class UsuarioBase(BaseModel):
     nombre: str = Field(..., example="Juan Pérez")
     correo: EmailStr = Field(..., example="juan.perez@universidad.edu.co")
-    rol: UserRole = UserRole.ESTUDIANTE
+    
+    # ✅ CORREGIDO
+    rol: UserRole = UserRole.estudiante
+    
     programa_academico: Optional[str] = Field(None, example="Ingeniería de Sistemas")
+
 
 class UsuarioCreate(UsuarioBase):
     password: str = Field(..., min_length=8)
+
 
 class UsuarioResponse(UsuarioBase):
     id: str
@@ -19,19 +24,23 @@ class UsuarioResponse(UsuarioBase):
 
     model_config = {"from_attributes": True}
 
+
 # --- ESQUEMAS DE EMPRESA ---
 class EmpresaBase(BaseModel):
     nombre: str = Field(..., example="Tech Solutions S.A.S.")
     nit: str = Field(..., example="900.123.456-1")
     direccion: str = Field(..., example="Calle 100 #15-20")
 
+
 class EmpresaCreate(EmpresaBase):
     pass
+
 
 class EmpresaResponse(EmpresaBase):
     id: int
 
     model_config = {"from_attributes": True}
+
 
 # --- ESQUEMAS DE PRÁCTICA ---
 class PracticaBase(BaseModel):
@@ -43,14 +52,17 @@ class PracticaBase(BaseModel):
     fecha_inicio: Optional[datetime] = None
     fecha_fin: Optional[datetime] = None
 
+
 class PracticaCreate(PracticaBase):
     pass
+
 
 class PracticaResponse(PracticaBase):
     id: str
     estado: str
 
     model_config = {"from_attributes": True}
+
 
 # --- ESQUEMAS DE SEGUIMIENTO ---
 class SeguimientoBase(BaseModel):
@@ -66,8 +78,10 @@ class SeguimientoBase(BaseModel):
             raise ValueError("Las horas deben ser mayores a cero")
         return v
 
+
 class SeguimientoCreate(SeguimientoBase):
     pass
+
 
 class SeguimientoUpdate(BaseModel):
     estado: Optional[StatusEnum] = None
@@ -75,6 +89,7 @@ class SeguimientoUpdate(BaseModel):
     evidencia_url: Optional[str] = None
     validado_tutor: Optional[bool] = None
     validado_supervisor: Optional[bool] = None
+
 
 class SeguimientoResponse(SeguimientoBase):
     id: str
@@ -87,14 +102,17 @@ class SeguimientoResponse(SeguimientoBase):
 
     model_config = {"from_attributes": True}
 
+
 # --- ESQUEMAS DE AUTENTICACIÓN ---
 class Token(BaseModel):
     access_token: str
     token_type: str
 
+
 class TokenData(BaseModel):
     username: Optional[str] = None
     rol: Optional[str] = None
+
 
 # --- ESQUEMAS DE AUDITORÍA ---
 class AuditLogResponse(BaseModel):
@@ -103,6 +121,5 @@ class AuditLogResponse(BaseModel):
     accion: str
     fecha: datetime
     ip_origen: str
-    
-    model_config = {"from_attributes": True}
 
+    model_config = {"from_attributes": True}

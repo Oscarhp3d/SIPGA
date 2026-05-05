@@ -1,17 +1,21 @@
 /* ══════════════════════════════════════
    SIPRA — Login Logic
+   Archivo: frontend/js/login.js
    ══════════════════════════════════════ */
 
-const API_URL = 'http://127.0.0.1:8000/api/v1';
+// ✅ CORREGIDO: URL dinámica según entorno (era 'http://127.0.0.1:8000/api/v1' fijo)
+const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+  ? 'http://127.0.0.1:8000/api/v1'
+  : `${window.location.origin}/api/v1`;
 
 // ── Referencias al DOM ──
-const emailInput  = document.getElementById('email');
-const passInput   = document.getElementById('password');
-const btnLogin    = document.getElementById('btnLogin');
-const togglePass  = document.getElementById('togglePass');
-const eyeIcon     = document.getElementById('eyeIcon');
-const rememberMe  = document.getElementById('remember');
-const errorMsg    = document.getElementById('errorMsg');
+const emailInput = document.getElementById('email');
+const passInput  = document.getElementById('password');
+const btnLogin   = document.getElementById('btnLogin');
+const togglePass = document.getElementById('togglePass');
+const eyeIcon    = document.getElementById('eyeIcon');
+const rememberMe = document.getElementById('remember');
+const errorMsg   = document.getElementById('errorMsg');
 
 // ══════════════════════════════════════
 // MOSTRAR / OCULTAR CONTRASEÑA
@@ -21,17 +25,15 @@ togglePass.addEventListener('click', () => {
   passInput.type = isPassword ? 'text' : 'password';
 
   eyeIcon.innerHTML = isPassword
-    ? /* ojo tachado */`
-        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
-        <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
-        <line x1="1" y1="1" x2="23" y2="23"/>`
-    : /* ojo abierto */`
-        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-        <circle cx="12" cy="12" r="3"/>`;
+    ? `<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
+       <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
+       <line x1="1" y1="1" x2="23" y2="23"/>`
+    : `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+       <circle cx="12" cy="12" r="3"/>`;
 });
 
 // ══════════════════════════════════════
-// MOSTRAR / OCULTAR ERROR
+// MENSAJES DE ERROR
 // ══════════════════════════════════════
 function showError(msg) {
   errorMsg.textContent = msg;
@@ -43,40 +45,55 @@ function hideError() {
 }
 
 // ══════════════════════════════════════
-// VALIDACIÓN BÁSICA
+// VALIDACIÓN
 // ══════════════════════════════════════
 function validate() {
-  const email    = emailInput.value.trim();
-  const password = passInput.value;
-
-  if (!email) {
+  if (!emailInput.value.trim()) {
     showError('Por favor ingresa tu correo o usuario.');
     emailInput.focus();
     return false;
   }
-
-  if (!password) {
+  if (!passInput.value) {
     showError('Por favor ingresa tu contraseña.');
     passInput.focus();
     return false;
   }
-
   return true;
 }
 
 // ══════════════════════════════════════
-// INICIO DE SESIÓN
+// HELPER: obtener token (localStorage o sessionStorage)
+// ✅ CORREGIDO: el login guarda en uno u otro según "Mantener sesión",
+//    esta función unifica la lectura para que dashboard.js y otros
+//    módulos siempre encuentren el token independientemente de dónde quedó.
+// ══════════════════════════════════════
+function getToken() {
+  return localStorage.getItem('token') || sessionStorage.getItem('token');
+}
+
+// ══════════════════════════════════════
+// HELPER: headers de autenticación
+// ══════════════════════════════════════
+function getAuthHeaders() {
+  const token = getToken();
+  return {
+    'Authorization': `Bearer ${token}`,
+    'Content-Type': 'application/json',
+  };
+}
+
+// ══════════════════════════════════════
+// INICIO DE SESIÓN → conecta con FastAPI
 // ══════════════════════════════════════
 async function handleLogin() {
   hideError();
-
   if (!validate()) return;
 
-  // Estado de carga
   btnLogin.classList.add('loading');
   btnLogin.textContent = 'Verificando...';
 
   try {
+    // FastAPI OAuth2 requiere FormData con "username" y "password"
     const formData = new FormData();
     formData.append('username', emailInput.value.trim());
     formData.append('password', passInput.value);
@@ -93,7 +110,7 @@ async function handleLogin() {
 
     const data = await res.json();
 
-    // Guardar token según checkbox
+    // Guardar token según "Mantener sesión"
     const storage = rememberMe.checked ? localStorage : sessionStorage;
     storage.setItem('token', data.access_token);
 
@@ -111,18 +128,9 @@ async function handleLogin() {
 // ══════════════════════════════════════
 // EVENTOS
 // ══════════════════════════════════════
-
-// Botón login
 btnLogin.addEventListener('click', handleLogin);
 
-// Enter en cualquier campo dispara el login
 [emailInput, passInput].forEach(input => {
-  input.addEventListener('keydown', e => {
-    if (e.key === 'Enter') handleLogin();
-  });
-});
-
-// Limpiar error al escribir
-[emailInput, passInput].forEach(input => {
+  input.addEventListener('keydown', e => { if (e.key === 'Enter') handleLogin(); });
   input.addEventListener('input', hideError);
 });
