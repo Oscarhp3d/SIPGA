@@ -30,3 +30,61 @@ def listar_usuarios(
 def leer_perfil(current_user: models.Usuario = Depends(auth.get_current_user)):
     """Obtiene el perfil del usuario autenticado."""
     return current_user
+
+
+# ══════════════════════════════════════
+# ACTUALIZAR USUARIO
+# ══════════════════════════════════════
+@router.put("/{usuario_id}", response_model=schemas.UsuarioResponse)
+def actualizar_usuario(
+    usuario_id: int,
+    usuario: schemas.UsuarioCreate,
+    db: Session = Depends(get_db),
+    admin=Depends(auth.verificar_rol(["coordinador"]))
+):
+    """Actualizar usuario (Solo Coordinador)."""
+
+    db_user = db.query(models.Usuario).filter(models.Usuario.id == usuario_id).first()
+
+    if not db_user:
+        raise HTTPException(
+            status_code=404,
+            detail="Usuario no encontrado"
+        )
+
+    db_user.nombre = usuario.nombre
+    db_user.correo = usuario.correo
+    db_user.rol = usuario.rol
+
+    # Actualizar contraseña
+    db_user.password_hash = auth.hash_password(usuario.password)
+
+    db.commit()
+    db.refresh(db_user)
+
+    return db_user
+
+
+# ══════════════════════════════════════
+# ELIMINAR USUARIO
+# ══════════════════════════════════════
+@router.delete("/{usuario_id}")
+def eliminar_usuario(
+    usuario_id: int,
+    db: Session = Depends(get_db),
+    admin=Depends(auth.verificar_rol(["coordinador"]))
+):
+    """Eliminar usuario (Solo Coordinador)."""
+
+    db_user = db.query(models.Usuario).filter(models.Usuario.id == usuario_id).first()
+
+    if not db_user:
+        raise HTTPException(
+            status_code=404,
+            detail="Usuario no encontrado"
+        )
+
+    db.delete(db_user)
+    db.commit()
+
+    return {"message": "Usuario eliminado correctamente"}

@@ -21,7 +21,13 @@ def hash_password(password: str) -> str:
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """Verifica si la contraseña coincide con el hash."""
-    return pwd_context.verify(plain_password, hashed_password)
+    try:
+        # 🔥 SOLUCIÓN: limitar a 72 bytes (bcrypt)
+        plain_password = plain_password[:72]
+        return pwd_context.verify(plain_password, hashed_password)
+    except Exception:
+        # 👇 evita que el servidor se caiga con error 500
+        return False
 
 # --- FUNCIONES DE TOKEN ---
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
@@ -52,7 +58,9 @@ def get_current_user(db: Session = Depends(get_db), token: str = Depends(oauth2_
     except JWTError:
         raise credentials_exception
     
+    # ✅ CORRECTO: usar "correo"
     user = db.query(models.Usuario).filter(models.Usuario.correo == username).first()
+    
     if user is None:
         raise credentials_exception
     return user 
@@ -61,7 +69,6 @@ def get_current_user(db: Session = Depends(get_db), token: str = Depends(oauth2_
 def verificar_rol(roles_permitidos: List[str]):
     """Generador de dependencias para verificar roles específicos."""
     def role_checker(user: models.Usuario = Depends(get_current_user)):
-        # Convertimos el enum a string para la comparación
         user_rol = user.rol.value if hasattr(user.rol, 'value') else user.rol
         if user_rol not in roles_permitidos:
             raise HTTPException(
@@ -70,4 +77,3 @@ def verificar_rol(roles_permitidos: List[str]):
             )
         return user
     return role_checker
-

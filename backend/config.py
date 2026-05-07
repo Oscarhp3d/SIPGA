@@ -1,3 +1,4 @@
+import os
 from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from typing import List, Any
@@ -16,10 +17,6 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
     
     # CORS
-    # ✅ CORREGIDO: era ["*"] — CORS abierto a cualquier origen es un riesgo de seguridad.
-    # Define los orígenes permitidos en el .env como:
-    #   ALLOWED_ORIGINS=https://tu-frontend.onrender.com,https://otro-origen.com
-    # Si no se define, solo se permite localhost para desarrollo.
     ALLOWED_ORIGINS: Any = ["http://localhost:5500", "http://127.0.0.1:5500", "http://localhost:3000"]
     
     @field_validator("ALLOWED_ORIGINS", mode="before")
@@ -38,6 +35,9 @@ class Settings(BaseSettings):
     UPLOAD_DIR: str = "evidencias"
     MAX_FILE_SIZE: int = 5 * 1024 * 1024  # 5MB
     
-    model_config = SettingsConfigDict(env_file=".env", case_sensitive=True)
+    model_config = SettingsConfigDict(
+        env_file=os.path.join(os.path.dirname(__file__), ".env"),
+        case_sensitive=True
+    )
 
 settings = Settings()
