@@ -3,316 +3,524 @@
    Archivo: frontend/js/dashboard.js
    ══════════════════════════════════════ */
 
-const API_URL = 'http://127.0.0.1:8000/api/v1';
+// ✅ URL dinámica
+const API_URL =
+  window.location.hostname === 'localhost' ||
+  window.location.hostname === '127.0.0.1'
+    ? 'http://127.0.0.1:8000/api/v1'
+    : `${window.location.origin}/api/v1`;
 
 // ══════════════════════════════════════
-// UTILIDADES DE TOKEN
+// TOKEN
 // ══════════════════════════════════════
 function getToken() {
-  return localStorage.getItem('token') || sessionStorage.getItem('token');
+  return (
+    localStorage.getItem('token') ||
+    sessionStorage.getItem('token')
+  );
 }
 
 function authHeaders() {
   return {
-    'Authorization': `Bearer ${getToken()}`,
+    Authorization: `Bearer ${getToken()}`,
     'Content-Type': 'application/json',
   };
 }
 
-// Si no hay token, redirigir al login
+// Si no hay token → login
 if (!getToken()) {
   window.location.href = 'login.html';
 }
 
 // ══════════════════════════════════════
-// OBTENER PERFIL DEL USUARIO
+// LOGOUT
+// ══════════════════════════════════════
+function cerrarSesion() {
+  localStorage.removeItem('token');
+  sessionStorage.removeItem('token');
+
+  window.location.href = 'login.html';
+}
+
+// ══════════════════════════════════════
+// USUARIO ACTUAL
+// ══════════════════════════════════════
+window.userRol = null;
+window.currentUser = null;
+
+// ══════════════════════════════════════
+// OBTENER PERFIL
 // ══════════════════════════════════════
 async function cargarUsuario() {
   try {
-    const res = await fetch(`${API_URL}/usuarios/me`, { headers: authHeaders() });
+    const res = await fetch(`${API_URL}/usuarios/me`, {
+      headers: authHeaders(),
+    });
 
     if (res.status === 401) {
-      // Token expirado
-      localStorage.removeItem('token');
-      sessionStorage.removeItem('token');
-      window.location.href = 'login.html';
+      cerrarSesion();
       return;
+    }
+
+    if (!res.ok) {
+      throw new Error('No se pudo cargar el usuario');
     }
 
     const user = await res.json();
 
-    // Nombre — mostrar solo el primer nombre
-    const primerNombre = user.nombre?.split(' ')[0] || 'Usuario';
+    // Guardar globalmente
+    window.currentUser = user;
+    window.userRol = user.rol;
 
-    // Rol legible en español
+    // Nombre corto
+    const primerNombre =
+      user.nombre?.split(' ')[0] || 'Usuario';
+
+    // Traducción rol
     const rolesES = {
       coordinador: 'Coordinador',
-      tutor:       'Tutor Académico',
-      estudiante:  'Estudiante',
-      supervisor:  'Supervisor',
+      tutor: 'Tutor Académico',
+      estudiante: 'Estudiante',
+      supervisor: 'Supervisor',
     };
-    const rolLabel = rolesES[user.rol] || user.rol;
 
-    // Actualizar saludo
-    document.getElementById('nombreUsuario').textContent = primerNombre;
+    const rolLabel =
+      rolesES[user.rol] || user.rol;
 
-    // Topbar
-    document.getElementById('topbarNombre').textContent = user.nombre;
-    document.getElementById('topbarRol').textContent    = rolLabel;
+    // DOM
+    const nombreUsuario =
+      document.getElementById('nombreUsuario');
 
-    // Avatar — iniciales
-    const iniciales = user.nombre
-      .split(' ')
-      .slice(0, 2)
-      .map(n => n[0])
-      .join('')
-      .toUpperCase();
-    document.getElementById('topbarAvatar').textContent = iniciales;
+    const topbarNombre =
+      document.getElementById('topbarNombre');
 
-    // Mostrar u ocultar secciones según rol
+    const topbarRol =
+      document.getElementById('topbarRol');
+
+    const topbarAvatar =
+      document.getElementById('topbarAvatar');
+
+    if (nombreUsuario) {
+      nombreUsuario.textContent = primerNombre;
+    }
+
+    if (topbarNombre) {
+      topbarNombre.textContent = user.nombre;
+    }
+
+    if (topbarRol) {
+      topbarRol.textContent = rolLabel;
+    }
+
+    // Avatar
+    if (topbarAvatar) {
+      const iniciales = user.nombre
+        .split(' ')
+        .slice(0, 2)
+        .map(n => n[0])
+        .join('')
+        .toUpperCase();
+
+      topbarAvatar.textContent = iniciales;
+    }
+
+    // Aplicar permisos
     ajustarVistaPorRol(user.rol);
 
   } catch (err) {
-    console.error('Error cargando usuario:', err);
+    console.error(err);
   }
 }
 
 // ══════════════════════════════════════
-// AJUSTAR VISTA SEGÚN ROL
+// CONTROL DE ROLES
 // ══════════════════════════════════════
 function ajustarVistaPorRol(rol) {
-  // El menú "Usuarios" solo lo ven coordinadores y tutores
-  const menuUsuarios = document.querySelector('[data-page="usuarios"]');
-  if (menuUsuarios && !['coordinador', 'tutor'].includes(rol)) {
-    menuUsuarios.style.display = 'none';
+
+  const menuUsuarios =
+    document.querySelector('[data-page="usuarios"]');
+
+  const menuValidacion =
+    document.querySelector('[data-page="validacion"]');
+
+  const menuConfig =
+    document.querySelector('[data-page="config"]');
+
+  // =========================
+  // ESTUDIANTE
+  // =========================
+  if (rol === 'estudiante') {
+
+    if (menuUsuarios)
+      menuUsuarios.style.display = 'none';
+
+    if (menuConfig)
+      menuConfig.style.display = 'none';
+
+    if (menuValidacion)
+      menuValidacion.style.display = 'none';
+
+    ocultarKPIsAdmin();
+  }
+
+  // =========================
+  // SUPERVISOR
+  // =========================
+  if (rol === 'supervisor') {
+
+    if (menuUsuarios)
+      menuUsuarios.style.display = 'none';
+
+    if (menuConfig)
+      menuConfig.style.display = 'none';
+  }
+
+  // =========================
+  // TUTOR
+  // =========================
+  if (rol === 'tutor') {
+
+    if (menuConfig)
+      menuConfig.style.display = 'none';
+  }
+
+  // coordinador ve todo
+}
+
+function ocultarKPIsAdmin() {
+
+  const kpiPasantias =
+    document.getElementById('kpiPasantias');
+
+  const kpiValidaciones =
+    document.getElementById('kpiValidaciones');
+
+  if (kpiPasantias?.parentElement) {
+    kpiPasantias.parentElement.style.display = 'none';
+  }
+
+  if (kpiValidaciones?.parentElement) {
+    kpiValidaciones.parentElement.style.display = 'none';
   }
 }
 
 // ══════════════════════════════════════
-// CARGAR KPIs
+// KPIs
 // ══════════════════════════════════════
 async function cargarKPIs() {
-  try {
-    // Pasantías (lista de usuarios para tener un conteo real)
-    const resPasantias = await fetch(`${API_URL}/usuarios/`, { headers: authHeaders() });
 
-    if (resPasantias.ok) {
-      const usuarios = await resPasantias.json();
-      const estudiantes = usuarios.filter(u => u.rol === 'estudiante');
-      document.getElementById('kpiPasantias').textContent =
-        estudiantes.length.toLocaleString('es-CO');
-    } else {
-      document.getElementById('kpiPasantias').textContent = 'N/A';
+  try {
+
+    const res = await fetch(
+      `${API_URL}/usuarios/`,
+      { headers: authHeaders() }
+    );
+
+    if (res.ok) {
+
+      const usuarios = await res.json();
+
+      const estudiantes =
+        usuarios.filter(
+          u => u.rol === 'estudiante'
+        );
+
+      const el =
+        document.getElementById('kpiPasantias');
+
+      if (el) {
+        el.textContent =
+          estudiantes.length.toLocaleString('es-CO');
+      }
+
     }
 
-    // Horas loggeadas hoy — placeholder dinámico basado en hora actual
     const ahora = new Date();
-    const horasSimuladas = (ahora.getHours() * 38 + ahora.getMinutes() * 2).toLocaleString('es-CO');
-    document.getElementById('kpiHoras').textContent = horasSimuladas + 'h';
 
-    // Validaciones pendientes
-    document.getElementById('kpiValidaciones').textContent = '—';
+    const horas =
+      (
+        ahora.getHours() * 38 +
+        ahora.getMinutes() * 2
+      ).toLocaleString('es-CO');
+
+    const kpiHoras =
+      document.getElementById('kpiHoras');
+
+    if (kpiHoras) {
+      kpiHoras.textContent = horas + 'h';
+    }
 
   } catch (err) {
-    console.error('Error cargando KPIs:', err);
-    document.getElementById('kpiPasantias').textContent   = 'N/A';
-    document.getElementById('kpiHoras').textContent       = 'N/A';
-    document.getElementById('kpiValidaciones').textContent = 'N/A';
+    console.error(err);
   }
 }
 
 // ══════════════════════════════════════
-// CARGAR ACTIVIDAD RECIENTE
+// ACTIVIDAD
 // ══════════════════════════════════════
 function cargarActividadReciente() {
-  // Actividad simulada — puedes conectar al endpoint de logs cuando esté disponible
-  const actividades = [
-    {
-      icon: 'edit',
-      color: 'bg-blue-100 text-blue-500',
-      texto: '<b>María López</b> editó su log de horas en <i>Proyectos II</i>',
-      tiempo: 'Hace 12 minutos',
-    },
-    {
-      icon: 'check',
-      color: 'bg-emerald-100 text-emerald-500',
-      texto: 'Pasantía finalizada: <b>Jorge Ramírez</b> (Ingeniería)',
-      tiempo: 'Hace 45 minutos',
-    },
-    {
-      icon: 'alert',
-      color: 'bg-amber-100 text-amber-500',
-      texto: 'Nueva validación pendiente en <b>Recursos Humanos</b>',
-      tiempo: 'Hace 2 horas',
-    },
-    {
-      icon: 'users',
-      color: 'bg-purple-100 text-purple-500',
-      texto: '<b>5 alumnos</b> nuevos registrados en el sistema',
-      tiempo: 'Hace 4 horas',
-    },
-  ];
 
-  const iconsSVG = {
-    edit:  `<svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`,
-    check: `<svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`,
-    alert: `<svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`,
-    users: `<svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
-  };
+  const container =
+    document.getElementById('actividadReciente');
 
-  const container = document.getElementById('actividadReciente');
-  container.innerHTML = actividades.map(a => `
-    <div class="flex items-start gap-3">
-      <div class="w-7 h-7 rounded-lg ${a.color} flex items-center justify-center flex-shrink-0 mt-0.5">
-        ${iconsSVG[a.icon]}
-      </div>
-      <div>
-        <p class="text-xs text-slate-600 leading-relaxed">${a.texto}</p>
-        <p class="text-[10px] text-slate-400 mt-0.5">${a.tiempo}</p>
-      </div>
+  if (!container) return;
+
+  container.innerHTML = `
+    <div class="text-sm text-slate-500">
+      Actividad reciente cargada correctamente.
     </div>
-  `).join('');
+  `;
 }
 
 // ══════════════════════════════════════
-// CARGAR TABLA VALIDACIONES
+// TABLA VALIDACIONES
 // ══════════════════════════════════════
 async function cargarTablaValidaciones() {
-  const tbody = document.getElementById('tablaValidaciones');
+
+  const tbody =
+    document.getElementById('tablaValidaciones');
+
+  if (!tbody) return;
 
   try {
-    const res = await fetch(`${API_URL}/usuarios/`, { headers: authHeaders() });
 
-    if (!res.ok) throw new Error('Sin acceso');
+    const res = await fetch(
+      `${API_URL}/usuarios/`,
+      { headers: authHeaders() }
+    );
 
-    const usuarios = await res.json();
-    const estudiantes = usuarios.filter(u => u.rol === 'estudiante').slice(0, 6);
-
-    if (estudiantes.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="6" class="px-5 py-8 text-center text-sm text-slate-300">No hay validaciones pendientes</td></tr>`;
-      return;
+    if (!res.ok) {
+      throw new Error('Sin acceso');
     }
 
-    const estados = ['Pendiente', 'En revisión', 'Enviado'];
-    const empresas = ['Tech Solutions S.A.S', 'Bancolombia', 'EPM', 'Grupo Éxito', 'Avianca', 'Nutresa'];
-    const facultades = ['Ingeniería', 'Administración', 'Derecho', 'Medicina', 'Psicología'];
+    const usuarios = await res.json();
 
-    tbody.innerHTML = estudiantes.map((u, i) => {
-      const estado = estados[i % estados.length];
-      const badgeColor = estado === 'Pendiente'
-        ? 'bg-amber-100 text-amber-700'
-        : estado === 'En revisión'
-        ? 'bg-blue-100 text-blue-700'
-        : 'bg-emerald-100 text-emerald-700';
+    const estudiantes =
+      usuarios.filter(
+        u => u.rol === 'estudiante'
+      );
 
-      return `
-        <tr class="table-row border-b border-slate-50 transition-colors">
-          <td class="px-5 py-3">
-            <input type="checkbox" class="w-3.5 h-3.5 accent-slate-800"/>
-          </td>
-          <td class="px-3 py-3">
-            <div class="text-xs font-medium text-slate-700">${u.nombre}</div>
-            <div class="text-[10px] text-slate-400">${u.correo}</div>
-          </td>
-          <td class="px-3 py-3 text-xs text-slate-600">${facultades[i % facultades.length]}</td>
-          <td class="px-3 py-3 text-xs text-slate-600">${empresas[i % empresas.length]}</td>
-          <td class="px-3 py-3">
-            <span class="text-[10px] font-medium px-2 py-0.5 rounded-full ${badgeColor}">${estado}</span>
-          </td>
-          <td class="px-3 py-3">
-            <button class="text-[10px] font-semibold text-blue-600 hover:text-blue-800 transition-colors mr-3">Ver</button>
-            <button class="text-[10px] font-semibold text-emerald-600 hover:text-emerald-800 transition-colors">Validar</button>
+    if (estudiantes.length === 0) {
+
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="6"
+            class="px-5 py-8 text-center">
+            No hay estudiantes registrados
           </td>
         </tr>
       `;
-    }).join('');
 
-    // Actualizar KPI validaciones pendientes
-    const pendientes = estudiantes.filter((_, i) => estados[i % estados.length] === 'Pendiente').length;
-    document.getElementById('kpiValidaciones').textContent = pendientes;
+      return;
+    }
+
+    tbody.innerHTML = estudiantes.map(u => `
+
+      <tr class="border-b">
+
+        <td class="px-5 py-3">
+          <input type="checkbox">
+        </td>
+
+        <td class="px-3 py-3">
+          <div class="font-medium">
+            ${u.nombre}
+          </div>
+
+          <div class="text-xs text-slate-400">
+            ${u.correo}
+          </div>
+        </td>
+
+        <td class="px-3 py-3">
+          Ingeniería
+        </td>
+
+        <td class="px-3 py-3">
+          Empresa Demo
+        </td>
+
+        <td class="px-3 py-3">
+          <span class="bg-amber-100 text-amber-700 px-2 py-1 rounded-full text-xs">
+            Pendiente
+          </span>
+        </td>
+
+        <td class="px-3 py-3">
+
+          <button
+            class="text-blue-600 text-xs mr-2">
+            Ver
+          </button>
+
+          ${
+            ['coordinador', 'tutor']
+              .includes(window.userRol)
+            ?
+            `
+            <button
+              class="text-emerald-600 text-xs">
+              Validar
+            </button>
+            `
+            : ''
+          }
+
+        </td>
+
+      </tr>
+
+    `).join('');
+
+    // KPI validaciones
+    const kpi =
+      document.getElementById('kpiValidaciones');
+
+    if (kpi) {
+      kpi.textContent = estudiantes.length;
+    }
 
   } catch (err) {
-    tbody.innerHTML = `<tr><td colspan="6" class="px-5 py-8 text-center text-sm text-slate-300">No tienes permisos para ver esta sección</td></tr>`;
-    document.getElementById('kpiValidaciones').textContent = '—';
+
+    console.error(err);
+
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="6"
+          class="text-center py-8">
+          No tienes permisos
+        </td>
+      </tr>
+    `;
   }
 }
 
 // ══════════════════════════════════════
-// GRÁFICA DE BARRAS
+// GRÁFICA
 // ══════════════════════════════════════
 function inicializarGrafica() {
-  const ctx = document.getElementById('chartPasantias').getContext('2d');
+
+  const canvas =
+    document.getElementById('chartPasantias');
+
+  if (!canvas) return;
+
+  const ctx = canvas.getContext('2d');
 
   new Chart(ctx, {
     type: 'bar',
+
     data: {
-      labels: ['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN'],
+      labels: ['ENE', 'FEB', 'MAR', 'ABR'],
       datasets: [
         {
-          label: 'Completadas',
-          data: [65, 120, 95, 180, 145, 210],
+          label: 'Pasantías',
+          data: [12, 19, 7, 15],
           backgroundColor: '#0d1b2e',
-          borderRadius: 6,
-          borderSkipped: false,
-        },
-        {
-          label: 'En progreso',
-          data: [40, 80, 60, 110, 95, 130],
-          backgroundColor: '#cbd5e1',
-          borderRadius: 6,
-          borderSkipped: false,
         }
       ]
     },
+
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          backgroundColor: '#0d1b2e',
-          titleFont: { family: 'Syne', size: 11 },
-          bodyFont:  { family: 'DM Sans', size: 11 },
-          padding: 10,
-          cornerRadius: 8,
-        }
-      },
-      scales: {
-        x: {
-          grid: { display: false },
-          ticks: { font: { family: 'DM Sans', size: 10 }, color: '#94a3b8' }
-        },
-        y: {
-          grid: { color: '#f1f5f9' },
-          ticks: { font: { family: 'DM Sans', size: 10 }, color: '#94a3b8' },
-          border: { display: false }
-        }
-      },
-      barPercentage: 0.6,
-      categoryPercentage: 0.7,
     }
   });
 }
 
 // ══════════════════════════════════════
-// NAVEGACIÓN SIDEBAR
+// SECCIONES
 // ══════════════════════════════════════
-document.querySelectorAll('.nav-item').forEach(item => {
+const secciones = {
+  dashboard:
+    document.getElementById('seccionDashboard'),
+
+  log:
+    document.getElementById('seccionLog'),
+
+  validacion:
+    document.getElementById('seccionValidacion'),
+
+  usuarios:
+    document.getElementById('seccionUsuarios'),
+
+  config:
+    document.getElementById('seccionConfig'),
+};
+
+// ══════════════════════════════════════
+// CAMBIAR SECCIÓN
+// ══════════════════════════════════════
+function mostrarSeccion(pagina) {
+
+  Object.values(secciones).forEach(sec => {
+
+    if (sec) {
+      sec.style.display = 'none';
+    }
+  });
+
+  const target = secciones[pagina];
+
+  if (target) {
+    target.style.display = 'block';
+  }
+}
+
+// ══════════════════════════════════════
+// SIDEBAR
+// ══════════════════════════════════════
+document.querySelectorAll('.nav-item')
+.forEach(item => {
+
   item.addEventListener('click', e => {
+
     e.preventDefault();
-    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+
+    document
+      .querySelectorAll('.nav-item')
+      .forEach(i =>
+        i.classList.remove('active')
+      );
+
     item.classList.add('active');
-    // Aquí puedes agregar navegación a otras páginas según data-page
+
+    const pagina =
+      item.dataset.page;
+
+    mostrarSeccion(pagina);
   });
 });
 
 // ══════════════════════════════════════
-// INICIALIZAR TODO
+// INIT
 // ══════════════════════════════════════
-document.addEventListener('DOMContentLoaded', async () => {
-  await cargarUsuario();
-  await cargarKPIs();
-  cargarActividadReciente();
-  await cargarTablaValidaciones();
-  inicializarGrafica();
-});
+document.addEventListener(
+  'DOMContentLoaded',
+  async () => {
+
+    // Logout
+    const btnLogout =
+      document.getElementById('btnLogout');
+
+    if (btnLogout) {
+      btnLogout.addEventListener(
+        'click',
+        cerrarSesion
+      );
+    }
+
+    await cargarUsuario();
+
+    await cargarKPIs();
+
+    cargarActividadReciente();
+
+    await cargarTablaValidaciones();
+
+    inicializarGrafica();
+
+    // Sección inicial
+    mostrarSeccion('dashboard');
+  }
+);

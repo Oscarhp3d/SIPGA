@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>SIPGA — Dashboard</title>
+  <title>SIPRA — Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
@@ -22,24 +22,38 @@
   <style>
     body { font-family: 'DM Sans', sans-serif; }
 
-    /* Sidebar activo */
     .nav-item { transition: background 0.2s; }
     .nav-item.active { background: rgba(255,255,255,0.08); border-left: 3px solid #fff; }
     .nav-item:hover:not(.active) { background: rgba(255,255,255,0.05); }
 
-    /* Scrollbar sidebar */
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 4px; }
 
-    /* Tabla */
     .table-row:hover { background: #f8fafc; }
 
-    /* Badge roles */
     .badge-coordinador { background:#dbeafe; color:#1d4ed8; }
     .badge-tutor       { background:#d1fae5; color:#065f46; }
     .badge-estudiante  { background:#fef3c7; color:#92400e; }
     .badge-supervisor  { background:#ede9fe; color:#5b21b6; }
+
+    /* Secciones ocultas por defecto */
+    .seccion { display: none; }
+    .seccion.activa { display: block; }
+
+    /* Animación suave al cambiar sección */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .seccion.activa { animation: fadeIn 0.2s ease; }
+
+    /* Modal */
+    #modalOverlay { display:none; }
+    #modalOverlay.open { display:flex; }
+
+    /* Tooltip logout */
+    #btnLogout:hover { background: rgba(255,255,255,0.08); }
   </style>
 </head>
 <body class="bg-slate-100 min-h-screen flex">
@@ -59,7 +73,7 @@
           </svg>
         </div>
         <div>
-          <div class="font-syne font-bold text-white text-sm leading-none">SIPGA</div>
+          <div class="font-syne font-bold text-white text-sm leading-none">SIPRA</div>
           <div class="text-white/40 text-[10px] mt-0.5">Gestión Académica</div>
         </div>
       </div>
@@ -106,13 +120,23 @@
       </a>
     </nav>
 
-    <!-- Estado servidor -->
+    <!-- Estado servidor + Logout -->
     <div class="px-5 py-4 border-t border-white/10">
       <div class="text-white/30 text-[10px] mb-1.5">Estado del Servidor</div>
-      <div class="flex items-center gap-2">
+      <div class="flex items-center gap-2 mb-4">
         <div class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div>
         <span class="text-white/60 text-xs">Operativo</span>
       </div>
+      <!-- BOTÓN CERRAR SESIÓN -->
+      <button id="btnLogout"
+              class="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg transition-colors cursor-pointer group">
+        <svg class="w-4 h-4 text-red-400 group-hover:text-red-300 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+          <polyline points="16 17 21 12 16 7"/>
+          <line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+        <span class="text-red-400 group-hover:text-red-300 text-xs font-medium transition-colors">Cerrar Sesión</span>
+      </button>
     </div>
   </aside>
 
@@ -123,7 +147,6 @@
 
     <!-- TOPBAR -->
     <header class="bg-white border-b border-slate-100 px-6 py-3 flex items-center gap-4 sticky top-0 z-20">
-      <!-- Buscador -->
       <div class="flex-1 relative">
         <svg class="w-4 h-4 text-slate-300 absolute left-3 top-1/2 -translate-y-1/2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
           <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
@@ -131,8 +154,6 @@
         <input type="text" placeholder="Buscar expedientes, alumnos o reportes..."
                class="w-full pl-9 pr-4 py-2 text-sm text-slate-600 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-blue-300 transition-colors"/>
       </div>
-
-      <!-- Iconos derecha -->
       <div class="flex items-center gap-3">
         <button class="relative p-2 text-slate-400 hover:text-slate-600 transition-colors">
           <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -140,19 +161,12 @@
           </svg>
           <span class="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-red-500 rounded-full"></span>
         </button>
-        <button class="p-2 text-slate-400 hover:text-slate-600 transition-colors">
-          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-            <circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/>
-          </svg>
-        </button>
-
-        <!-- Usuario -->
         <div class="flex items-center gap-2.5 pl-3 border-l border-slate-100">
           <div class="text-right">
             <div class="text-xs font-semibold text-slate-700 leading-none" id="topbarNombre">Cargando...</div>
             <div class="text-[10px] text-slate-400 mt-0.5 capitalize" id="topbarRol">—</div>
           </div>
-          <div class="w-8 h-8 rounded-full bg-navy flex items-center justify-center text-white font-syne font-bold text-sm"
+          <div class="w-8 h-8 rounded-full flex items-center justify-center text-white font-syne font-bold text-sm"
                style="background:#0d1b2e;" id="topbarAvatar">?</div>
         </div>
       </div>
@@ -161,126 +175,949 @@
     <!-- BODY -->
     <div class="flex-1 p-6">
 
-      <!-- Saludo -->
-      <div class="mb-6">
-        <h1 class="font-syne text-2xl font-bold text-slate-800">
-          Bienvenido de nuevo, <span id="nombreUsuario">...</span>
-        </h1>
-        <p class="text-sm text-slate-400 mt-1">Aquí tienes el resumen administrativo de la plataforma SIPGA para hoy.</p>
+      <!-- ══════════════════════════════
+           SECCIÓN: DASHBOARD
+      ══════════════════════════════ -->
+      <div id="seccionDashboard" class="seccion activa">
+        <div class="mb-6">
+          <h1 class="font-syne text-2xl font-bold text-slate-800">
+            Bienvenido de nuevo, <span id="nombreUsuario">...</span>
+          </h1>
+          <p class="text-sm text-slate-400 mt-1">Aquí tienes el resumen administrativo de la plataforma SIPRA para hoy.</p>
+        </div>
+
+        <!-- KPIs -->
+        <div class="grid grid-cols-3 gap-4 mb-6">
+          <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
+            <div class="flex items-start justify-between mb-4">
+              <div class="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center">
+                <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>
+                </svg>
+              </div>
+              <span class="text-[11px] font-medium text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">+12% vs mes ant.</span>
+            </div>
+            <div class="text-[11px] text-slate-400 uppercase tracking-wide mb-1">Pasantías Activas</div>
+            <div class="font-syne text-3xl font-bold text-slate-800" id="kpiPasantias">—</div>
+          </div>
+
+          <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
+            <div class="flex items-start justify-between mb-4">
+              <div class="w-10 h-10 rounded-xl bg-blue-500 flex items-center justify-center">
+                <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                </svg>
+              </div>
+              <span class="text-[11px] font-medium text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">En tiempo real</span>
+            </div>
+            <div class="text-[11px] text-slate-400 uppercase tracking-wide mb-1">Horas Loggeadas (Hoy)</div>
+            <div class="font-syne text-3xl font-bold text-slate-800" id="kpiHoras">—</div>
+          </div>
+
+          <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
+            <div class="flex items-start justify-between mb-4">
+              <div class="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center">
+                <svg class="w-5 h-5 text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                  <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+                </svg>
+              </div>
+              <span class="text-[11px] font-medium text-red-600 bg-red-50 px-2 py-0.5 rounded-full">Prioridad Alta</span>
+            </div>
+            <div class="text-[11px] text-slate-400 uppercase tracking-wide mb-1">Validaciones Pendientes</div>
+            <div class="font-syne text-3xl font-bold text-slate-800" id="kpiValidaciones">—</div>
+          </div>
+        </div>
+
+        <!-- Gráfica + Actividad -->
+        <div class="grid grid-cols-3 gap-4 mb-6">
+          <div class="col-span-2 bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
+            <div class="flex items-start justify-between mb-1">
+              <div>
+                <h2 class="font-syne font-semibold text-slate-800 text-sm">Progreso de Pasantías</h2>
+                <p class="text-xs text-slate-400 mt-0.5">Evolución de culminación por facultad</p>
+              </div>
+              <span class="text-[11px] font-medium text-slate-500 bg-slate-100 px-2.5 py-1 rounded-full">Últimos 6 meses</span>
+            </div>
+            <div class="mt-4" style="height:220px;">
+              <canvas id="chartPasantias"></canvas>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
+            <h2 class="font-syne font-semibold text-slate-800 text-sm mb-4">Actividad Reciente</h2>
+            <div class="space-y-4" id="actividadReciente">
+              <div class="text-xs text-slate-300 text-center pt-4">Cargando...</div>
+            </div>
+            <button class="w-full mt-4 py-2 text-[11px] font-semibold text-slate-500 border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors tracking-wide">
+              VER TODO EL HISTORIAL
+            </button>
+          </div>
+        </div>
+
+        <!-- Tabla validaciones -->
+        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm">
+          <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100">
+            <h2 class="font-syne font-semibold text-slate-800 text-sm">Validaciones Pendientes</h2>
+            <button class="px-4 py-2 text-xs font-semibold text-white rounded-xl transition-all hover:opacity-90"
+                    style="background:#0d1b2e;">
+              Validar Seleccionados
+            </button>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full">
+              <thead>
+                <tr class="border-b border-slate-100">
+                  <th class="px-5 py-3 text-left"><input type="checkbox" class="w-3.5 h-3.5 accent-slate-800"/></th>
+                  <th class="px-3 py-3 text-left text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Alumno</th>
+                  <th class="px-3 py-3 text-left text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Facultad</th>
+                  <th class="px-3 py-3 text-left text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Empresa Destino</th>
+                  <th class="px-3 py-3 text-left text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Estado</th>
+                  <th class="px-3 py-3 text-left text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="tablaValidaciones">
+                <tr><td colspan="6" class="px-5 py-8 text-center text-sm text-slate-300">Cargando validaciones...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
 
-      <!-- TARJETAS KPI -->
-      <div class="grid grid-cols-3 gap-4 mb-6">
-
-        <!-- Pasantías activas -->
-        <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
-          <div class="flex items-start justify-between mb-4">
-            <div class="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center">
-              <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                <path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>
-              </svg>
-            </div>
-            <span class="text-[11px] font-medium text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">+12% vs mes ant.</span>
+      <!-- ══════════════════════════════
+           SECCIÓN: LOG DE HORAS
+      ══════════════════════════════ -->
+      <div id="seccionLog" class="seccion">
+        <div class="mb-6 flex items-center justify-between">
+          <div>
+            <h1 class="font-syne text-2xl font-bold text-slate-800">Log de Horas</h1>
+            <p class="text-sm text-slate-400 mt-1">Registro de actividades y horas de práctica.</p>
           </div>
-          <div class="text-[11px] text-slate-400 uppercase tracking-wide mb-1">Pasantías Activas</div>
-          <div class="font-syne text-3xl font-bold text-slate-800" id="kpiPasantias">—</div>
-        </div>
-
-        <!-- Horas loggeadas -->
-        <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
-          <div class="flex items-start justify-between mb-4">
-            <div class="w-10 h-10 rounded-xl bg-blue-500 flex items-center justify-center">
-              <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
-              </svg>
-            </div>
-            <span class="text-[11px] font-medium text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">En tiempo real</span>
-          </div>
-          <div class="text-[11px] text-slate-400 uppercase tracking-wide mb-1">Horas Loggeadas (Hoy)</div>
-          <div class="font-syne text-3xl font-bold text-slate-800" id="kpiHoras">—</div>
-        </div>
-
-        <!-- Validaciones pendientes -->
-        <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
-          <div class="flex items-start justify-between mb-4">
-            <div class="w-10 h-10 rounded-xl bg-red-100 flex items-center justify-center">
-              <svg class="w-5 h-5 text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
-                <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
-              </svg>
-            </div>
-            <span class="text-[11px] font-medium text-red-600 bg-red-50 px-2 py-0.5 rounded-full">Prioridad Alta</span>
-          </div>
-          <div class="text-[11px] text-slate-400 uppercase tracking-wide mb-1">Validaciones Pendientes</div>
-          <div class="font-syne text-3xl font-bold text-slate-800" id="kpiValidaciones">—</div>
-        </div>
-      </div>
-
-      <!-- GRÁFICA + ACTIVIDAD RECIENTE -->
-      <div class="grid grid-cols-3 gap-4 mb-6">
-
-        <!-- Gráfica -->
-        <div class="col-span-2 bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
-          <div class="flex items-start justify-between mb-1">
-            <div>
-              <h2 class="font-syne font-semibold text-slate-800 text-sm">Progreso de Pasantías</h2>
-              <p class="text-xs text-slate-400 mt-0.5">Evolución de culminación por facultad</p>
-            </div>
-            <span class="text-[11px] font-medium text-slate-500 bg-slate-100 px-2.5 py-1 rounded-full">Últimos 6 meses</span>
-          </div>
-          <div class="mt-4" style="height:220px;">
-            <canvas id="chartPasantias"></canvas>
-          </div>
-        </div>
-
-        <!-- Actividad reciente -->
-        <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
-          <h2 class="font-syne font-semibold text-slate-800 text-sm mb-4">Actividad Reciente</h2>
-          <div class="space-y-4" id="actividadReciente">
-            <!-- Se llena con JS -->
-            <div class="text-xs text-slate-300 text-center pt-4">Cargando...</div>
-          </div>
-          <button class="w-full mt-4 py-2 text-[11px] font-semibold text-slate-500 border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors tracking-wide">
-            VER TODO EL HISTORIAL
+          <button onclick="abrirModalLog()" class="px-4 py-2 text-xs font-semibold text-white rounded-xl hover:opacity-90 transition-all flex items-center gap-2" style="background:#0d1b2e;">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Registrar Horas
           </button>
         </div>
+
+        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm">
+          <div class="px-5 py-4 border-b border-slate-100 flex items-center gap-3">
+            <input type="text" id="filtroLog" placeholder="Filtrar por descripción..." oninput="filtrarLog()"
+                   class="flex-1 px-3 py-2 text-sm border border-slate-200 rounded-xl outline-none focus:border-blue-300 bg-slate-50"/>
+            <select id="filtroEstadoLog" onchange="filtrarLog()"
+                    class="px-3 py-2 text-sm border border-slate-200 rounded-xl outline-none focus:border-blue-300 bg-slate-50 text-slate-600">
+              <option value="">Todos los estados</option>
+              <option value="borrador">Borrador</option>
+              <option value="enviado">Enviado</option>
+              <option value="aprobado">Aprobado</option>
+              <option value="rechazado">Rechazado</option>
+            </select>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full">
+              <thead>
+                <tr class="border-b border-slate-100">
+                  <th class="px-5 py-3 text-left text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Fecha</th>
+                  <th class="px-3 py-3 text-left text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Descripción</th>
+                  <th class="px-3 py-3 text-left text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Horas</th>
+                  <th class="px-3 py-3 text-left text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Estado</th>
+                  <th class="px-3 py-3 text-left text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="tablaLog">
+                <tr><td colspan="5" class="px-5 py-8 text-center text-sm text-slate-300">Cargando registros...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
 
-      <!-- TABLA VALIDACIONES PENDIENTES -->
-      <div class="bg-white rounded-2xl border border-slate-100 shadow-sm">
-        <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100">
-          <h2 class="font-syne font-semibold text-slate-800 text-sm">Validaciones Pendientes</h2>
-          <button class="px-4 py-2 text-xs font-semibold text-white rounded-xl transition-all hover:opacity-90"
-                  style="background:#0d1b2e;">
-            Validar Seleccionados
+      <!-- ══════════════════════════════
+           SECCIÓN: VALIDACIÓN
+      ══════════════════════════════ -->
+      <div id="seccionValidacion" class="seccion">
+        <div class="mb-6">
+          <h1 class="font-syne text-2xl font-bold text-slate-800">Validación de Actividades</h1>
+          <p class="text-sm text-slate-400 mt-1">Revisa y aprueba los seguimientos enviados por los estudiantes.</p>
+        </div>
+
+        <div class="grid grid-cols-3 gap-4 mb-6">
+          <div class="bg-amber-50 border border-amber-200 rounded-2xl p-5">
+            <div class="text-[11px] font-semibold text-amber-600 uppercase tracking-wide mb-1">Pendientes</div>
+            <div class="font-syne text-3xl font-bold text-amber-700" id="valPendientes">—</div>
+          </div>
+          <div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-5">
+            <div class="text-[11px] font-semibold text-emerald-600 uppercase tracking-wide mb-1">Aprobados hoy</div>
+            <div class="font-syne text-3xl font-bold text-emerald-700">0</div>
+          </div>
+          <div class="bg-red-50 border border-red-200 rounded-2xl p-5">
+            <div class="text-[11px] font-semibold text-red-600 uppercase tracking-wide mb-1">Rechazados hoy</div>
+            <div class="font-syne text-3xl font-bold text-red-700">0</div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm">
+          <div class="px-5 py-4 border-b border-slate-100">
+            <h2 class="font-syne font-semibold text-slate-800 text-sm">Actividades por Validar</h2>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full">
+              <thead>
+                <tr class="border-b border-slate-100">
+                  <th class="px-5 py-3 text-left text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Estudiante</th>
+                  <th class="px-3 py-3 text-left text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Actividad</th>
+                  <th class="px-3 py-3 text-left text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Horas</th>
+                  <th class="px-3 py-3 text-left text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Fecha</th>
+                  <th class="px-3 py-3 text-left text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="tablaValidacion">
+                <tr><td colspan="5" class="px-5 py-8 text-center text-sm text-slate-300">No hay actividades pendientes de validación</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════
+           SECCIÓN: USUARIOS
+      ══════════════════════════════ -->
+      <div id="seccionUsuarios" class="seccion">
+        <div class="mb-6 flex items-center justify-between">
+          <div>
+            <h1 class="font-syne text-2xl font-bold text-slate-800">Gestión de Usuarios</h1>
+            <p class="text-sm text-slate-400 mt-1">Administra los usuarios registrados en el sistema.</p>
+          </div>
+          <button onclick="abrirModalUsuario()" class="px-4 py-2 text-xs font-semibold text-white rounded-xl hover:opacity-90 transition-all flex items-center gap-2" style="background:#0d1b2e;">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Nuevo Usuario
           </button>
         </div>
-        <div class="overflow-x-auto">
-          <table class="w-full">
-            <thead>
-              <tr class="border-b border-slate-100">
-                <th class="px-5 py-3 text-left">
-                  <input type="checkbox" class="w-3.5 h-3.5 accent-slate-800"/>
-                </th>
-                <th class="px-3 py-3 text-left text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Alumno</th>
-                <th class="px-3 py-3 text-left text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Facultad</th>
-                <th class="px-3 py-3 text-left text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Empresa Destino</th>
-                <th class="px-3 py-3 text-left text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Estado</th>
-                <th class="px-3 py-3 text-left text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Acciones</th>
-              </tr>
-            </thead>
-            <tbody id="tablaValidaciones">
-              <tr>
-                <td colspan="6" class="px-5 py-8 text-center text-sm text-slate-300">Cargando validaciones...</td>
-              </tr>
-            </tbody>
-          </table>
+
+        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm">
+          <div class="px-5 py-4 border-b border-slate-100 flex items-center gap-3">
+            <input type="text" id="filtroUsuarios" placeholder="Buscar por nombre o correo..." oninput="filtrarUsuarios()"
+                   class="flex-1 px-3 py-2 text-sm border border-slate-200 rounded-xl outline-none focus:border-blue-300 bg-slate-50"/>
+            <select id="filtroRol" onchange="filtrarUsuarios()"
+                    class="px-3 py-2 text-sm border border-slate-200 rounded-xl outline-none focus:border-blue-300 bg-slate-50 text-slate-600">
+              <option value="">Todos los roles</option>
+              <option value="estudiante">Estudiante</option>
+              <option value="tutor">Tutor</option>
+              <option value="coordinador">Coordinador</option>
+              <option value="supervisor">Supervisor</option>
+            </select>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full">
+              <thead>
+                <tr class="border-b border-slate-100">
+                  <th class="px-5 py-3 text-left text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Usuario</th>
+                  <th class="px-3 py-3 text-left text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Rol</th>
+                  <th class="px-3 py-3 text-left text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Programa</th>
+                  <th class="px-3 py-3 text-left text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Fecha Registro</th>
+                  <th class="px-3 py-3 text-left text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="tablaUsuarios">
+                <tr><td colspan="5" class="px-5 py-8 text-center text-sm text-slate-300">Cargando usuarios...</td></tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
 
-    </div>
+      <!-- ══════════════════════════════
+           SECCIÓN: CONFIGURACIÓN
+      ══════════════════════════════ -->
+      <div id="seccionConfig" class="seccion">
+        <div class="mb-6">
+          <h1 class="font-syne text-2xl font-bold text-slate-800">Configuración</h1>
+          <p class="text-sm text-slate-400 mt-1">Ajusta las preferencias de tu cuenta.</p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-6">
+          <!-- Perfil -->
+          <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
+            <h2 class="font-syne font-semibold text-slate-800 text-sm mb-5">Datos del Perfil</h2>
+            <div class="space-y-4">
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wide mb-1.5">Nombre completo</label>
+                <input type="text" id="configNombre" class="w-full px-3 py-2.5 text-sm border border-slate-200 rounded-xl outline-none focus:border-blue-300 bg-slate-50 text-slate-700"/>
+              </div>
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wide mb-1.5">Correo electrónico</label>
+                <input type="email" id="configCorreo" class="w-full px-3 py-2.5 text-sm border border-slate-200 rounded-xl outline-none focus:border-blue-300 bg-slate-50 text-slate-700"/>
+              </div>
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wide mb-1.5">Programa Académico</label>
+                <input type="text" id="configPrograma" class="w-full px-3 py-2.5 text-sm border border-slate-200 rounded-xl outline-none focus:border-blue-300 bg-slate-50 text-slate-700"/>
+              </div>
+              <button class="w-full py-2.5 text-xs font-semibold text-white rounded-xl hover:opacity-90 transition-all" style="background:#0d1b2e;">
+                Guardar Cambios
+              </button>
+            </div>
+          </div>
+
+          <!-- Seguridad -->
+          <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
+            <h2 class="font-syne font-semibold text-slate-800 text-sm mb-5">Seguridad</h2>
+            <div class="space-y-4">
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wide mb-1.5">Contraseña actual</label>
+                <input type="password" class="w-full px-3 py-2.5 text-sm border border-slate-200 rounded-xl outline-none focus:border-blue-300 bg-slate-50"/>
+              </div>
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wide mb-1.5">Nueva contraseña</label>
+                <input type="password" class="w-full px-3 py-2.5 text-sm border border-slate-200 rounded-xl outline-none focus:border-blue-300 bg-slate-50"/>
+              </div>
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wide mb-1.5">Confirmar nueva contraseña</label>
+                <input type="password" class="w-full px-3 py-2.5 text-sm border border-slate-200 rounded-xl outline-none focus:border-blue-300 bg-slate-50"/>
+              </div>
+              <button class="w-full py-2.5 text-xs font-semibold text-white rounded-xl hover:opacity-90 transition-all bg-blue-600">
+                Cambiar Contraseña
+              </button>
+            </div>
+
+            <!-- Zona peligrosa -->
+            <div class="mt-6 pt-5 border-t border-slate-100">
+              <h3 class="font-syne font-semibold text-red-500 text-xs mb-3">Zona de Peligro</h3>
+              <button id="btnLogoutConfig" class="w-full py-2.5 text-xs font-semibold text-red-600 border border-red-200 rounded-xl hover:bg-red-50 transition-colors flex items-center justify-center gap-2">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                  <polyline points="16 17 21 12 16 7"/>
+                  <line x1="21" y1="12" x2="9" y2="12"/>
+                </svg>
+                Cerrar Sesión
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- fin .p-6 -->
   </main>
 
-  <script src="js/dashboard.js"></script>
+  <!-- ══════════════════════════════════
+       MODAL: REGISTRAR HORAS
+  ══════════════════════════════════ -->
+  <div id="modalOverlay" class="fixed inset-0 z-50 items-center justify-center bg-black/40 backdrop-blur-sm">
+    <div id="modalBox" class="bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 p-6">
+      <div class="flex items-center justify-between mb-5">
+        <h3 class="font-syne font-bold text-slate-800 text-base" id="modalTitulo">Registrar Horas</h3>
+        <button onclick="cerrarModal()" class="text-slate-400 hover:text-slate-600 transition-colors">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <div id="modalContenido">
+        <!-- Se llena dinámicamente -->
+      </div>
+    </div>
+  </div>
+
+ <script>
+  // ══════════════════════════════════════
+  // CONFIG API
+  // ══════════════════════════════════════
+  const API_URL =
+    window.location.hostname === 'localhost' ||
+    window.location.hostname === '127.0.0.1'
+      ? 'http://127.0.0.1:8000/api/v1'
+      : `${window.location.origin}/api/v1`;
+
+  const token =
+    localStorage.getItem('token') ||
+    sessionStorage.getItem('token');
+
+  // ══════════════════════════════════════
+  // NAVEGACIÓN SIDEBAR
+  // ══════════════════════════════════════
+  const secciones = {
+    dashboard: document.getElementById('seccionDashboard'),
+    log: document.getElementById('seccionLog'),
+    validacion: document.getElementById('seccionValidacion'),
+    usuarios: document.getElementById('seccionUsuarios'),
+    config: document.getElementById('seccionConfig'),
+  };
+
+  document.querySelectorAll('.nav-item').forEach(item => {
+    item.addEventListener('click', e => {
+      e.preventDefault();
+
+      const pagina = item.dataset.page;
+
+      document.querySelectorAll('.nav-item')
+        .forEach(i => i.classList.remove('active'));
+
+      item.classList.add('active');
+
+      Object.values(secciones)
+        .forEach(s => s.classList.remove('activa'));
+
+      secciones[pagina].classList.add('activa');
+
+      if (pagina === 'usuarios') cargarTablaUsuarios();
+      if (pagina === 'config') cargarDatosConfig();
+    });
+  });
+
+  // ══════════════════════════════════════
+  // LOGOUT
+  // ══════════════════════════════════════
+  function cerrarSesion() {
+    localStorage.removeItem('token');
+    sessionStorage.removeItem('token');
+
+    window.location.href = 'login.html';
+  }
+
+  document.getElementById('btnLogout')
+    .addEventListener('click', cerrarSesion);
+
+  document.getElementById('btnLogoutConfig')
+    .addEventListener('click', cerrarSesion);
+
+  // ══════════════════════════════════════
+  // MODAL
+  // ══════════════════════════════════════
+  function abrirModal() {
+    document
+      .getElementById('modalOverlay')
+      .classList.add('open');
+  }
+
+  function cerrarModal() {
+    document
+      .getElementById('modalOverlay')
+      .classList.remove('open');
+  }
+
+  document.getElementById('modalOverlay')
+    .addEventListener('click', e => {
+      if (e.target.id === 'modalOverlay') {
+        cerrarModal();
+      }
+    });
+
+  // ══════════════════════════════════════
+  // VARIABLES
+  // ══════════════════════════════════════
+  let _usuarios = [];
+
+  // ══════════════════════════════════════
+  // CARGAR USUARIO ACTUAL
+  // ══════════════════════════════════════
+  async function cargarPerfil() {
+    try {
+      const res = await fetch(`${API_URL}/usuarios/me`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      if (!res.ok) {
+        cerrarSesion();
+        return;
+      }
+
+      const user = await res.json();
+
+      document.getElementById('topbarNombre').textContent = user.nombre;
+      document.getElementById('topbarRol').textContent = user.rol;
+      document.getElementById('nombreUsuario').textContent = user.nombre;
+
+      document.getElementById('topbarAvatar').textContent =
+        user.nombre.charAt(0).toUpperCase();
+
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  // ══════════════════════════════════════
+  // CARGAR TABLA USUARIOS
+  // ══════════════════════════════════════
+  async function cargarTablaUsuarios() {
+    const tbody = document.getElementById('tablaUsuarios');
+
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="5" class="px-5 py-8 text-center text-sm text-slate-300">
+          Cargando usuarios...
+        </td>
+      </tr>
+    `;
+
+    try {
+      const res = await fetch(`${API_URL}/usuarios/`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      if (!res.ok) {
+        throw new Error('Error al cargar');
+      }
+
+      _usuarios = await res.json();
+
+      renderTablaUsuarios(_usuarios);
+
+    } catch (error) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="5" class="px-5 py-8 text-center text-sm text-red-400">
+            Error al cargar usuarios
+          </td>
+        </tr>
+      `;
+    }
+  }
+
+  // ══════════════════════════════════════
+  // RENDER TABLA
+  // ══════════════════════════════════════
+  function renderTablaUsuarios(lista) {
+
+    const tbody = document.getElementById('tablaUsuarios');
+
+    if (!lista.length) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="5" class="px-5 py-8 text-center text-sm text-slate-300">
+            No hay usuarios registrados
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    tbody.innerHTML = lista.map(usuario => {
+
+      const fecha = usuario.fecha_creacion
+        ? new Date(usuario.fecha_creacion)
+            .toLocaleDateString('es-CO')
+        : '—';
+
+      return `
+        <tr class="table-row border-b border-slate-50">
+
+          <td class="px-5 py-3">
+            <div class="text-xs font-semibold text-slate-700">
+              ${usuario.nombre}
+            </div>
+
+            <div class="text-[10px] text-slate-400">
+              ${usuario.correo}
+            </div>
+          </td>
+
+          <td class="px-3 py-3">
+            <span class="text-[10px] font-medium px-2 py-0.5 rounded-full badge-${usuario.rol}">
+              ${usuario.rol}
+            </span>
+          </td>
+
+          <td class="px-3 py-3 text-xs text-slate-600">
+            ${usuario.programa_academico || '—'}
+          </td>
+
+          <td class="px-3 py-3 text-xs text-slate-500">
+            ${fecha}
+          </td>
+
+          <td class="px-3 py-3 flex gap-3">
+
+            <button
+              onclick="editarUsuario(${usuario.id})"
+              class="text-[10px] font-semibold text-blue-600 hover:text-blue-800">
+              Editar
+            </button>
+
+            <button
+              onclick="eliminarUsuario(${usuario.id})"
+              class="text-[10px] font-semibold text-red-600 hover:text-red-800">
+              Eliminar
+            </button>
+
+          </td>
+
+        </tr>
+      `;
+    }).join('');
+  }
+
+  // ══════════════════════════════════════
+  // FILTRAR USUARIOS
+  // ══════════════════════════════════════
+  function filtrarUsuarios() {
+
+    const texto = document
+      .getElementById('filtroUsuarios')
+      .value
+      .toLowerCase();
+
+    const rol = document
+      .getElementById('filtroRol')
+      .value;
+
+    const filtrados = _usuarios.filter(u => {
+
+      const coincideTexto =
+        u.nombre.toLowerCase().includes(texto) ||
+        u.correo.toLowerCase().includes(texto);
+
+      const coincideRol =
+        rol === '' || u.rol === rol;
+
+      return coincideTexto && coincideRol;
+    });
+
+    renderTablaUsuarios(filtrados);
+  }
+
+  // ══════════════════════════════════════
+  // MODAL NUEVO USUARIO
+  // ══════════════════════════════════════
+  function abrirModalUsuario() {
+
+    document.getElementById('modalTitulo')
+      .textContent = 'Nuevo Usuario';
+
+    document.getElementById('modalContenido')
+      .innerHTML = `
+
+      <div class="space-y-4">
+
+        <input type="hidden" id="usuarioId"/>
+
+        <div>
+          <label class="block text-xs mb-1">Nombre</label>
+
+          <input
+            type="text"
+            id="nuNombre"
+            class="w-full px-3 py-2 border rounded-xl"
+          />
+        </div>
+
+        <div>
+          <label class="block text-xs mb-1">Correo</label>
+
+          <input
+            type="email"
+            id="nuCorreo"
+            class="w-full px-3 py-2 border rounded-xl"
+          />
+        </div>
+
+        <div>
+          <label class="block text-xs mb-1">Contraseña</label>
+
+          <input
+            type="password"
+            id="nuPassword"
+            class="w-full px-3 py-2 border rounded-xl"
+          />
+        </div>
+
+        <div>
+          <label class="block text-xs mb-1">Rol</label>
+
+          <select
+            id="nuRol"
+            class="w-full px-3 py-2 border rounded-xl">
+
+            <option value="estudiante">Estudiante</option>
+            <option value="tutor">Tutor</option>
+            <option value="supervisor">Supervisor</option>
+            <option value="coordinador">Coordinador</option>
+
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs mb-1">
+            Programa Académico
+          </label>
+
+          <input
+            type="text"
+            id="nuPrograma"
+            class="w-full px-3 py-2 border rounded-xl"
+          />
+        </div>
+
+        <div id="nuError"
+             class="text-xs text-red-500 hidden">
+        </div>
+
+        <div class="flex gap-3 pt-2">
+
+          <button
+            onclick="cerrarModal()"
+            class="flex-1 py-2 border rounded-xl">
+            Cancelar
+          </button>
+
+          <button
+            onclick="crearUsuario()"
+            class="flex-1 py-2 rounded-xl text-white"
+            style="background:#0d1b2e;">
+            Guardar
+          </button>
+
+        </div>
+
+      </div>
+    `;
+
+    abrirModal();
+  }
+
+  // ══════════════════════════════════════
+  // CREAR USUARIO
+  // ══════════════════════════════════════
+  async function crearUsuario() {
+
+    const err = document.getElementById('nuError');
+
+    const body = {
+      nombre: document.getElementById('nuNombre').value,
+      correo: document.getElementById('nuCorreo').value,
+      password: document.getElementById('nuPassword').value,
+      rol: document.getElementById('nuRol').value,
+      programa_academico: document.getElementById('nuPrograma').value
+    };
+
+    try {
+
+      const res = await fetch(`${API_URL}/usuarios/`, {
+        method: 'POST',
+
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+
+        body: JSON.stringify(body)
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        err.textContent = data.detail || 'Error';
+        err.classList.remove('hidden');
+        return;
+      }
+
+      cerrarModal();
+
+      cargarTablaUsuarios();
+
+    } catch (error) {
+
+      err.textContent = 'Error de conexión';
+      err.classList.remove('hidden');
+    }
+  }
+
+  // ══════════════════════════════════════
+  // EDITAR USUARIO
+  // ══════════════════════════════════════
+  async function editarUsuario(id) {
+
+    const usuario = _usuarios.find(u => u.id === id);
+
+    if (!usuario) return;
+
+    document.getElementById('modalTitulo')
+      .textContent = 'Editar Usuario';
+
+    document.getElementById('modalContenido')
+      .innerHTML = `
+
+      <div class="space-y-4">
+
+        <div>
+          <label class="block text-xs mb-1">Nombre</label>
+
+          <input
+            type="text"
+            id="editNombre"
+            value="${usuario.nombre}"
+            class="w-full px-3 py-2 border rounded-xl"
+          />
+        </div>
+
+        <div>
+          <label class="block text-xs mb-1">Correo</label>
+
+          <input
+            type="email"
+            id="editCorreo"
+            value="${usuario.correo}"
+            class="w-full px-3 py-2 border rounded-xl"
+          />
+        </div>
+
+        <div>
+          <label class="block text-xs mb-1">Nueva Contraseña</label>
+
+          <input
+            type="password"
+            id="editPassword"
+            class="w-full px-3 py-2 border rounded-xl"
+          />
+        </div>
+
+        <div>
+          <label class="block text-xs mb-1">Rol</label>
+
+          <select
+            id="editRol"
+            class="w-full px-3 py-2 border rounded-xl">
+
+            <option value="estudiante">Estudiante</option>
+            <option value="tutor">Tutor</option>
+            <option value="supervisor">Supervisor</option>
+            <option value="coordinador">Coordinador</option>
+
+          </select>
+        </div>
+
+        <div class="flex gap-3 pt-2">
+
+          <button
+            onclick="cerrarModal()"
+            class="flex-1 py-2 border rounded-xl">
+            Cancelar
+          </button>
+
+          <button
+            onclick="guardarEdicion(${usuario.id})"
+            class="flex-1 py-2 rounded-xl text-white"
+            style="background:#0d1b2e;">
+            Guardar Cambios
+          </button>
+
+        </div>
+
+      </div>
+    `;
+
+    document.getElementById('editRol').value = usuario.rol;
+
+    abrirModal();
+  }
+
+  // ══════════════════════════════════════
+  // GUARDAR EDICIÓN
+  // ══════════════════════════════════════
+  async function guardarEdicion(id) {
+
+    const body = {
+      nombre: document.getElementById('editNombre').value,
+      correo: document.getElementById('editCorreo').value,
+      password: document.getElementById('editPassword').value,
+      rol: document.getElementById('editRol').value
+    };
+
+    try {
+
+      const res = await fetch(`${API_URL}/usuarios/${id}`, {
+
+        method: 'PUT',
+
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+
+        body: JSON.stringify(body)
+      });
+
+      if (!res.ok) {
+        alert('Error al actualizar');
+        return;
+      }
+
+      cerrarModal();
+
+      cargarTablaUsuarios();
+
+    } catch (error) {
+
+      alert('Error de conexión');
+    }
+  }
+
+  // ══════════════════════════════════════
+  // ELIMINAR USUARIO
+  // ══════════════════════════════════════
+  async function eliminarUsuario(id) {
+
+    if (!confirm('¿Eliminar usuario?')) return;
+
+    try {
+
+      const res = await fetch(`${API_URL}/usuarios/${id}`, {
+
+        method: 'DELETE',
+
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      if (!res.ok) {
+        alert('No se pudo eliminar');
+        return;
+      }
+
+      cargarTablaUsuarios();
+
+    } catch (error) {
+
+      alert('Error de conexión');
+    }
+  }
+
+  // ══════════════════════════════════════
+  // CONFIG
+  // ══════════════════════════════════════
+  async function cargarDatosConfig() {
+
+    try {
+
+      const res = await fetch(`${API_URL}/usuarios/me`, {
+
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      const user = await res.json();
+
+      document.getElementById('configNombre').value =
+        user.nombre || '';
+
+      document.getElementById('configCorreo').value =
+        user.correo || '';
+
+      document.getElementById('configPrograma').value =
+        user.programa_academico || '';
+
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  // ══════════════════════════════════════
+  // INIT
+  // ══════════════════════════════════════
+  cargarPerfil();
+</script>
 </body>
 </html>
