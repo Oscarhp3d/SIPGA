@@ -18,6 +18,12 @@ class UsuarioCreate(UsuarioBase):
     password: str = Field(..., min_length=8)
 
 
+class UsuarioUpdate(BaseModel):
+    nombre: Optional[str] = None
+    correo: Optional[EmailStr] = None
+    password: Optional[str] = None
+    rol: Optional[UserRole] = None
+
 class UsuarioResponse(UsuarioBase):
     id: str
     fecha_creacion: datetime
@@ -55,6 +61,12 @@ class PracticaBase(BaseModel):
 
 class PracticaCreate(PracticaBase):
     pass
+
+class PracticaUpdate(BaseModel):
+    estado: Optional[str] = None
+    tutor_id: Optional[str] = None
+    supervisor_id: Optional[str] = None
+    fecha_fin: Optional[datetime] = None
 
 
 class PracticaResponse(PracticaBase):

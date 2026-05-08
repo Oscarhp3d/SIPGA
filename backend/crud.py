@@ -65,6 +65,20 @@ def obtener_practica(db: Session, practica_id: str) -> Optional[models.Practica]
     """Obtiene una práctica por su ID."""
     return db.query(models.Practica).filter(models.Practica.id == practica_id).first()
 
+def obtener_todas_practicas(db: Session) -> List[models.Practica]:
+    """Lista todas las prácticas (uso exclusivo del coordinador)."""
+    return db.query(models.Practica).all()
+
+def obtener_practicas_por_usuario(db: Session, usuario_id: str, rol: str) -> List[models.Practica]:
+    """Obtiene las prácticas relacionadas a un usuario según su rol."""
+    if rol == "estudiante":
+        return db.query(models.Practica).filter(models.Practica.estudiante_id == usuario_id).all()
+    elif rol == "tutor":
+        return db.query(models.Practica).filter(models.Practica.tutor_id == usuario_id).all()
+    elif rol == "supervisor":
+        return db.query(models.Practica).filter(models.Practica.supervisor_id == usuario_id).all()
+    return []
+
 # --- LÓGICA DE SEGUIMIENTO ---
 
 def registrar_seguimiento(db: Session, seguimiento: schemas.SeguimientoCreate) -> models.Seguimiento:

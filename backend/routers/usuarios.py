@@ -37,27 +37,28 @@ def leer_perfil(current_user: models.Usuario = Depends(auth.get_current_user)):
 # ══════════════════════════════════════
 @router.put("/{usuario_id}", response_model=schemas.UsuarioResponse)
 def actualizar_usuario(
-    usuario_id: int,
-    usuario: schemas.UsuarioCreate,
+    usuario_id: str,
+    usuario: schemas.UsuarioUpdate,
     db: Session = Depends(get_db),
     admin=Depends(auth.verificar_rol(["coordinador"]))
 ):
-    """Actualizar usuario (Solo Coordinador)."""
-
     db_user = db.query(models.Usuario).filter(models.Usuario.id == usuario_id).first()
 
     if not db_user:
-        raise HTTPException(
-            status_code=404,
-            detail="Usuario no encontrado"
-        )
+        raise HTTPException(status_code=404, detail="Usuario no encontrado")
 
-    db_user.nombre = usuario.nombre
-    db_user.correo = usuario.correo
-    db_user.rol = usuario.rol
+    if usuario.nombre:
+        db_user.nombre = usuario.nombre
 
-    # Actualizar contraseña
-    db_user.password_hash = auth.hash_password(usuario.password)
+    if usuario.correo:
+        db_user.correo = usuario.correo
+
+    if usuario.rol:
+        db_user.rol = usuario.rol
+
+    # 🔐 SOLO si manda password
+    if usuario.password:
+        db_user.password_hash = auth.hash_password(usuario.password)
 
     db.commit()
     db.refresh(db_user)
@@ -70,7 +71,7 @@ def actualizar_usuario(
 # ══════════════════════════════════════
 @router.delete("/{usuario_id}")
 def eliminar_usuario(
-    usuario_id: int,
+    usuario_id: str,
     db: Session = Depends(get_db),
     admin=Depends(auth.verificar_rol(["coordinador"]))
 ):

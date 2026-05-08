@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 import logging
 import os
 import time
@@ -32,6 +33,14 @@ app = FastAPI(
     title=settings.PROJECT_NAME,
     description="API profesional para el seguimiento de prácticas profesionales - SIPRA",
     version=settings.VERSION,
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # 3. MIDDLEWARES

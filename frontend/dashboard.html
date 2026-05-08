@@ -103,12 +103,37 @@
         <span class="text-white/60 text-xs font-medium">Validación</span>
       </a>
 
+      <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer" data-page="practicas">
+        <svg class="w-4 h-4 text-white/50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/>
+          <line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/>
+        </svg>
+        <span class="text-white/60 text-xs font-medium">Prácticas</span>
+      </a>
+
       <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer" data-page="usuarios">
         <svg class="w-4 h-4 text-white/50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
           <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
           <path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
         </svg>
         <span class="text-white/60 text-xs font-medium">Usuarios</span>
+      </a>
+
+      <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer" data-page="empresas" id="menuEmpresas">
+        <svg class="w-4 h-4 text-white/50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+          <polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+        <span class="text-white/60 text-xs font-medium">Empresas</span>
+      </a>
+
+      <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer" data-page="reportes">
+        <svg class="w-4 h-4 text-white/50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/>
+          <line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/>
+        </svg>
+        <span class="text-white/60 text-xs font-medium">Reportes</span>
       </a>
 
       <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer" data-page="config">
@@ -494,6 +519,166 @@
         </div>
       </div>
 
+      <!-- ══════════════════════════════
+           SECCIÓN: EMPRESAS
+      ══════════════════════════════ -->
+      <div id="seccionEmpresas" class="seccion">
+        <div class="mb-6 flex items-center justify-between">
+          <div>
+            <h1 class="font-syne text-2xl font-bold text-slate-800">Empresas</h1>
+            <p class="text-sm text-slate-400 mt-1">Gestiona las empresas vinculadas a prácticas.</p>
+          </div>
+          <button onclick="abrirModalEmpresa()" class="px-4 py-2 text-xs font-semibold text-white rounded-xl hover:opacity-90 transition-all flex items-center gap-2" style="background:#0d1b2e;">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Nueva Empresa
+          </button>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+          <table class="w-full text-sm">
+            <thead class="bg-slate-50 border-b border-slate-100">
+              <tr>
+                <th class="px-5 py-3 text-left text-[10px] font-semibold text-slate-400 uppercase tracking-wider">ID</th>
+                <th class="px-3 py-3 text-left text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Nombre</th>
+                <th class="px-3 py-3 text-left text-[10px] font-semibold text-slate-400 uppercase tracking-wider">NIT</th>
+                <th class="px-3 py-3 text-left text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Dirección</th>
+              </tr>
+            </thead>
+            <tbody id="tablaEmpresas">
+              <tr><td colspan="4" class="px-5 py-8 text-center text-sm text-slate-400">Cargando...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════
+           SECCIÓN: PRÁCTICAS
+      ══════════════════════════════ -->
+      <div id="seccionPracticas" class="seccion">
+        <div class="mb-6 flex items-center justify-between">
+          <div>
+            <h1 class="font-syne text-2xl font-bold text-slate-800">Gestión de Prácticas</h1>
+            <p class="text-sm text-slate-400 mt-1">Visualiza, aprueba y gestiona todas las prácticas académicas.</p>
+          </div>
+          <button onclick="abrirModalPractica()" class="px-4 py-2 text-xs font-semibold text-white rounded-xl hover:opacity-90 transition-all flex items-center gap-2" style="background:#0d1b2e;">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Nueva Práctica
+          </button>
+        </div>
+
+        <!-- KPIs prácticas -->
+        <div class="grid grid-cols-4 gap-4 mb-6">
+          <div class="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm">
+            <div class="text-[10px] font-semibold text-slate-400 uppercase tracking-wide mb-1">Total</div>
+            <div class="font-syne text-2xl font-bold text-slate-800" id="pracTotalKpi">—</div>
+          </div>
+          <div class="bg-emerald-50 rounded-2xl p-4 border border-emerald-100 shadow-sm">
+            <div class="text-[10px] font-semibold text-emerald-600 uppercase tracking-wide mb-1">Activas</div>
+            <div class="font-syne text-2xl font-bold text-emerald-700" id="pracActivasKpi">—</div>
+          </div>
+          <div class="bg-amber-50 rounded-2xl p-4 border border-amber-100 shadow-sm">
+            <div class="text-[10px] font-semibold text-amber-600 uppercase tracking-wide mb-1">Pendientes</div>
+            <div class="font-syne text-2xl font-bold text-amber-700" id="pracPendientesKpi">—</div>
+          </div>
+          <div class="bg-blue-50 rounded-2xl p-4 border border-blue-100 shadow-sm">
+            <div class="text-[10px] font-semibold text-blue-600 uppercase tracking-wide mb-1">Finalizadas</div>
+            <div class="font-syne text-2xl font-bold text-blue-700" id="pracFinalizadasKpi">—</div>
+          </div>
+        </div>
+
+        <!-- Filtros -->
+        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm">
+          <div class="px-5 py-4 border-b border-slate-100 flex items-center gap-3">
+            <input type="text" id="filtroPracticas" placeholder="Buscar por estudiante o empresa..." oninput="filtrarPracticas()"
+                   class="flex-1 px-3 py-2 text-sm border border-slate-200 rounded-xl outline-none focus:border-blue-300 bg-slate-50"/>
+            <select id="filtroEstadoPractica" onchange="filtrarPracticas()"
+                    class="px-3 py-2 text-sm border border-slate-200 rounded-xl outline-none focus:border-blue-300 bg-slate-50 text-slate-600">
+              <option value="">Todos los estados</option>
+              <option value="activa">Activa</option>
+              <option value="pendiente">Pendiente</option>
+              <option value="finalizada">Finalizada</option>
+              <option value="suspendida">Suspendida</option>
+            </select>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full">
+              <thead>
+                <tr class="border-b border-slate-100">
+                  <th class="px-5 py-3 text-left text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Estudiante</th>
+                  <th class="px-3 py-3 text-left text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Empresa</th>
+                  <th class="px-3 py-3 text-left text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Tutor</th>
+                  <th class="px-3 py-3 text-left text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Progreso</th>
+                  <th class="px-3 py-3 text-left text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Estado</th>
+                  <th class="px-3 py-3 text-left text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="tablaPracticas">
+                <tr><td colspan="6" class="px-5 py-8 text-center text-sm text-slate-300">Cargando prácticas...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════
+           SECCIÓN: REPORTES
+      ══════════════════════════════ -->
+      <div id="seccionReportes" class="seccion">
+        <div class="mb-6">
+          <h1 class="font-syne text-2xl font-bold text-slate-800">Reportes</h1>
+          <p class="text-sm text-slate-400 mt-1">Genera y descarga reportes PDF de las prácticas académicas.</p>
+        </div>
+
+        <!-- Resumen estadístico -->
+        <div class="grid grid-cols-3 gap-4 mb-6">
+          <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm col-span-2">
+            <h2 class="font-syne font-semibold text-slate-800 text-sm mb-4">Distribución por Estado</h2>
+            <div style="height:180px;">
+              <canvas id="chartReportes"></canvas>
+            </div>
+          </div>
+          <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm flex flex-col justify-between">
+            <div>
+              <h2 class="font-syne font-semibold text-slate-800 text-sm mb-4">Resumen General</h2>
+              <div class="space-y-3" id="resumenReportes">
+                <div class="text-xs text-slate-300">Cargando...</div>
+              </div>
+            </div>
+            <button onclick="exportarResumenCSV()" class="mt-4 w-full py-2 text-xs font-semibold text-slate-600 border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors flex items-center justify-center gap-2">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+              Exportar CSV
+            </button>
+          </div>
+        </div>
+
+        <!-- Tabla de prácticas para reportes -->
+        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm">
+          <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
+            <h2 class="font-syne font-semibold text-slate-800 text-sm">Prácticas — Descarga de Reportes PDF</h2>
+            <input type="text" id="filtroReportes" placeholder="Filtrar..." oninput="filtrarTablaReportes()"
+                   class="px-3 py-1.5 text-xs border border-slate-200 rounded-xl outline-none focus:border-blue-300 bg-slate-50 w-48"/>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full">
+              <thead>
+                <tr class="border-b border-slate-100">
+                  <th class="px-5 py-3 text-left text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Estudiante</th>
+                  <th class="px-3 py-3 text-left text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Empresa</th>
+                  <th class="px-3 py-3 text-left text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Estado</th>
+                  <th class="px-3 py-3 text-left text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Horas req.</th>
+                  <th class="px-3 py-3 text-left text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Reporte</th>
+                </tr>
+              </thead>
+              <tbody id="tablaReportes">
+                <tr><td colspan="5" class="px-5 py-8 text-center text-sm text-slate-300">Cargando...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
     </div><!-- fin .p-6 -->
   </main>
 
@@ -537,7 +722,10 @@
     dashboard: document.getElementById('seccionDashboard'),
     log: document.getElementById('seccionLog'),
     validacion: document.getElementById('seccionValidacion'),
+    practicas: document.getElementById('seccionPracticas'),
+    empresas:  document.getElementById('seccionEmpresas'),
     usuarios: document.getElementById('seccionUsuarios'),
+    reportes: document.getElementById('seccionReportes'),
     config: document.getElementById('seccionConfig'),
   };
 
@@ -553,12 +741,17 @@
       item.classList.add('active');
 
       Object.values(secciones)
-        .forEach(s => s.classList.remove('activa'));
+        .forEach(s => s && s.classList.remove('activa'));
 
-      secciones[pagina].classList.add('activa');
+      if (secciones[pagina]) secciones[pagina].classList.add('activa');
 
       if (pagina === 'usuarios') cargarTablaUsuarios();
       if (pagina === 'config') cargarDatosConfig();
+      if (pagina === 'empresas') cargarEmpresas();
+      if (pagina === 'log') cargarLog();
+      if (pagina === 'validacion') cargarValidacion();
+      if (pagina === 'practicas') cargarPracticas();
+      if (pagina === 'reportes') cargarReportes();
     });
   });
 
@@ -600,6 +793,16 @@
       }
     });
 
+  // Listener delegado en el modal para capturar "Guardar Cambios"
+  document.getElementById('modalBox')
+    .addEventListener('click', e => {
+      const btn = e.target.closest('.btn-accion');
+      if (!btn) return;
+      const id = btn.dataset.id;
+      const action = btn.dataset.action;
+      if (action === 'guardar-edicion') guardarEdicion(id);
+    });
+
   // ══════════════════════════════════════
   // VARIABLES
   // ══════════════════════════════════════
@@ -622,6 +825,8 @@
       }
 
       const user = await res.json();
+      window.currentUserId  = user.id;
+      window.currentUserRol = user.rol;
 
       document.getElementById('topbarNombre').textContent = user.nombre;
       document.getElementById('topbarRol').textContent = user.rol;
@@ -629,6 +834,34 @@
 
       document.getElementById('topbarAvatar').textContent =
         user.nombre.charAt(0).toUpperCase();
+
+      // ── Control de sidebar por rol ──────────────────────
+      const ocultar = (page) => {
+        const el = document.querySelector(`[data-page="${page}"]`);
+        if (el) el.style.display = 'none';
+      };
+
+      if (user.rol === 'estudiante') {
+        // Solo ve: dashboard, log, sus prácticas, config
+        ocultar('validacion');
+        ocultar('usuarios');
+        ocultar('empresas');
+        ocultar('reportes');
+      } else if (user.rol === 'tutor') {
+        // Ve: dashboard, log, validación, prácticas
+        ocultar('usuarios');
+        ocultar('empresas');
+        ocultar('reportes');
+        ocultar('config');
+      } else if (user.rol === 'supervisor') {
+        // Ve: dashboard, validación, prácticas
+        ocultar('log');
+        ocultar('usuarios');
+        ocultar('empresas');
+        ocultar('reportes');
+        ocultar('config');
+      }
+      // coordinador ve todo — no se oculta nada
 
     } catch (error) {
       console.error(error);
@@ -663,6 +896,7 @@
       _usuarios = await res.json();
 
       renderTablaUsuarios(_usuarios);
+      registrarListenerTabla();
 
     } catch (error) {
       tbody.innerHTML = `
@@ -730,14 +964,14 @@
           <td class="px-3 py-3 flex gap-3">
 
             <button
-              onclick="editarUsuario(${usuario.id})"
-              class="text-[10px] font-semibold text-blue-600 hover:text-blue-800">
+              data-id="${usuario.id}" data-action="editar"
+              class="btn-accion text-[10px] font-semibold text-blue-600 hover:text-blue-800">
               Editar
             </button>
 
             <button
-              onclick="eliminarUsuario(${usuario.id})"
-              class="text-[10px] font-semibold text-red-600 hover:text-red-800">
+              data-id="${usuario.id}" data-action="eliminar"
+              class="btn-accion text-[10px] font-semibold text-red-600 hover:text-red-800">
               Eliminar
             </button>
 
@@ -746,6 +980,22 @@
         </tr>
       `;
     }).join('');
+  }
+
+  // Event listener delegado para la tabla de usuarios (se registra una sola vez)
+  let _tablaListenerRegistrado = false;
+  function registrarListenerTabla() {
+    if (_tablaListenerRegistrado) return;
+    _tablaListenerRegistrado = true;
+    document.getElementById('tablaUsuarios').addEventListener('click', e => {
+      const btn = e.target.closest('.btn-accion');
+      if (!btn) return;
+      const id = btn.dataset.id;
+      const action = btn.dataset.action;
+      if (action === 'editar') editarUsuario(id);
+      if (action === 'eliminar') eliminarUsuario(id);
+      if (action === 'guardar-edicion') guardarEdicion(id);
+    });
   }
 
   // ══════════════════════════════════════
@@ -996,8 +1246,8 @@
           </button>
 
           <button
-            onclick="guardarEdicion(${usuario.id})"
-            class="flex-1 py-2 rounded-xl text-white"
+            data-id="${usuario.id}" data-action="guardar-edicion"
+            class="btn-accion flex-1 py-2 rounded-xl text-white"
             style="background:#0d1b2e;">
             Guardar Cambios
           </button>
@@ -1017,12 +1267,18 @@
   // ══════════════════════════════════════
   async function guardarEdicion(id) {
 
+    const pwVal = document.getElementById('editPassword').value;
+
     const body = {
       nombre: document.getElementById('editNombre').value,
       correo: document.getElementById('editCorreo').value,
-      password: document.getElementById('editPassword').value,
       rol: document.getElementById('editRol').value
     };
+
+    // Solo incluir password si el usuario escribió algo
+    if (pwVal && pwVal.trim() !== '') {
+      body.password = pwVal;
+    }
 
     try {
 
@@ -1039,7 +1295,8 @@
       });
 
       if (!res.ok) {
-        alert('Error al actualizar');
+        const data = await res.json().catch(() => ({}));
+        alert('Error al actualizar: ' + (data.detail || res.status));
         return;
       }
 
@@ -1049,7 +1306,7 @@
 
     } catch (error) {
 
-      alert('Error de conexión');
+      alert('Error de conexión: ' + error.message);
     }
   }
 
@@ -1072,7 +1329,8 @@
       });
 
       if (!res.ok) {
-        alert('No se pudo eliminar');
+        const data = await res.json().catch(() => ({}));
+        alert('No se pudo eliminar: ' + (data.detail || res.status));
         return;
       }
 
@@ -1112,6 +1370,934 @@
     } catch (error) {
       console.error(error);
     }
+  }
+
+
+  // ══════════════════════════════════════
+  // LOG DE HORAS (SEGUIMIENTOS)
+  // ══════════════════════════════════════
+  let _seguimientos = [];
+  let _miPracticaId = null; // practica_id del estudiante logueado
+
+  async function cargarLog() {
+    const tbody = document.getElementById('tablaLog');
+    if (!tbody) return;
+
+    tbody.innerHTML = `<tr><td colspan="5" class="px-5 py-8 text-center text-sm text-slate-300">Cargando...</td></tr>`;
+
+    try {
+      // Primero obtener la práctica del usuario actual
+      if (!_miPracticaId) {
+        const endpoint = window.currentUserRol === 'coordinador'
+          ? `${API_URL}/practicas/`
+          : `${API_URL}/practicas/mis`;
+
+        const resP = await fetch(endpoint, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        if (resP.ok) {
+          const practicas = await resP.json();
+          const miPractica = practicas.find(p => p.estudiante_id === window.currentUserId) || practicas[0];
+          if (miPractica) _miPracticaId = miPractica.id;
+        }
+      }
+
+      if (!_miPracticaId) {
+        tbody.innerHTML = `<tr><td colspan="5" class="px-5 py-8 text-center text-sm text-slate-400">No tienes una práctica activa asignada.</td></tr>`;
+        return;
+      }
+
+      const res = await fetch(`${API_URL}/seguimientos/practica/${_miPracticaId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      if (!res.ok) throw new Error('Sin acceso');
+      _seguimientos = await res.json();
+      renderTablaLog(_seguimientos);
+
+    } catch (e) {
+      tbody.innerHTML = `<tr><td colspan="5" class="px-5 py-8 text-center text-sm text-red-400">Error al cargar seguimientos.</td></tr>`;
+    }
+  }
+
+  const _coloresEstado = {
+    borrador:  'bg-slate-100 text-slate-600',
+    enviado:   'bg-amber-100 text-amber-700',
+    aprobado:  'bg-emerald-100 text-emerald-700',
+    rechazado: 'bg-red-100 text-red-600',
+  };
+
+  function renderTablaLog(lista) {
+    const tbody = document.getElementById('tablaLog');
+    if (!tbody) return;
+    if (lista.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="5" class="px-5 py-8 text-center text-sm text-slate-400">No hay registros aún. ¡Registra tu primera actividad!</td></tr>`;
+      return;
+    }
+    tbody.innerHTML = lista.map(s => {
+      const fecha = new Date(s.fecha_actividad).toLocaleDateString('es-CO');
+      const badge = _coloresEstado[s.estado] || 'bg-slate-100 text-slate-600';
+      return `
+        <tr class="border-b border-slate-50 hover:bg-slate-50/50 transition-colors">
+          <td class="px-5 py-3 text-xs text-slate-500">${fecha}</td>
+          <td class="px-3 py-3 text-xs text-slate-700 max-w-xs truncate" title="${s.descripcion}">${s.descripcion}</td>
+          <td class="px-3 py-3 text-xs font-semibold text-slate-700">${s.horas_realizadas}h</td>
+          <td class="px-3 py-3">
+            <span class="px-2 py-1 rounded-full text-[10px] font-semibold ${badge}">${s.estado}</span>
+          </td>
+          <td class="px-3 py-3">
+            ${s.estado === 'borrador' || s.estado === 'rechazado'
+              ? `<button data-id="${s.id}" class="btn-log-enviar text-[10px] font-semibold text-blue-600 hover:text-blue-800 mr-2">Enviar</button>`
+              : ''}
+            ${s.observaciones_tutor
+              ? `<span class="text-[10px] text-slate-400 italic" title="${s.observaciones_tutor}">Obs: ${s.observaciones_tutor.substring(0,30)}...</span>`
+              : ''}
+          </td>
+        </tr>`;
+    }).join('');
+
+    // Listener para botón Enviar (cambiar estado a 'enviado')
+    tbody.querySelectorAll('.btn-log-enviar').forEach(btn => {
+      btn.addEventListener('click', () => enviarSeguimiento(btn.dataset.id));
+    });
+  }
+
+  async function enviarSeguimiento(id) {
+    try {
+      const res = await fetch(`${API_URL}/seguimientos/${id}/validar`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ estado: 'enviado' })
+      });
+      if (res.ok) cargarLog();
+    } catch (e) {
+      console.error('Error al enviar seguimiento:', e);
+    }
+  }
+
+  function filtrarLog() {
+    const texto = document.getElementById('filtroLog').value.toLowerCase();
+    const estado = document.getElementById('filtroEstadoLog').value;
+    const filtrados = _seguimientos.filter(s => {
+      const coincideTexto = s.descripcion.toLowerCase().includes(texto);
+      const coincideEstado = !estado || s.estado === estado;
+      return coincideTexto && coincideEstado;
+    });
+    renderTablaLog(filtrados);
+  }
+
+  async function abrirModalLog() {
+    // Si no sabemos el practica_id todavía, intentar cargarlo
+    if (!_miPracticaId) await cargarLog();
+
+    if (!_miPracticaId) {
+      alert('No tienes una práctica activa asignada. Contacta al coordinador.');
+      return;
+    }
+
+    document.getElementById('modalTitulo').textContent = 'Registrar Actividad';
+    document.getElementById('modalContenido').innerHTML = `
+      <div class="space-y-3">
+        <div>
+          <label class="block text-xs mb-1">Descripción de la actividad <span class="text-slate-400">(mín. 15 caracteres)</span></label>
+          <textarea id="logDesc" rows="3" class="w-full px-3 py-2 border rounded-xl text-sm resize-none outline-none focus:border-blue-300"
+            placeholder="Describe la actividad realizada..."></textarea>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs mb-1">Horas realizadas <span class="text-slate-400">(máx. 12)</span></label>
+            <input type="number" id="logHoras" min="0.5" max="12" step="0.5" value="4"
+                   class="w-full px-3 py-2 border rounded-xl text-sm outline-none focus:border-blue-300"/>
+          </div>
+          <div>
+            <label class="block text-xs mb-1">Fecha de la actividad</label>
+            <input type="date" id="logFecha" class="w-full px-3 py-2 border rounded-xl text-sm outline-none focus:border-blue-300"
+                   value="${new Date().toISOString().split('T')[0]}"/>
+          </div>
+        </div>
+        <div id="logError" class="text-xs text-red-500 hidden"></div>
+        <div class="flex gap-3 pt-2">
+          <button onclick="cerrarModal()" class="flex-1 py-2 border rounded-xl text-xs">Cancelar</button>
+          <button onclick="guardarSeguimiento()" class="flex-1 py-2 rounded-xl text-white text-xs font-semibold" style="background:#0d1b2e;">Guardar</button>
+        </div>
+      </div>`;
+    abrirModal();
+  }
+
+  async function guardarSeguimiento() {
+    const err = document.getElementById('logError');
+    const desc = document.getElementById('logDesc').value.trim();
+    const horas = parseFloat(document.getElementById('logHoras').value);
+    const fechaRaw = document.getElementById('logFecha').value;
+
+    if (desc.length < 15) {
+      err.textContent = 'La descripción debe tener al menos 15 caracteres.';
+      err.classList.remove('hidden');
+      return;
+    }
+    if (!horas || horas <= 0 || horas > 12) {
+      err.textContent = 'Las horas deben estar entre 0.5 y 12.';
+      err.classList.remove('hidden');
+      return;
+    }
+
+    const body = {
+      practica_id:      _miPracticaId,
+      descripcion:      desc,
+      horas_realizadas: horas,
+      fecha_actividad:  fechaRaw ? new Date(fechaRaw + 'T12:00:00').toISOString() : new Date().toISOString(),
+    };
+
+    try {
+      const res = await fetch(`${API_URL}/seguimientos/`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify(body)
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        err.textContent = data.detail || 'Error al guardar';
+        err.classList.remove('hidden');
+        return;
+      }
+      cerrarModal();
+      cargarLog();
+    } catch (e) {
+      err.textContent = 'Error de conexión';
+      err.classList.remove('hidden');
+    }
+  }
+
+  // ══════════════════════════════════════
+  // VALIDACIÓN DE ACTIVIDADES
+  // ══════════════════════════════════════
+  let _seguimientosPendientes = [];
+
+  async function cargarValidacion() {
+    const tbody = document.getElementById('tablaValidacion');
+    if (!tbody) return;
+
+    tbody.innerHTML = `<tr><td colspan="5" class="px-5 py-8 text-center text-sm text-slate-300">Cargando...</td></tr>`;
+
+    try {
+      // Cargar prácticas según el rol
+      const endpointPrac = window.currentUserRol === 'coordinador'
+        ? `${API_URL}/practicas/`
+        : `${API_URL}/practicas/mis`;
+
+      const resP = await fetch(endpointPrac, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (!resP.ok) throw new Error('Sin acceso a prácticas');
+      const practicas = await resP.json();
+
+      if (practicas.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="px-5 py-8 text-center text-sm text-slate-400">No hay prácticas activas.</td></tr>`;
+        return;
+      }
+
+      // Cargar mapa de usuarios si está vacío
+      if (Object.keys(_usuariosMapa).length === 0) {
+        const resU = await fetch(`${API_URL}/usuarios/`, { headers: { Authorization: `Bearer ${token}` } });
+        if (resU.ok) {
+          const us = await resU.ok ? await resU.json() : [];
+          us.forEach(u => { _usuariosMapa[u.id] = u; });
+        }
+      }
+
+      // Obtener seguimientos de todas las prácticas
+      const promesas = practicas.map(p =>
+        fetch(`${API_URL}/seguimientos/practica/${p.id}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        }).then(r => r.ok ? r.json() : [])
+      );
+      const resultados = await Promise.all(promesas);
+      const todos = resultados.flat();
+
+      // Solo los enviados (pendientes de validación)
+      _seguimientosPendientes = todos.filter(s => s.estado === 'enviado');
+
+      renderTablaValidacion(_seguimientosPendientes, practicas);
+
+      // Actualizar KPIs
+      const kpiPend = document.getElementById('valPendientes');
+      if (kpiPend) kpiPend.textContent = _seguimientosPendientes.length;
+
+    } catch (e) {
+      tbody.innerHTML = `<tr><td colspan="5" class="px-5 py-8 text-center text-sm text-red-400">Error al cargar validaciones.</td></tr>`;
+    }
+  }
+
+  function renderTablaValidacion(lista, practicas) {
+    const tbody = document.getElementById('tablaValidacion');
+    if (!tbody) return;
+
+    if (lista.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="5" class="px-5 py-8 text-center text-sm text-slate-400">No hay actividades pendientes de validación. ✓</td></tr>`;
+      return;
+    }
+
+    // Mapa practica_id → estudiante
+    const practicaMapa = {};
+    if (practicas) practicas.forEach(p => { practicaMapa[p.id] = p; });
+
+    tbody.innerHTML = lista.map(s => {
+      const practica = practicaMapa[s.practica_id];
+      const estudiante = practica ? _usuariosMapa[practica.estudiante_id] : null;
+      const nombreEst = estudiante ? estudiante.nombre : 'Desconocido';
+      const fecha = new Date(s.fecha_actividad).toLocaleDateString('es-CO');
+      return `
+        <tr class="border-b border-slate-50 hover:bg-slate-50/50 transition-colors">
+          <td class="px-5 py-3 text-xs font-medium text-slate-700">${nombreEst}</td>
+          <td class="px-3 py-3 text-xs text-slate-600 max-w-xs truncate" title="${s.descripcion}">${s.descripcion}</td>
+          <td class="px-3 py-3 text-xs font-semibold text-slate-700">${s.horas_realizadas}h</td>
+          <td class="px-3 py-3 text-xs text-slate-500">${fecha}</td>
+          <td class="px-3 py-3 flex items-center gap-2">
+            <button data-id="${s.id}" class="btn-val-aprobar px-2.5 py-1 rounded-lg text-[10px] font-semibold bg-emerald-100 text-emerald-700 hover:bg-emerald-200 transition-colors">✓ Aprobar</button>
+            <button data-id="${s.id}" class="btn-val-rechazar px-2.5 py-1 rounded-lg text-[10px] font-semibold bg-red-100 text-red-600 hover:bg-red-200 transition-colors">✗ Rechazar</button>
+          </td>
+        </tr>`;
+    }).join('');
+
+    // Listeners
+    tbody.querySelectorAll('.btn-val-aprobar').forEach(btn => {
+      btn.addEventListener('click', () => validarActividad(btn.dataset.id, 'aprobado'));
+    });
+    tbody.querySelectorAll('.btn-val-rechazar').forEach(btn => {
+      btn.addEventListener('click', () => abrirModalRechazo(btn.dataset.id));
+    });
+  }
+
+  async function validarActividad(id, estado, observaciones = null) {
+    try {
+      const body = { estado };
+      if (observaciones) body.observaciones_tutor = observaciones;
+
+      const res = await fetch(`${API_URL}/seguimientos/${id}/validar`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify(body)
+      });
+      if (res.ok) cargarValidacion();
+      else {
+        const data = await res.json();
+        alert(data.detail || 'Error al validar');
+      }
+    } catch (e) {
+      alert('Error de conexión');
+    }
+  }
+
+  function abrirModalRechazo(id) {
+    document.getElementById('modalTitulo').textContent = 'Rechazar Actividad';
+    document.getElementById('modalContenido').innerHTML = `
+      <div class="space-y-3">
+        <p class="text-xs text-slate-500">Indica el motivo del rechazo para que el estudiante pueda corregir su registro.</p>
+        <div>
+          <label class="block text-xs mb-1">Observaciones</label>
+          <textarea id="obsRechazo" rows="3" class="w-full px-3 py-2 border rounded-xl text-sm resize-none outline-none focus:border-red-300"
+            placeholder="Ej: La descripción no corresponde a las horas reportadas..."></textarea>
+        </div>
+        <div id="obsError" class="text-xs text-red-500 hidden"></div>
+        <div class="flex gap-3 pt-2">
+          <button onclick="cerrarModal()" class="flex-1 py-2 border rounded-xl text-xs">Cancelar</button>
+          <button onclick="confirmarRechazo('${id}')" class="flex-1 py-2 rounded-xl text-white text-xs font-semibold bg-red-500 hover:bg-red-600">Confirmar Rechazo</button>
+        </div>
+      </div>`;
+    abrirModal();
+  }
+
+  function confirmarRechazo(id) {
+    const obs = document.getElementById('obsRechazo').value.trim();
+    const err = document.getElementById('obsError');
+    if (!obs) {
+      err.textContent = 'Escribe el motivo del rechazo.';
+      err.classList.remove('hidden');
+      return;
+    }
+    cerrarModal();
+    validarActividad(id, 'rechazado', obs);
+  }
+
+  // ══════════════════════════════════════
+  // EMPRESAS
+  // ══════════════════════════════════════
+  let _empresas = [];
+
+  async function cargarEmpresas() {
+    const tbody = document.getElementById('tablaEmpresas');
+    try {
+      const res = await fetch(`${API_URL}/empresas/`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (!res.ok) throw new Error('Sin acceso');
+      _empresas = await res.json();
+      renderTablaEmpresas(_empresas);
+    } catch (e) {
+      tbody.innerHTML = `<tr><td colspan="4" class="px-5 py-8 text-center text-sm text-red-400">Error al cargar empresas</td></tr>`;
+    }
+  }
+
+  function renderTablaEmpresas(lista) {
+    const tbody = document.getElementById('tablaEmpresas');
+    if (!tbody) return;
+    if (lista.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="4" class="px-5 py-8 text-center text-sm text-slate-400">No hay empresas registradas</td></tr>`;
+      return;
+    }
+    tbody.innerHTML = lista.map(e => `
+      <tr class="border-b border-slate-50 hover:bg-slate-50/50 transition-colors">
+        <td class="px-5 py-3 text-xs font-mono text-slate-400">${e.id}</td>
+        <td class="px-3 py-3 text-xs font-medium text-slate-700">${e.nombre}</td>
+        <td class="px-3 py-3 text-xs text-slate-500">${e.nit}</td>
+        <td class="px-3 py-3 text-xs text-slate-500">${e.direccion}</td>
+      </tr>
+    `).join('');
+  }
+
+  function abrirModalEmpresa() {
+    document.getElementById('modalTitulo').textContent = 'Nueva Empresa';
+    document.getElementById('modalContenido').innerHTML = `
+      <div class="space-y-3">
+        <div>
+          <label class="block text-xs mb-1">Nombre de la empresa</label>
+          <input type="text" id="empNombre" class="w-full px-3 py-2 border rounded-xl text-sm" placeholder="Ej: Tech Solutions S.A.S."/>
+        </div>
+        <div>
+          <label class="block text-xs mb-1">NIT</label>
+          <input type="text" id="empNit" class="w-full px-3 py-2 border rounded-xl text-sm" placeholder="Ej: 900.123.456-1"/>
+        </div>
+        <div>
+          <label class="block text-xs mb-1">Dirección</label>
+          <input type="text" id="empDireccion" class="w-full px-3 py-2 border rounded-xl text-sm" placeholder="Ej: Calle 100 #15-20"/>
+        </div>
+        <div id="empError" class="text-xs text-red-500 hidden"></div>
+        <div class="flex gap-3 pt-2">
+          <button onclick="cerrarModal()" class="flex-1 py-2 border rounded-xl text-xs">Cancelar</button>
+          <button onclick="crearEmpresa()" class="flex-1 py-2 rounded-xl text-white text-xs font-semibold" style="background:#0d1b2e;">Registrar Empresa</button>
+        </div>
+      </div>`;
+    abrirModal();
+  }
+
+  async function crearEmpresa() {
+    const err = document.getElementById('empError');
+    const body = {
+      nombre:    document.getElementById('empNombre').value.trim(),
+      nit:       document.getElementById('empNit').value.trim(),
+      direccion: document.getElementById('empDireccion').value.trim(),
+    };
+    if (!body.nombre || !body.nit || !body.direccion) {
+      err.textContent = 'Todos los campos son obligatorios.';
+      err.classList.remove('hidden');
+      return;
+    }
+    try {
+      const res = await fetch(`${API_URL}/empresas/`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify(body)
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        err.textContent = data.detail || 'Error al registrar empresa';
+        err.classList.remove('hidden');
+        return;
+      }
+      cerrarModal();
+      cargarEmpresas();
+    } catch (e) {
+      err.textContent = 'Error de conexión';
+      err.classList.remove('hidden');
+    }
+  }
+
+  // ══════════════════════════════════════
+  // PRÁCTICAS
+  // ══════════════════════════════════════
+  let _practicas = [];
+  let _usuariosMapa = {}; // id → usuario
+
+  async function cargarPracticas() {
+    const tbody = document.getElementById('tablaPracticas');
+    tbody.innerHTML = `<tr><td colspan="6" class="px-5 py-8 text-center text-sm text-slate-300">Cargando prácticas...</td></tr>`;
+
+    try {
+      // Cargar usuarios para mapear IDs a nombres
+      const resU = await fetch(`${API_URL}/usuarios/`, { headers: { Authorization: `Bearer ${token}` } });
+      if (resU.ok) {
+        const usuarios = await resU.json();
+        _usuariosMapa = {};
+        usuarios.forEach(u => { _usuariosMapa[u.id] = u; });
+      }
+
+      // Cargar prácticas — el backend devuelve lista si es coordinador
+      const res = await fetch(`${API_URL}/practicas/`, { headers: { Authorization: `Bearer ${token}` } });
+
+      if (!res.ok) {
+        // Si el endpoint GET / no existe aún, mostrar estado pendiente
+        tbody.innerHTML = `<tr><td colspan="6" class="px-5 py-8 text-center text-sm text-slate-400">
+          El endpoint de listado de prácticas aún no está implementado en el backend.<br>
+          <span class="text-[11px] text-slate-300">Implementar GET /practicas/ en el router.</span>
+        </td></tr>`;
+        actualizarKpisPracticas([]);
+        return;
+      }
+
+      _practicas = await res.json();
+      renderTablaPracticas(_practicas);
+      actualizarKpisPracticas(_practicas);
+      registrarListenerPracticas();
+
+    } catch (err) {
+      tbody.innerHTML = `<tr><td colspan="6" class="px-5 py-8 text-center text-sm text-red-400">Error al cargar prácticas</td></tr>`;
+    }
+  }
+
+  function actualizarKpisPracticas(lista) {
+    const total = lista.length;
+    const activas = lista.filter(p => p.estado === 'activa').length;
+    const pendientes = lista.filter(p => p.estado === 'pendiente').length;
+    const finalizadas = lista.filter(p => p.estado === 'finalizada').length;
+
+    const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+    set('pracTotalKpi', total);
+    set('pracActivasKpi', activas);
+    set('pracPendientesKpi', pendientes);
+    set('pracFinalizadasKpi', finalizadas);
+  }
+
+  function renderTablaPracticas(lista) {
+    const tbody = document.getElementById('tablaPracticas');
+
+    if (!lista.length) {
+      tbody.innerHTML = `<tr><td colspan="6" class="px-5 py-8 text-center text-sm text-slate-300">No hay prácticas registradas</td></tr>`;
+      return;
+    }
+
+    const estadoBadge = {
+      activa:     'bg-emerald-100 text-emerald-700',
+      pendiente:  'bg-amber-100 text-amber-700',
+      finalizada: 'bg-blue-100 text-blue-700',
+      suspendida: 'bg-red-100 text-red-700',
+    };
+
+    tbody.innerHTML = lista.map(p => {
+      const estudiante = _usuariosMapa[p.estudiante_id];
+      const tutor      = _usuariosMapa[p.tutor_id];
+      const badge      = estadoBadge[p.estado] || 'bg-slate-100 text-slate-600';
+      const progreso   = p.horas_totales_requeridas ? Math.min(100, Math.round((p.horas_completadas || 0) / p.horas_totales_requeridas * 100)) : 0;
+
+      return `
+        <tr class="table-row border-b border-slate-50">
+          <td class="px-5 py-3">
+            <div class="text-xs font-semibold text-slate-700">${estudiante ? estudiante.nombre : p.estudiante_id}</div>
+            <div class="text-[10px] text-slate-400">${estudiante ? estudiante.correo : ''}</div>
+          </td>
+          <td class="px-3 py-3 text-xs text-slate-600">${p.empresa_id || '—'}</td>
+          <td class="px-3 py-3 text-xs text-slate-600">${tutor ? tutor.nombre : '—'}</td>
+          <td class="px-3 py-3">
+            <div class="flex items-center gap-2">
+              <div class="flex-1 bg-slate-100 rounded-full h-1.5">
+                <div class="bg-blue-500 h-1.5 rounded-full" style="width:${progreso}%"></div>
+              </div>
+              <span class="text-[10px] text-slate-400 w-8">${progreso}%</span>
+            </div>
+          </td>
+          <td class="px-3 py-3">
+            <span class="text-[10px] font-medium px-2 py-0.5 rounded-full ${badge}">${p.estado}</span>
+          </td>
+          <td class="px-3 py-3 flex gap-2">
+            <button data-id="${p.id}" data-action="ver-practica"
+                    class="btn-practica text-[10px] font-semibold text-blue-600 hover:text-blue-800">Ver</button>
+            ${p.estado !== 'finalizada' ? `
+            <button data-id="${p.id}" data-action="aprobar-practica"
+                    class="btn-practica text-[10px] font-semibold text-emerald-600 hover:text-emerald-800">Aprobar</button>
+            ` : ''}
+          </td>
+        </tr>`;
+    }).join('');
+  }
+
+  let _practicaListenerOk = false;
+  function registrarListenerPracticas() {
+    if (_practicaListenerOk) return;
+    _practicaListenerOk = true;
+    document.getElementById('tablaPracticas').addEventListener('click', e => {
+      const btn = e.target.closest('.btn-practica');
+      if (!btn) return;
+      const id = btn.dataset.id;
+      const action = btn.dataset.action;
+      if (action === 'ver-practica') verDetallePractica(id);
+      if (action === 'aprobar-practica') aprobarPractica(id);
+    });
+  }
+
+  function filtrarPracticas() {
+    const texto = document.getElementById('filtroPracticas').value.toLowerCase();
+    const estado = document.getElementById('filtroEstadoPractica').value;
+    const filtrados = _practicas.filter(p => {
+      const estudiante = _usuariosMapa[p.estudiante_id];
+      const nombre = estudiante ? estudiante.nombre.toLowerCase() : '';
+      const coincideTexto = nombre.includes(texto) || String(p.empresa_id).includes(texto);
+      const coincideEstado = !estado || p.estado === estado;
+      return coincideTexto && coincideEstado;
+    });
+    renderTablaPracticas(filtrados);
+  }
+
+  function verDetallePractica(id) {
+    const p = _practicas.find(x => x.id === id);
+    if (!p) return;
+    const estudiante = _usuariosMapa[p.estudiante_id];
+    const tutor = _usuariosMapa[p.tutor_id];
+
+    document.getElementById('modalTitulo').textContent = 'Detalle de Práctica';
+    document.getElementById('modalContenido').innerHTML = `
+      <div class="space-y-3 text-sm">
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <div class="text-[10px] text-slate-400 uppercase tracking-wide mb-0.5">Estudiante</div>
+            <div class="font-medium text-slate-700">${estudiante ? estudiante.nombre : p.estudiante_id}</div>
+          </div>
+          <div>
+            <div class="text-[10px] text-slate-400 uppercase tracking-wide mb-0.5">Tutor</div>
+            <div class="font-medium text-slate-700">${tutor ? tutor.nombre : '—'}</div>
+          </div>
+          <div>
+            <div class="text-[10px] text-slate-400 uppercase tracking-wide mb-0.5">Estado</div>
+            <div class="font-medium text-slate-700">${p.estado}</div>
+          </div>
+          <div>
+            <div class="text-[10px] text-slate-400 uppercase tracking-wide mb-0.5">Horas requeridas</div>
+            <div class="font-medium text-slate-700">${p.horas_totales_requeridas}h</div>
+          </div>
+          <div>
+            <div class="text-[10px] text-slate-400 uppercase tracking-wide mb-0.5">Fecha inicio</div>
+            <div class="font-medium text-slate-700">${p.fecha_inicio ? new Date(p.fecha_inicio).toLocaleDateString('es-CO') : '—'}</div>
+          </div>
+          <div>
+            <div class="text-[10px] text-slate-400 uppercase tracking-wide mb-0.5">Fecha fin</div>
+            <div class="font-medium text-slate-700">${p.fecha_fin ? new Date(p.fecha_fin).toLocaleDateString('es-CO') : '—'}</div>
+          </div>
+        </div>
+        <div class="pt-3 flex gap-3">
+          <button onclick="cerrarModal()" class="flex-1 py-2 border rounded-xl text-xs">Cerrar</button>
+          <a href="${API_URL}/practicas/${p.id}/reporte-pdf"
+             target="_blank"
+             class="flex-1 py-2 rounded-xl text-white text-xs text-center font-semibold"
+             style="background:#0d1b2e;">
+            Descargar PDF
+          </a>
+        </div>
+      </div>`;
+    abrirModal();
+  }
+
+  async function aprobarPractica(id) {
+    // PATCH estado a 'activa' — ajustar según endpoint real del backend
+    if (!confirm('¿Marcar esta práctica como activa/aprobada?')) return;
+    try {
+      const res = await fetch(`${API_URL}/practicas/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ estado: 'activa' })
+      });
+      if (!res.ok) {
+        const d = await res.json().catch(() => ({}));
+        alert('No se pudo aprobar: ' + (d.detail || res.status));
+        return;
+      }
+      cargarPracticas();
+    } catch (err) {
+      alert('Error de conexión: ' + err.message);
+    }
+  }
+
+  async function abrirModalPractica() {
+    // Si el mapa está vacío (el coordinador no pasó por la sección Usuarios), cargarlo ahora
+    if (Object.keys(_usuariosMapa).length === 0) {
+      try {
+        const resU = await fetch(`${API_URL}/usuarios/`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        if (resU.ok) {
+          const us = await resU.json();
+          _usuariosMapa = {};
+          us.forEach(u => { _usuariosMapa[u.id] = u; });
+        }
+      } catch (e) {
+        console.error('No se pudieron cargar usuarios para el modal:', e);
+      }
+    }
+
+    // Cargar empresas si la lista está vacía
+    if (_empresas.length === 0) {
+      try {
+        const resE = await fetch(`${API_URL}/empresas/`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        if (resE.ok) _empresas = await resE.json();
+      } catch (e) {
+        console.error('No se pudieron cargar empresas para el modal:', e);
+      }
+    }
+
+    // Construir selects de usuarios desde el mapa ya cargado
+    const estudiantes = Object.values(_usuariosMapa).filter(u => u.rol === 'estudiante');
+    const tutores     = Object.values(_usuariosMapa).filter(u => u.rol === 'tutor');
+
+    const optsEst = estudiantes.map(u => `<option value="${u.id}">${u.nombre}</option>`).join('');
+    const optsTut = tutores.map(u => `<option value="${u.id}">${u.nombre}</option>`).join('');
+    const optsEmp = _empresas.length > 0
+      ? _empresas.map(e => `<option value="${e.id}">${e.nombre} (ID: ${e.id})</option>`).join('')
+      : '<option value="" disabled>— Sin empresas registradas —</option>';
+
+    document.getElementById('modalTitulo').textContent = 'Nueva Práctica';
+    document.getElementById('modalContenido').innerHTML = `
+      <div class="space-y-3">
+        <div>
+          <label class="block text-xs mb-1">Estudiante</label>
+          <select id="npEstudiante" class="w-full px-3 py-2 border rounded-xl text-sm">
+            <option value="">— Seleccionar —</option>${optsEst}
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs mb-1">Tutor</label>
+          <select id="npTutor" class="w-full px-3 py-2 border rounded-xl text-sm">
+            <option value="">— Seleccionar —</option>${optsTut}
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs mb-1">Empresa</label>
+          <select id="npEmpresa" class="w-full px-3 py-2 border rounded-xl text-sm">
+            <option value="">— Seleccionar —</option>${optsEmp}
+          </select>
+          ${_empresas.length === 0 ? '<p class="text-[10px] text-amber-500 mt-1">No hay empresas. <a href="#" onclick="cerrarModal();mostrarSeccion(\'empresas\');cargarEmpresas();" class="underline">Registra una primero.</a></p>' : ''}
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs mb-1">Fecha inicio</label>
+            <input type="date" id="npFechaInicio" class="w-full px-3 py-2 border rounded-xl text-sm"/>
+          </div>
+          <div>
+            <label class="block text-xs mb-1">Horas requeridas</label>
+            <input type="number" id="npHoras" value="320" class="w-full px-3 py-2 border rounded-xl text-sm"/>
+          </div>
+        </div>
+        <div id="npError" class="text-xs text-red-500 hidden"></div>
+        <div class="flex gap-3 pt-2">
+          <button onclick="cerrarModal()" class="flex-1 py-2 border rounded-xl text-xs">Cancelar</button>
+          <button onclick="crearPractica()" class="flex-1 py-2 rounded-xl text-white text-xs font-semibold" style="background:#0d1b2e;">Crear Práctica</button>
+        </div>
+      </div>`;
+    abrirModal();
+  }
+
+  async function crearPractica() {
+    const err = document.getElementById('npError');
+
+    // Convertir fecha "YYYY-MM-DD" a ISO datetime; enviar null si vacía
+    const fechaRaw = document.getElementById('npFechaInicio').value;
+    const fechaISO = fechaRaw ? new Date(fechaRaw + 'T00:00:00').toISOString() : null;
+
+    const body = {
+      estudiante_id: document.getElementById('npEstudiante').value,
+      tutor_id:      document.getElementById('npTutor').value,
+      empresa_id:    parseInt(document.getElementById('npEmpresa').value),
+      horas_totales_requeridas: parseInt(document.getElementById('npHoras').value) || 320,
+      fecha_inicio:  fechaISO,
+    };
+
+    if (!body.estudiante_id || !body.tutor_id || !body.empresa_id || isNaN(body.empresa_id)) {
+      err.textContent = 'Estudiante, tutor y empresa son obligatorios.';
+      err.classList.remove('hidden');
+      return;
+    }
+
+    try {
+      const res = await fetch(`${API_URL}/practicas/`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify(body)
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        err.textContent = data.detail || 'Error al crear práctica';
+        err.classList.remove('hidden');
+        return;
+      }
+      cerrarModal();
+      cargarPracticas();
+    } catch (e) {
+      err.textContent = 'Error de conexión';
+      err.classList.remove('hidden');
+    }
+  }
+
+  // ══════════════════════════════════════
+  // REPORTES
+  // ══════════════════════════════════════
+  let _practicasReporte = [];
+  let _chartReportes = null;
+
+  async function cargarReportes() {
+    const tbody = document.getElementById('tablaReportes');
+
+    try {
+      // Reusar datos de prácticas si ya están cargados
+      if (_practicas.length === 0) {
+        // Intentar cargar
+        const resU = await fetch(`${API_URL}/usuarios/`, { headers: { Authorization: `Bearer ${token}` } });
+        if (resU.ok) {
+          const us = await resU.json();
+          _usuariosMapa = {};
+          us.forEach(u => { _usuariosMapa[u.id] = u; });
+        }
+        const resP = await fetch(`${API_URL}/practicas/`, { headers: { Authorization: `Bearer ${token}` } });
+        if (resP.ok) _practicas = await resP.json();
+      }
+
+      _practicasReporte = [..._practicas];
+
+      renderTablaReportes(_practicasReporte);
+      actualizarResumenReportes(_practicasReporte);
+      renderGraficaReportes(_practicasReporte);
+
+    } catch (err) {
+      tbody.innerHTML = `<tr><td colspan="5" class="px-5 py-8 text-center text-sm text-red-400">Error al cargar reportes</td></tr>`;
+    }
+  }
+
+  function renderTablaReportes(lista) {
+    const tbody = document.getElementById('tablaReportes');
+    if (!lista.length) {
+      tbody.innerHTML = `<tr><td colspan="5" class="px-5 py-8 text-center text-sm text-slate-300">No hay prácticas para reportar</td></tr>`;
+      return;
+    }
+
+    const estadoBadge = {
+      activa:     'bg-emerald-100 text-emerald-700',
+      pendiente:  'bg-amber-100 text-amber-700',
+      finalizada: 'bg-blue-100 text-blue-700',
+      suspendida: 'bg-red-100 text-red-700',
+    };
+
+    tbody.innerHTML = lista.map(p => {
+      const estudiante = _usuariosMapa[p.estudiante_id];
+      const badge = estadoBadge[p.estado] || 'bg-slate-100 text-slate-600';
+      return `
+        <tr class="table-row border-b border-slate-50">
+          <td class="px-5 py-3">
+            <div class="text-xs font-semibold text-slate-700">${estudiante ? estudiante.nombre : p.estudiante_id}</div>
+            <div class="text-[10px] text-slate-400">${estudiante ? estudiante.correo : ''}</div>
+          </td>
+          <td class="px-3 py-3 text-xs text-slate-600">${p.empresa_id || '—'}</td>
+          <td class="px-3 py-3">
+            <span class="text-[10px] font-medium px-2 py-0.5 rounded-full ${badge}">${p.estado}</span>
+          </td>
+          <td class="px-3 py-3 text-xs text-slate-600">${p.horas_totales_requeridas}h</td>
+          <td class="px-3 py-3">
+            <a href="${API_URL}/practicas/${p.id}/reporte-pdf"
+               target="_blank"
+               class="inline-flex items-center gap-1 text-[10px] font-semibold text-white px-3 py-1.5 rounded-lg hover:opacity-80 transition-opacity"
+               style="background:#0d1b2e;">
+              <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+              PDF
+            </a>
+          </td>
+        </tr>`;
+    }).join('');
+  }
+
+  function filtrarTablaReportes() {
+    const texto = document.getElementById('filtroReportes').value.toLowerCase();
+    const filtrados = _practicasReporte.filter(p => {
+      const est = _usuariosMapa[p.estudiante_id];
+      return (est ? est.nombre.toLowerCase() : '').includes(texto) ||
+             String(p.empresa_id).includes(texto);
+    });
+    renderTablaReportes(filtrados);
+  }
+
+  function actualizarResumenReportes(lista) {
+    const total = lista.length;
+    const activas = lista.filter(p => p.estado === 'activa').length;
+    const finalizadas = lista.filter(p => p.estado === 'finalizada').length;
+    const pendientes = lista.filter(p => p.estado === 'pendiente').length;
+    const totalHoras = lista.reduce((acc, p) => acc + (p.horas_totales_requeridas || 0), 0);
+
+    document.getElementById('resumenReportes').innerHTML = `
+      <div class="flex justify-between items-center py-1.5 border-b border-slate-50">
+        <span class="text-xs text-slate-500">Total prácticas</span>
+        <span class="text-xs font-bold text-slate-800">${total}</span>
+      </div>
+      <div class="flex justify-between items-center py-1.5 border-b border-slate-50">
+        <span class="text-xs text-slate-500">Activas</span>
+        <span class="text-xs font-bold text-emerald-600">${activas}</span>
+      </div>
+      <div class="flex justify-between items-center py-1.5 border-b border-slate-50">
+        <span class="text-xs text-slate-500">Finalizadas</span>
+        <span class="text-xs font-bold text-blue-600">${finalizadas}</span>
+      </div>
+      <div class="flex justify-between items-center py-1.5 border-b border-slate-50">
+        <span class="text-xs text-slate-500">Pendientes</span>
+        <span class="text-xs font-bold text-amber-600">${pendientes}</span>
+      </div>
+      <div class="flex justify-between items-center py-1.5">
+        <span class="text-xs text-slate-500">Horas totales req.</span>
+        <span class="text-xs font-bold text-slate-800">${totalHoras}h</span>
+      </div>`;
+  }
+
+  function renderGraficaReportes(lista) {
+    const canvas = document.getElementById('chartReportes');
+    if (!canvas) return;
+
+    const conteos = {
+      'Activa':     lista.filter(p => p.estado === 'activa').length,
+      'Pendiente':  lista.filter(p => p.estado === 'pendiente').length,
+      'Finalizada': lista.filter(p => p.estado === 'finalizada').length,
+      'Suspendida': lista.filter(p => p.estado === 'suspendida').length,
+    };
+
+    if (_chartReportes) _chartReportes.destroy();
+
+    _chartReportes = new Chart(canvas.getContext('2d'), {
+      type: 'doughnut',
+      data: {
+        labels: Object.keys(conteos),
+        datasets: [{
+          data: Object.values(conteos),
+          backgroundColor: ['#10b981', '#f59e0b', '#3b82f6', '#ef4444'],
+          borderWidth: 0,
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { position: 'right', labels: { font: { size: 11 }, padding: 12 } } }
+      }
+    });
+  }
+
+  function exportarResumenCSV() {
+    if (!_practicasReporte.length) { alert('No hay datos para exportar'); return; }
+    const filas = [
+      ['ID','Estudiante','Correo','Empresa','Estado','Horas Requeridas'],
+      ..._practicasReporte.map(p => {
+        const est = _usuariosMapa[p.estudiante_id];
+        return [p.id, est ? est.nombre : p.estudiante_id, est ? est.correo : '', p.empresa_id, p.estado, p.horas_totales_requeridas];
+      })
+    ];
+    const csv = filas.map(r => r.map(v => `"${v}"`).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `SIPRA_Practicas_${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
   }
 
   // ══════════════════════════════════════
