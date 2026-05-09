@@ -1,7 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Request, status
 from sqlalchemy.orm import Session
 from typing import List
-import models, schemas, crud, auth
+import models, schemas, crud
+import sys, os
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import auth
 from database import get_db
 from config import settings
 import os
@@ -34,7 +37,7 @@ def listar_seguimientos_practica(
         raise HTTPException(status_code=404, detail="Práctica no encontrada")
         
     ids_permitidos = [practica.estudiante_id, practica.tutor_id, practica.supervisor_id]
-    if current_user.rol != models.UserRole.COORDINADOR and current_user.id not in ids_permitidos:
+    if current_user.rol != models.UserRole.coordinador and current_user.id not in ids_permitidos:
         raise HTTPException(status_code=403, detail="Acceso denegado")
         
     return crud.obtener_seguimientos_practica(db, practica_id=practica_id)

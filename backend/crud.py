@@ -1,40 +1,49 @@
 from sqlalchemy.orm import Session
-from typing import List, Optional
+from sqlalchemy import func
+from typing import List, Optional, Dict
 import models, schemas
 import auth
 from datetime import datetime
 
-# --- LÓGICA DE AUDITORÍA ---
+
+# ══════════════════════════════════════════
+# AUDITORÍA
+# ══════════════════════════════════════════
 
 def create_audit_log(db: Session, usuario_id: str, accion: str, ip: str) -> models.AuditLog:
-    """Registra una acción en el log de auditoría."""
-    db_log = models.AuditLog(
-        usuario_id=usuario_id,
-        accion=accion,
-        ip_origen=ip
-    )
+    db_log = models.AuditLog(usuario_id=usuario_id, accion=accion, ip_origen=ip)
     db.add(db_log)
     db.commit()
-    db.refresh(db_log)
     return db_log
 
-# --- LÓGICA DE USUARIOS ---
+
+# ══════════════════════════════════════════
+# USUARIOS
+# ══════════════════════════════════════════
 
 def obtener_usuarios(db: Session) -> List[models.Usuario]:
-    """Obtiene todos los usuarios registrados."""
     return db.query(models.Usuario).all()
 
+def obtener_usuario_por_id(db: Session, usuario_id: str) -> Optional[models.Usuario]:
+    return db.query(models.Usuario).filter(models.Usuario.id == usuario_id).first()
+
 def obtener_usuario_por_correo(db: Session, correo: str) -> Optional[models.Usuario]:
-    """Busca un usuario por su correo electrónico."""
     return db.query(models.Usuario).filter(models.Usuario.correo == correo).first()
 
+def obtener_usuarios_por_rol(db: Session, rol: models.UserRole) -> List[models.Usuario]:
+    return db.query(models.Usuario).filter(models.Usuario.rol == rol).all()
+
+def obtener_tutores(db: Session) -> List[models.Usuario]:
+    return obtener_usuarios_por_rol(db, models.UserRole.tutor)
+
+def obtener_estudiantes(db: Session) -> List[models.Usuario]:
+    return obtener_usuarios_por_rol(db, models.UserRole.estudiante)
+
 def crear_usuario(db: Session, usuario: schemas.UsuarioCreate) -> models.Usuario:
-    """Crea un nuevo usuario con la contraseña hasheada."""
-    password_cifrada = auth.hash_password(usuario.password)
     db_usuario = models.Usuario(
         nombre=usuario.nombre,
         correo=usuario.correo,
-        password_hash=password_cifrada,
+        password_hash=auth.hash_password(usuario.password),
         rol=usuario.rol,
         programa_academico=usuario.programa_academico
     )
@@ -43,13 +52,75 @@ def crear_usuario(db: Session, usuario: schemas.UsuarioCreate) -> models.Usuario
     db.refresh(db_usuario)
     return db_usuario
 
-# --- LÓGICA DE PRÁCTICAS ---
+
+# ══════════════════════════════════════════
+# ASIGNACIONES TUTOR → CARRERA
+# ══════════════════════════════════════════
+
+def asignar_tutor_a_programa(
+    db: Session, data: schemas.AsignacionTutorCreate
+) -> models.AsignacionTutor:
+    """
+    El coordinador asigna un tutor a un programa académico.
+    Si ya existe una asignación activa para ese programa, la desactiva primero.
+    """
+    # Desactivar asignación anterior para ese programa
+    db.query(models.AsignacionTutor).filter(
+        models.AsignacionTutor.programa_academico == data.programa_academico,
+        models.AsignacionTutor.activa == True
+    ).update({"activa": False})
+    db.commit()
+
+    nueva = models.AsignacionTutor(
+        tutor_id=data.tutor_id,
+        programa_academico=data.programa_academico,
+        activa=True
+    )
+    db.add(nueva)
+    db.commit()
+    db.refresh(nueva)
+    return nueva
+
+def obtener_asignaciones(db: Session) -> List[models.AsignacionTutor]:
+    return db.query(models.AsignacionTutor).filter(
+        models.AsignacionTutor.activa == True
+    ).all()
+
+def obtener_tutor_por_programa(
+    db: Session, programa: str
+) -> Optional[models.Usuario]:
+    """Devuelve el tutor activo asignado a un programa académico."""
+    asig = db.query(models.AsignacionTutor).filter(
+        models.AsignacionTutor.programa_academico == programa,
+        models.AsignacionTutor.activa == True
+    ).first()
+    if asig:
+        return db.query(models.Usuario).filter(models.Usuario.id == asig.tutor_id).first()
+    return None
+
+
+# ══════════════════════════════════════════
+# PRÁCTICAS
+# ══════════════════════════════════════════
 
 def crear_practica(db: Session, data: schemas.PracticaCreate) -> models.Practica:
-    """Crea un nuevo registro de práctica profesional."""
+    """
+    Crea una práctica. Si no se especifica tutor_id, intenta asignar 
+    automáticamente el tutor del programa del estudiante.
+    """
+    tutor_id = data.tutor_id
+
+    # Auto-asignación por programa si tutor no fue especificado
+    if not tutor_id:
+        estudiante = obtener_usuario_por_id(db, data.estudiante_id)
+        if estudiante and estudiante.programa_academico:
+            tutor = obtener_tutor_por_programa(db, estudiante.programa_academico)
+            if tutor:
+                tutor_id = tutor.id
+
     db_practica = models.Practica(
         estudiante_id=data.estudiante_id,
-        tutor_id=data.tutor_id,
+        tutor_id=tutor_id,
         supervisor_id=data.supervisor_id,
         empresa_id=data.empresa_id,
         horas_totales_requeridas=data.horas_totales_requeridas,
@@ -62,88 +133,160 @@ def crear_practica(db: Session, data: schemas.PracticaCreate) -> models.Practica
     return db_practica
 
 def obtener_practica(db: Session, practica_id: str) -> Optional[models.Practica]:
-    """Obtiene una práctica por su ID."""
     return db.query(models.Practica).filter(models.Practica.id == practica_id).first()
 
 def obtener_todas_practicas(db: Session) -> List[models.Practica]:
-    """Lista todas las prácticas (uso exclusivo del coordinador)."""
     return db.query(models.Practica).all()
 
-def obtener_practicas_por_usuario(db: Session, usuario_id: str, rol: str) -> List[models.Practica]:
-    """Obtiene las prácticas relacionadas a un usuario según su rol."""
+def obtener_practicas_por_usuario(
+    db: Session, usuario_id: str, rol: str
+) -> List[models.Practica]:
     if rol == "estudiante":
-        return db.query(models.Practica).filter(models.Practica.estudiante_id == usuario_id).all()
+        return db.query(models.Practica).filter(
+            models.Practica.estudiante_id == usuario_id
+        ).all()
     elif rol == "tutor":
-        return db.query(models.Practica).filter(models.Practica.tutor_id == usuario_id).all()
+        return db.query(models.Practica).filter(
+            models.Practica.tutor_id == usuario_id
+        ).all()
     elif rol == "supervisor":
-        return db.query(models.Practica).filter(models.Practica.supervisor_id == usuario_id).all()
+        return db.query(models.Practica).filter(
+            models.Practica.supervisor_id == usuario_id
+        ).all()
     return []
 
-# --- LÓGICA DE SEGUIMIENTO ---
+def reasignar_tutor_practica(
+    db: Session, practica_id: str, nuevo_tutor_id: str
+) -> Optional[models.Practica]:
+    """El coordinador reasigna el tutor de una práctica específica."""
+    practica = obtener_practica(db, practica_id)
+    if not practica:
+        return None
+    practica.tutor_id = nuevo_tutor_id
+    db.commit()
+    db.refresh(practica)
+    return practica
 
-def registrar_seguimiento(db: Session, seguimiento: schemas.SeguimientoCreate) -> models.Seguimiento:
-    """Registra una nueva actividad de seguimiento."""
-    db_seguimiento = models.Seguimiento(
+
+# ══════════════════════════════════════════
+# SEGUIMIENTOS
+# ══════════════════════════════════════════
+
+def registrar_seguimiento(
+    db: Session, seguimiento: schemas.SeguimientoCreate
+) -> models.Seguimiento:
+    db_seg = models.Seguimiento(
         practica_id=seguimiento.practica_id,
         descripcion=seguimiento.descripcion,
         horas_realizadas=seguimiento.horas_realizadas,
         fecha_actividad=seguimiento.fecha_actividad,
-        estado=models.StatusEnum.enviado  # ✅ CORREGIDO: era StatusEnum.ENVIADO
+        estado=models.StatusEnum.enviado
     )
-    db.add(db_seguimiento)
+    db.add(db_seg)
     db.commit()
-    db.refresh(db_seguimiento)
-    return db_seguimiento
+    db.refresh(db_seg)
+    return db_seg
 
-def obtener_seguimientos_practica(db: Session, practica_id: str) -> List[models.Seguimiento]:
-    """Obtiene los seguimientos no eliminados de una práctica."""
+def obtener_seguimientos_practica(
+    db: Session, practica_id: str
+) -> List[models.Seguimiento]:
     return db.query(models.Seguimiento).filter(
         models.Seguimiento.practica_id == practica_id,
         models.Seguimiento.is_deleted == False
     ).all()
 
-def obtener_seguimiento(db: Session, seguimiento_id: str) -> Optional[models.Seguimiento]:
-    """Obtiene un seguimiento específico por ID."""
-    return db.query(models.Seguimiento).filter(models.Seguimiento.id == seguimiento_id).first()
+def obtener_seguimiento(
+    db: Session, seguimiento_id: str
+) -> Optional[models.Seguimiento]:
+    return db.query(models.Seguimiento).filter(
+        models.Seguimiento.id == seguimiento_id
+    ).first()
 
-# --- VALIDACIÓN Y FASE DE REVISIÓN ---
+def obtener_seguimientos_pendientes_tutor(
+    db: Session, tutor_id: str
+) -> List[models.Seguimiento]:
+    """Seguimientos en estado 'enviado' de las prácticas del tutor."""
+    practicas_ids = [
+        p.id for p in db.query(models.Practica).filter(
+            models.Practica.tutor_id == tutor_id
+        ).all()
+    ]
+    return db.query(models.Seguimiento).filter(
+        models.Seguimiento.practica_id.in_(practicas_ids),
+        models.Seguimiento.estado == models.StatusEnum.enviado,
+        models.Seguimiento.is_deleted == False
+    ).all()
+
+def obtener_seguimientos_pendientes_supervisor(
+    db: Session, supervisor_id: str
+) -> List[models.Seguimiento]:
+    """Seguimientos enviados de las prácticas donde el supervisor está asignado."""
+    practicas_ids = [
+        p.id for p in db.query(models.Practica).filter(
+            models.Practica.supervisor_id == supervisor_id
+        ).all()
+    ]
+    return db.query(models.Seguimiento).filter(
+        models.Seguimiento.practica_id.in_(practicas_ids),
+        models.Seguimiento.estado == models.StatusEnum.enviado,
+        models.Seguimiento.is_deleted == False
+    ).all()
 
 def validar_seguimiento(
-    db: Session, 
-    seguimiento_id: str, 
-    estado: models.StatusEnum, 
-    revisor_id: str, 
-    observaciones: str, 
+    db: Session,
+    seguimiento_id: str,
+    estado: models.StatusEnum,
+    revisor_id: str,
+    observaciones: str,
     ip: str
 ) -> Optional[models.Seguimiento]:
-    """Actualiza el estado de un seguimiento y registra la auditoría."""
-    db_seg = db.query(models.Seguimiento).filter(models.Seguimiento.id == seguimiento_id).first()
+    db_seg = db.query(models.Seguimiento).filter(
+        models.Seguimiento.id == seguimiento_id
+    ).first()
     if not db_seg:
         return None
-        
+
     db_seg.estado = estado
     db_seg.observaciones_tutor = observaciones
-    
-    # Sincronización de validaciones según el rol del revisor
-    revisor = db.query(models.Usuario).filter(models.Usuario.id == revisor_id).first()
+
+    revisor = obtener_usuario_por_id(db, revisor_id)
     if revisor:
-        # ✅ CORREGIDO: era UserRole.TUTOR / .SUPERVISOR / .COORDINADOR (mayúsculas)
         if revisor.rol == models.UserRole.tutor:
             db_seg.validado_tutor = (estado == models.StatusEnum.aprobado)
         elif revisor.rol == models.UserRole.supervisor:
             db_seg.validado_supervisor = (estado == models.StatusEnum.aprobado)
+            # Al aprobar el supervisor, actualizar horas acumuladas en la práctica
+            if estado == models.StatusEnum.aprobado:
+                practica = obtener_practica(db, db_seg.practica_id)
+                if practica:
+                    practica.horas_acumuladas = (practica.horas_acumuladas or 0) + db_seg.horas_realizadas
         elif revisor.rol == models.UserRole.coordinador:
             db_seg.validado_tutor = (estado == models.StatusEnum.aprobado)
             db_seg.validado_supervisor = (estado == models.StatusEnum.aprobado)
 
     db.commit()
     db.refresh(db_seg)
-    create_audit_log(db, revisor_id, f"VALIDACIÓN: {estado} - SEGUIMIENTO: {seguimiento_id}", ip)
+    create_audit_log(
+        db, revisor_id,
+        f"VALIDACIÓN [{estado.upper()}] seguimiento={seguimiento_id}",
+        ip
+    )
     return db_seg
 
-def actualizar_evidencia(db: Session, seguimiento_id: str, ruta_archivo: str) -> Optional[models.Seguimiento]:
-    """Asocia un archivo de evidencia a un seguimiento."""
-    db_seg = db.query(models.Seguimiento).filter(models.Seguimiento.id == seguimiento_id).first()
+def eliminar_seguimiento_logico(
+    db: Session, seguimiento_id: str
+) -> Optional[models.Seguimiento]:
+    db_seg = obtener_seguimiento(db, seguimiento_id)
+    if db_seg:
+        db_seg.is_deleted = True
+        db.commit()
+        db.refresh(db_seg)
+    return db_seg
+
+def actualizar_evidencia(
+    db: Session, seguimiento_id: str, ruta_archivo: str
+) -> Optional[models.Seguimiento]:
+    db_seg = obtener_seguimiento(db, seguimiento_id)
     if db_seg:
         db_seg.archivo_evidencia = ruta_archivo
         db_seg.evidencia_url = ruta_archivo
@@ -151,19 +294,12 @@ def actualizar_evidencia(db: Session, seguimiento_id: str, ruta_archivo: str) ->
         db.refresh(db_seg)
     return db_seg
 
-def eliminar_seguimiento_logico(db: Session, seguimiento_id: str) -> Optional[models.Seguimiento]:
-    """Realiza un borrado lógico de un seguimiento."""
-    db_seg = db.query(models.Seguimiento).filter(models.Seguimiento.id == seguimiento_id).first()
-    if db_seg:
-        db_seg.is_deleted = True
-        db.commit()
-        db.refresh(db_seg)
-    return db_seg
 
-# --- LÓGICA DE EMPRESAS ---
+# ══════════════════════════════════════════
+# EMPRESAS
+# ══════════════════════════════════════════
 
 def crear_empresa(db: Session, empresa: schemas.EmpresaCreate) -> models.Empresa:
-    """Registra una nueva empresa en el sistema."""
     db_empresa = models.Empresa(
         nombre=empresa.nombre,
         nit=empresa.nit,
@@ -175,5 +311,70 @@ def crear_empresa(db: Session, empresa: schemas.EmpresaCreate) -> models.Empresa
     return db_empresa
 
 def obtener_empresas(db: Session) -> List[models.Empresa]:
-    """Lista todas las empresas."""
     return db.query(models.Empresa).all()
+
+
+# ══════════════════════════════════════════
+# DASHBOARDS POR ROL
+# ══════════════════════════════════════════
+
+def dashboard_coordinador(db: Session) -> dict:
+    total_estudiantes = db.query(models.Usuario).filter(
+        models.Usuario.rol == models.UserRole.estudiante
+    ).count()
+    total_tutores = db.query(models.Usuario).filter(
+        models.Usuario.rol == models.UserRole.tutor
+    ).count()
+    total_activas = db.query(models.Practica).filter(
+        models.Practica.estado == "activa"
+    ).count()
+
+    # Prácticas agrupadas por programa del estudiante
+    practicas_por_programa: Dict[str, int] = {}
+    practicas = db.query(models.Practica).all()
+    for p in practicas:
+        if p.estudiante and p.estudiante.programa_academico:
+            prog = p.estudiante.programa_academico
+            practicas_por_programa[prog] = practicas_por_programa.get(prog, 0) + 1
+
+    seguimientos_pendientes = db.query(models.Seguimiento).filter(
+        models.Seguimiento.estado == models.StatusEnum.enviado,
+        models.Seguimiento.is_deleted == False
+    ).count()
+
+    return {
+        "total_estudiantes": total_estudiantes,
+        "total_tutores": total_tutores,
+        "total_practicas_activas": total_activas,
+        "practicas_por_programa": practicas_por_programa,
+        "seguimientos_pendientes": seguimientos_pendientes
+    }
+
+def dashboard_tutor(db: Session, tutor_id: str) -> dict:
+    practicas = obtener_practicas_por_usuario(db, tutor_id, "tutor")
+    pendientes = len(obtener_seguimientos_pendientes_tutor(db, tutor_id))
+    total_horas = sum(p.horas_acumuladas or 0 for p in practicas)
+    return {
+        "mis_estudiantes": practicas,
+        "seguimientos_pendientes": pendientes,
+        "total_horas_validadas": total_horas
+    }
+
+def dashboard_estudiante(db: Session, estudiante_id: str) -> dict:
+    practicas = obtener_practicas_por_usuario(db, estudiante_id, "estudiante")
+    practica = practicas[0] if practicas else None
+    horas_acum = practica.horas_acumuladas if practica else 0.0
+    horas_req = practica.horas_totales_requeridas if practica else 320
+    porcentaje = round((horas_acum / horas_req) * 100, 1) if horas_req > 0 else 0.0
+
+    seguimientos_recientes = []
+    if practica:
+        seguimientos_recientes = obtener_seguimientos_practica(db, practica.id)[-5:]
+
+    return {
+        "practica": practica,
+        "horas_acumuladas": horas_acum,
+        "horas_requeridas": horas_req,
+        "porcentaje_avance": porcentaje,
+        "seguimientos_recientes": seguimientos_recientes
+    }

@@ -16,9 +16,8 @@ class StatusEnum(str, enum.Enum):
     borrador  = "borrador"
     enviado   = "enviado"
     aprobado  = "aprobado"
-    rechazado = "rechazado"   
+    rechazado = "rechazado"
 
-# Tipos Enum que apuntan al tipo ya existente en Neon (create_type=False)
 userrole_type   = Enum(UserRole,  name="userrole",   create_type=False)
 statusenum_type = Enum(StatusEnum, name="statusenum", create_type=False)
 
@@ -31,14 +30,16 @@ class Usuario(Base):
     nombre             = Column(String(100), nullable=False)
     correo             = Column(String(150), unique=True, nullable=False, index=True)
     password_hash      = Column(String(255), nullable=False)
-    
-    # ✅ CORREGIDO
     rol                = Column(userrole_type, default=UserRole.estudiante)
-    
     programa_academico = Column(String, nullable=True)
     fecha_creacion     = Column(DateTime, default=datetime.datetime.utcnow)
 
-    seguimientos_validados = relationship("AuditLog", back_populates="usuario")
+    audit_logs = relationship(
+        "AuditLog",
+        primaryjoin="Usuario.id == AuditLog.usuario_id",
+        foreign_keys="[AuditLog.usuario_id]",
+        back_populates="usuario"
+    )
 
 
 class Empresa(Base):
@@ -52,6 +53,19 @@ class Empresa(Base):
     practicas = relationship("Practica", back_populates="empresa")
 
 
+class AsignacionTutor(Base):
+    """Asigna un tutor a un programa académico completo (usado por el coordinador)."""
+    __tablename__ = "asignaciones_tutor"
+
+    id                 = Column(Integer, primary_key=True, index=True)
+    tutor_id           = Column(String, ForeignKey("usuarios.id"), nullable=False)
+    programa_academico = Column(String(200), nullable=False)
+    fecha_asignacion   = Column(DateTime, default=datetime.datetime.utcnow)
+    activa             = Column(Boolean, default=True)
+
+    tutor = relationship("Usuario", foreign_keys=[tutor_id])
+
+
 class Practica(Base):
     __tablename__ = "practicas"
 
@@ -62,6 +76,7 @@ class Practica(Base):
     empresa_id               = Column(Integer, ForeignKey("empresas.id"))
     estado                   = Column(String(20), default="activa")
     horas_totales_requeridas = Column(Integer, default=320)
+    horas_acumuladas         = Column(Float, default=0.0)
     fecha_inicio             = Column(DateTime)
     fecha_fin                = Column(DateTime)
 
@@ -80,10 +95,7 @@ class Seguimiento(Base):
     fecha_actividad  = Column(DateTime, default=datetime.datetime.utcnow)
     descripcion      = Column(Text, nullable=False)
     horas_realizadas = Column(Float, nullable=False)
-    
-    # ✅ CORREGIDO (también estaba mal)
     estado           = Column(statusenum_type, default=StatusEnum.borrador)
-    
     validado_tutor      = Column(Boolean, default=False)
     validado_supervisor = Column(Boolean, default=False)
     observaciones_tutor = Column(Text, nullable=True)
@@ -98,9 +110,14 @@ class AuditLog(Base):
     __tablename__ = "logs_auditoria"
 
     id         = Column(Integer, primary_key=True, index=True)
-    usuario_id = Column(String, ForeignKey("usuarios.id"))
+    usuario_id = Column(String, nullable=True)   # Sin FK formal para preservar historial
     accion     = Column(String)
     fecha      = Column(DateTime, default=datetime.datetime.utcnow)
     ip_origen  = Column(String)
 
-    usuario = relationship("Usuario", back_populates="seguimientos_validados")
+    usuario = relationship(
+        "Usuario",
+        primaryjoin="AuditLog.usuario_id == Usuario.id",
+        foreign_keys="[AuditLog.usuario_id]",
+        back_populates="audit_logs"
+    )

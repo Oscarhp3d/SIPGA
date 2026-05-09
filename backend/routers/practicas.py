@@ -1,19 +1,48 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List
-import models, schemas, crud, auth
+import models, schemas, crud
+import sys, os
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import auth
 from database import get_db
 
 router = APIRouter(prefix="/practicas", tags=["Prácticas"])
 
+
 @router.post("/", response_model=schemas.PracticaResponse, status_code=status.HTTP_201_CREATED)
 def iniciar_practica(
-    data: schemas.PracticaCreate, 
+    data: schemas.PracticaCreate,
     db: Session = Depends(get_db),
     admin=Depends(auth.verificar_rol(["coordinador"]))
 ):
-    """Inicia una nueva práctica (Solo Coordinadores)."""
+    """
+    Crea una nueva práctica (Solo Coordinadores).
+    Si no se envía tutor_id, el backend lo auto-asigna según el programa del estudiante.
+    Si tampoco existe asignación automática, la práctica queda sin tutor (se asigna luego).
+    """
+    # Validar que el estudiante existe
+    estudiante = crud.obtener_usuario_por_id(db, data.estudiante_id)
+    if not estudiante:
+        raise HTTPException(status_code=404, detail="Estudiante no encontrado")
+    if estudiante.rol != models.UserRole.estudiante:
+        raise HTTPException(status_code=400, detail="El usuario indicado no tiene rol de estudiante")
+
+    # Validar empresa
+    empresa = db.query(models.Empresa).filter(models.Empresa.id == data.empresa_id).first()
+    if not empresa:
+        raise HTTPException(status_code=404, detail="Empresa no encontrada")
+
+    # Validar tutor si se envió explícitamente
+    if data.tutor_id:
+        tutor = crud.obtener_usuario_por_id(db, data.tutor_id)
+        if not tutor:
+            raise HTTPException(status_code=404, detail="Tutor no encontrado")
+        if tutor.rol != models.UserRole.tutor:
+            raise HTTPException(status_code=400, detail="El usuario indicado no tiene rol de tutor")
+
     return crud.crear_practica(db, data)
+
 
 @router.get("/mis", response_model=List[schemas.PracticaResponse])
 def mis_practicas(
@@ -24,6 +53,7 @@ def mis_practicas(
     rol = current_user.rol.value if hasattr(current_user.rol, 'value') else current_user.rol
     return crud.obtener_practicas_por_usuario(db, current_user.id, rol)
 
+
 @router.get("/", response_model=List[schemas.PracticaResponse])
 def listar_practicas(
     db: Session = Depends(get_db),
@@ -32,9 +62,10 @@ def listar_practicas(
     """Lista todas las prácticas (Solo Coordinadores)."""
     return crud.obtener_todas_practicas(db)
 
+
 @router.get("/{practica_id}", response_model=schemas.PracticaResponse)
 def obtener_practica(
-    practica_id: str, 
+    practica_id: str,
     db: Session = Depends(get_db),
     current_user: models.Usuario = Depends(auth.get_current_user)
 ):
@@ -42,12 +73,13 @@ def obtener_practica(
     practica = crud.obtener_practica(db, practica_id)
     if not practica:
         raise HTTPException(status_code=404, detail="Práctica no encontrada")
-    
+
     ids_permitidos = [practica.estudiante_id, practica.tutor_id, practica.supervisor_id]
     if current_user.rol != models.UserRole.coordinador and current_user.id not in ids_permitidos:
         raise HTTPException(status_code=403, detail="No tiene acceso a esta práctica")
-        
+
     return practica
+
 
 @router.patch("/{practica_id}", response_model=schemas.PracticaResponse)
 def actualizar_practica(
@@ -62,11 +94,23 @@ def actualizar_practica(
         raise HTTPException(status_code=404, detail="Práctica no encontrada")
 
     if data.estado is not None:
+        estados_validos = {"activa", "pendiente", "finalizada", "suspendida"}
+        if data.estado not in estados_validos:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Estado inválido. Valores permitidos: {', '.join(estados_validos)}"
+            )
         practica.estado = data.estado
+
     if data.tutor_id is not None:
+        tutor = crud.obtener_usuario_por_id(db, data.tutor_id)
+        if not tutor or tutor.rol != models.UserRole.tutor:
+            raise HTTPException(status_code=400, detail="tutor_id inválido o usuario no es tutor")
         practica.tutor_id = data.tutor_id
+
     if data.supervisor_id is not None:
         practica.supervisor_id = data.supervisor_id
+
     if data.fecha_fin is not None:
         practica.fecha_fin = data.fecha_fin
 
@@ -74,9 +118,10 @@ def actualizar_practica(
     db.refresh(practica)
     return practica
 
+
 @router.get("/{practica_id}/reporte-pdf")
 def descargar_reporte(
-    practica_id: str, 
+    practica_id: str,
     db: Session = Depends(get_db),
     current_user: models.Usuario = Depends(auth.get_current_user)
 ):
@@ -84,24 +129,24 @@ def descargar_reporte(
     practica = crud.obtener_practica(db, practica_id)
     if not practica:
         raise HTTPException(status_code=404, detail="Práctica no encontrada")
-    
+
     ids_permitidos = [practica.estudiante_id, practica.tutor_id, practica.supervisor_id]
     if current_user.rol != models.UserRole.coordinador and current_user.id not in ids_permitidos:
         raise HTTPException(status_code=403, detail="No tiene permisos para este reporte")
 
     from reportes import generar_pdf_practica
     from fastapi.responses import StreamingResponse
-    
+
     seguimientos = crud.obtener_seguimientos_practica(db, practica_id=practica_id)
-    
+
     pdf_buffer = generar_pdf_practica(
-        practica.estudiante.nombre, 
-        practica.empresa.nombre if practica.empresa else "Sin asignar", 
+        practica.estudiante.nombre,
+        practica.empresa.nombre if practica.empresa else "Sin asignar",
         seguimientos
     )
-    
+
     return StreamingResponse(
-        pdf_buffer, 
+        pdf_buffer,
         media_type="application/pdf",
-        headers={"Content-Disposition": f"attachment; filename=Reporte_SIPRA_{practica_id}.pdf"}
+        headers={"Content-Disposition": f"attachment; filename=Reporte_SIPGA_{practica_id}.pdf"}
     )

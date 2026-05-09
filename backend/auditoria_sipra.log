@@ -4987,3 +4987,2240 @@ AttributeError: type object 'UserRole' has no attribute 'COORDINADOR'
 2026-05-07 14:34:36,591 - INFO - Path: /api/v1/usuarios/ | Method: GET | IP: 127.0.0.1 | Time: 0.3033s
 2026-05-07 14:34:36,904 - INFO - Path: /api/v1/practicas/ | Method: GET | IP: 127.0.0.1 | Time: 0.3079s
 2026-05-07 14:34:38,611 - INFO - Path: /api/v1/usuarios/ | Method: GET | IP: 127.0.0.1 | Time: 0.3042s
+2026-05-08 11:06:03,732 - INFO - Path: /api/v1/auth/token | Method: POST | IP: 127.0.0.1 | Time: 0.6459s
+2026-05-08 11:06:04,377 - INFO - Path: /api/v1/usuarios/me | Method: GET | IP: 127.0.0.1 | Time: 0.2747s
+2026-05-08 11:06:06,293 - INFO - Path: /api/v1/usuarios/ | Method: GET | IP: 127.0.0.1 | Time: 0.3036s
+2026-05-08 11:06:06,628 - INFO - Path: /api/v1/practicas/ | Method: GET | IP: 127.0.0.1 | Time: 0.3224s
+2026-05-08 11:06:09,906 - INFO - Path: /api/v1/practicas/mis | Method: GET | IP: 127.0.0.1 | Time: 0.3123s
+2026-05-08 11:06:10,704 - INFO - Path: /api/v1/seguimientos/practica/02ce7293-43b0-4778-8fc2-5b8c9b7068e1 | Method: GET | IP: 127.0.0.1 | Time: 0.7907s
+2026-05-08 11:06:52,496 - INFO - Path: /api/v1/seguimientos/ | Method: POST | IP: 127.0.0.1 | Time: 0.7069s
+2026-05-08 11:06:52,890 - INFO - Path: /api/v1/seguimientos/practica/02ce7293-43b0-4778-8fc2-5b8c9b7068e1 | Method: GET | IP: 127.0.0.1 | Time: 0.3854s
+2026-05-08 11:06:58,613 - INFO - Path: /api/v1/usuarios/me | Method: GET | IP: 127.0.0.1 | Time: 0.2272s
+2026-05-08 11:07:03,673 - INFO - Path: /api/v1/usuarios/ | Method: GET | IP: 127.0.0.1 | Time: 0.3028s
+2026-05-08 11:07:03,995 - INFO - Path: /api/v1/practicas/ | Method: GET | IP: 127.0.0.1 | Time: 0.3183s
+2026-05-08 11:07:04,761 - INFO - Path: /api/v1/seguimientos/practica/02ce7293-43b0-4778-8fc2-5b8c9b7068e1 | Method: GET | IP: 127.0.0.1 | Time: 0.3760s
+2026-05-08 11:08:52,315 - INFO - Path: /api/v1/auth/token | Method: POST | IP: 127.0.0.1 | Time: 0.6169s
+2026-05-08 11:08:57,491 - INFO - Path: /api/v1/auth/token | Method: POST | IP: 127.0.0.1 | Time: 0.4827s
+2026-05-08 11:08:58,008 - INFO - Path: /api/v1/usuarios/me | Method: GET | IP: 127.0.0.1 | Time: 0.2306s
+2026-05-08 11:09:01,200 - INFO - Path: /api/v1/practicas/mis | Method: GET | IP: 127.0.0.1 | Time: 0.2946s
+2026-05-08 11:09:01,602 - INFO - Path: /api/v1/seguimientos/practica/02ce7293-43b0-4778-8fc2-5b8c9b7068e1 | Method: GET | IP: 127.0.0.1 | Time: 0.3838s
+2026-05-08 11:09:06,983 - INFO - Path: /api/v1/practicas/mis | Method: GET | IP: 127.0.0.1 | Time: 0.2995s
+2026-05-08 11:09:07,318 - INFO - Path: /api/v1/usuarios/ | Method: GET | IP: 127.0.0.1 | Time: 0.3159s
+2026-05-08 11:09:07,689 - INFO - Path: /api/v1/seguimientos/practica/02ce7293-43b0-4778-8fc2-5b8c9b7068e1 | Method: GET | IP: 127.0.0.1 | Time: 0.3652s
+2026-05-08 11:09:12,740 - INFO - Path: /api/v1/seguimientos/ffa1919d-04e1-4fd7-8014-ccb8f88b67a4/validar | Method: PATCH | IP: 127.0.0.1 | Time: 1.2289s
+2026-05-08 11:09:13,054 - INFO - Path: /api/v1/practicas/mis | Method: GET | IP: 127.0.0.1 | Time: 0.2975s
+2026-05-08 11:09:13,455 - INFO - Path: /api/v1/seguimientos/practica/02ce7293-43b0-4778-8fc2-5b8c9b7068e1 | Method: GET | IP: 127.0.0.1 | Time: 0.3816s
+2026-05-08 11:09:19,572 - INFO - Path: /api/v1/usuarios/me | Method: GET | IP: 127.0.0.1 | Time: 0.2238s
+2026-05-08 11:09:21,371 - INFO - Path: /api/v1/practicas/mis | Method: GET | IP: 127.0.0.1 | Time: 0.2920s
+2026-05-08 11:09:21,702 - INFO - Path: /api/v1/usuarios/ | Method: GET | IP: 127.0.0.1 | Time: 0.3107s
+2026-05-08 11:09:22,082 - INFO - Path: /api/v1/seguimientos/practica/02ce7293-43b0-4778-8fc2-5b8c9b7068e1 | Method: GET | IP: 127.0.0.1 | Time: 0.3771s
+2026-05-08 11:09:24,639 - INFO - Path: /api/v1/usuarios/ | Method: GET | IP: 127.0.0.1 | Time: 0.3055s
+2026-05-08 11:09:24,936 - INFO - Path: /api/v1/practicas/ | Method: GET | IP: 127.0.0.1 | Time: 0.2917s
+2026-05-08 11:09:27,650 - INFO - Path: /api/v1/usuarios/ | Method: GET | IP: 127.0.0.1 | Time: 0.2961s
+2026-05-08 11:09:27,967 - INFO - Path: /api/v1/practicas/ | Method: GET | IP: 127.0.0.1 | Time: 0.3014s
+2026-05-09 13:38:48,273 - ERROR - ERROR CRÍTICO en /api/v1/auth/token: 2 validation errors:
+  {'type': 'missing', 'loc': ('response', 'rol'), 'msg': 'Field required', 'input': {'access_token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjYXJsYUBzaXByYS5lZHUuY28iLCJyb2wiOiJlc3R1ZGlhbnRlIiwiZXhwIjoxNzc4MzU1NTI4fQ.nIX_e-hLczpaAbGl4lctXZx4srvX_phixHf3lrq590A', 'token_type': 'bearer'}}
+  {'type': 'missing', 'loc': ('response', 'nombre'), 'msg': 'Field required', 'input': {'access_token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjYXJsYUBzaXByYS5lZHUuY28iLCJyb2wiOiJlc3R1ZGlhbnRlIiwiZXhwIjoxNzc4MzU1NTI4fQ.nIX_e-hLczpaAbGl4lctXZx4srvX_phixHf3lrq590A', 'token_type': 'bearer'}}
+
+  File "C:\Users\asus\Downloads\SIPGA\backend\routers\auth.py", line 9, in login
+    POST /api/v1/auth/token
+Traceback (most recent call last):
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 191, in __call__
+    with recv_stream, send_stream, collapse_excgroups():
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_utils.py", line 87, in collapse_excgroups
+    raise exc
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 193, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\Downloads\SIPGA\backend\main.py", line 47, in add_process_time_header
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\cors.py", line 96, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\cors.py", line 154, in simple_response
+    await self.app(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 120, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 695, in app
+    content = await serialize_response(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 300, in serialize_response
+    raise ResponseValidationError(
+fastapi.exceptions.ResponseValidationError: 2 validation errors:
+  {'type': 'missing', 'loc': ('response', 'rol'), 'msg': 'Field required', 'input': {'access_token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjYXJsYUBzaXByYS5lZHUuY28iLCJyb2wiOiJlc3R1ZGlhbnRlIiwiZXhwIjoxNzc4MzU1NTI4fQ.nIX_e-hLczpaAbGl4lctXZx4srvX_phixHf3lrq590A', 'token_type': 'bearer'}}
+  {'type': 'missing', 'loc': ('response', 'nombre'), 'msg': 'Field required', 'input': {'access_token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjYXJsYUBzaXByYS5lZHUuY28iLCJyb2wiOiJlc3R1ZGlhbnRlIiwiZXhwIjoxNzc4MzU1NTI4fQ.nIX_e-hLczpaAbGl4lctXZx4srvX_phixHf3lrq590A', 'token_type': 'bearer'}}
+
+  File "C:\Users\asus\Downloads\SIPGA\backend\routers\auth.py", line 9, in login
+    POST /api/v1/auth/token
+2026-05-09 14:02:54,568 - ERROR - ERROR CRÍTICO en /api/v1/auth/token: 2 validation errors:
+  {'type': 'missing', 'loc': ('response', 'rol'), 'msg': 'Field required', 'input': {'access_token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjYXJsYUBzaXByYS5lZHUuY28iLCJyb2wiOiJlc3R1ZGlhbnRlIiwiZXhwIjoxNzc4MzU2OTc0fQ.3aTCQzCmphUwMa6NOR69XZP7z2O9G6IPy8Fiy_3NtH4', 'token_type': 'bearer'}}
+  {'type': 'missing', 'loc': ('response', 'nombre'), 'msg': 'Field required', 'input': {'access_token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjYXJsYUBzaXByYS5lZHUuY28iLCJyb2wiOiJlc3R1ZGlhbnRlIiwiZXhwIjoxNzc4MzU2OTc0fQ.3aTCQzCmphUwMa6NOR69XZP7z2O9G6IPy8Fiy_3NtH4', 'token_type': 'bearer'}}
+
+  File "C:\Users\asus\Downloads\SIPGA\backend\routers\auth_router.py", line 9, in login
+    POST /api/v1/auth/token
+Traceback (most recent call last):
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 191, in __call__
+    with recv_stream, send_stream, collapse_excgroups():
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_utils.py", line 87, in collapse_excgroups
+    raise exc
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 193, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\Downloads\SIPGA\backend\main.py", line 47, in add_process_time_header
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\cors.py", line 96, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\cors.py", line 154, in simple_response
+    await self.app(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 120, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 695, in app
+    content = await serialize_response(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 300, in serialize_response
+    raise ResponseValidationError(
+fastapi.exceptions.ResponseValidationError: 2 validation errors:
+  {'type': 'missing', 'loc': ('response', 'rol'), 'msg': 'Field required', 'input': {'access_token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjYXJsYUBzaXByYS5lZHUuY28iLCJyb2wiOiJlc3R1ZGlhbnRlIiwiZXhwIjoxNzc4MzU2OTc0fQ.3aTCQzCmphUwMa6NOR69XZP7z2O9G6IPy8Fiy_3NtH4', 'token_type': 'bearer'}}
+  {'type': 'missing', 'loc': ('response', 'nombre'), 'msg': 'Field required', 'input': {'access_token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjYXJsYUBzaXByYS5lZHUuY28iLCJyb2wiOiJlc3R1ZGlhbnRlIiwiZXhwIjoxNzc4MzU2OTc0fQ.3aTCQzCmphUwMa6NOR69XZP7z2O9G6IPy8Fiy_3NtH4', 'token_type': 'bearer'}}
+
+  File "C:\Users\asus\Downloads\SIPGA\backend\routers\auth_router.py", line 9, in login
+    POST /api/v1/auth/token
+2026-05-09 14:04:44,554 - ERROR - ERROR CRÍTICO en /api/v1/auth/token: 2 validation errors:
+  {'type': 'missing', 'loc': ('response', 'rol'), 'msg': 'Field required', 'input': {'access_token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjYXJsYUBzaXByYS5lZHUuY28iLCJyb2wiOiJlc3R1ZGlhbnRlIiwiZXhwIjoxNzc4MzU3MDg0fQ.hMJ1S8JHDXktL447BVkbNMkBXaHJjhbeOyafWHMiSo0', 'token_type': 'bearer'}}
+  {'type': 'missing', 'loc': ('response', 'nombre'), 'msg': 'Field required', 'input': {'access_token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjYXJsYUBzaXByYS5lZHUuY28iLCJyb2wiOiJlc3R1ZGlhbnRlIiwiZXhwIjoxNzc4MzU3MDg0fQ.hMJ1S8JHDXktL447BVkbNMkBXaHJjhbeOyafWHMiSo0', 'token_type': 'bearer'}}
+
+  File "C:\Users\asus\Downloads\SIPGA\backend\routers\auth_router.py", line 9, in login
+    POST /api/v1/auth/token
+Traceback (most recent call last):
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 191, in __call__
+    with recv_stream, send_stream, collapse_excgroups():
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_utils.py", line 87, in collapse_excgroups
+    raise exc
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 193, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\Downloads\SIPGA\backend\main.py", line 47, in add_process_time_header
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\cors.py", line 96, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\cors.py", line 154, in simple_response
+    await self.app(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 120, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 695, in app
+    content = await serialize_response(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 300, in serialize_response
+    raise ResponseValidationError(
+fastapi.exceptions.ResponseValidationError: 2 validation errors:
+  {'type': 'missing', 'loc': ('response', 'rol'), 'msg': 'Field required', 'input': {'access_token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjYXJsYUBzaXByYS5lZHUuY28iLCJyb2wiOiJlc3R1ZGlhbnRlIiwiZXhwIjoxNzc4MzU3MDg0fQ.hMJ1S8JHDXktL447BVkbNMkBXaHJjhbeOyafWHMiSo0', 'token_type': 'bearer'}}
+  {'type': 'missing', 'loc': ('response', 'nombre'), 'msg': 'Field required', 'input': {'access_token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjYXJsYUBzaXByYS5lZHUuY28iLCJyb2wiOiJlc3R1ZGlhbnRlIiwiZXhwIjoxNzc4MzU3MDg0fQ.hMJ1S8JHDXktL447BVkbNMkBXaHJjhbeOyafWHMiSo0', 'token_type': 'bearer'}}
+
+  File "C:\Users\asus\Downloads\SIPGA\backend\routers\auth_router.py", line 9, in login
+    POST /api/v1/auth/token
+2026-05-09 14:05:43,378 - INFO - Path: /api/v1/auth/token | Method: POST | IP: 127.0.0.1 | Time: 0.5994s
+2026-05-09 14:05:43,737 - INFO - Path: /api/v1/usuarios/me | Method: OPTIONS | IP: 127.0.0.1 | Time: 0.0000s
+2026-05-09 14:05:43,979 - INFO - Path: /api/v1/usuarios/me | Method: GET | IP: 127.0.0.1 | Time: 0.2383s
+2026-05-09 14:05:45,897 - INFO - Path: /api/v1/practicas/mis | Method: OPTIONS | IP: 127.0.0.1 | Time: 0.0000s
+2026-05-09 14:05:46,278 - ERROR - ERROR CRÍTICO en /api/v1/practicas/mis: (psycopg2.errors.UndefinedColumn) column practicas.horas_acumuladas does not exist
+LINE 1: ...requeridas AS practicas_horas_totales_requeridas, practicas....
+                                                             ^
+
+[SQL: SELECT practicas.id AS practicas_id, practicas.estudiante_id AS practicas_estudiante_id, practicas.tutor_id AS practicas_tutor_id, practicas.supervisor_id AS practicas_supervisor_id, practicas.empresa_id AS practicas_empresa_id, practicas.estado AS practicas_estado, practicas.horas_totales_requeridas AS practicas_horas_totales_requeridas, practicas.horas_acumuladas AS practicas_horas_acumuladas, practicas.fecha_inicio AS practicas_fecha_inicio, practicas.fecha_fin AS practicas_fecha_fin 
+FROM practicas 
+WHERE practicas.estudiante_id = %(estudiante_id_1)s]
+[parameters: {'estudiante_id_1': 'e1493a9e-1a6d-4020-abce-216b1e965033'}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+Traceback (most recent call last):
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+psycopg2.errors.UndefinedColumn: column practicas.horas_acumuladas does not exist
+LINE 1: ...requeridas AS practicas_horas_totales_requeridas, practicas....
+                                                             ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 191, in __call__
+    with recv_stream, send_stream, collapse_excgroups():
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_utils.py", line 87, in collapse_excgroups
+    raise exc
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 193, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\Downloads\SIPGA\backend\main.py", line 47, in add_process_time_header
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\cors.py", line 96, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\cors.py", line 154, in simple_response
+    await self.app(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 120, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 674, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 330, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\concurrency.py", line 32, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\anyio\to_thread.py", line 63, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\anyio\_backends\_asyncio.py", line 2518, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\anyio\_backends\_asyncio.py", line 1002, in run
+    result = context.run(func, *args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\Downloads\SIPGA\backend\routers\practicas.py", line 28, in mis_practicas
+    return crud.obtener_practicas_por_usuario(db, current_user.id, rol)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\Downloads\SIPGA\backend\crud.py", line 147, in obtener_practicas_por_usuario
+    ).all()
+      ^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\query.py", line 2704, in all
+    return self._iter().all()  # type: ignore
+           ^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\query.py", line 2857, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 2351, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 2249, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+             ^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1419, in execute
+    return meth(
+           ^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\sql\elements.py", line 527, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1641, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 2363, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.ProgrammingError: (psycopg2.errors.UndefinedColumn) column practicas.horas_acumuladas does not exist
+LINE 1: ...requeridas AS practicas_horas_totales_requeridas, practicas....
+                                                             ^
+
+[SQL: SELECT practicas.id AS practicas_id, practicas.estudiante_id AS practicas_estudiante_id, practicas.tutor_id AS practicas_tutor_id, practicas.supervisor_id AS practicas_supervisor_id, practicas.empresa_id AS practicas_empresa_id, practicas.estado AS practicas_estado, practicas.horas_totales_requeridas AS practicas_horas_totales_requeridas, practicas.horas_acumuladas AS practicas_horas_acumuladas, practicas.fecha_inicio AS practicas_fecha_inicio, practicas.fecha_fin AS practicas_fecha_fin 
+FROM practicas 
+WHERE practicas.estudiante_id = %(estudiante_id_1)s]
+[parameters: {'estudiante_id_1': 'e1493a9e-1a6d-4020-abce-216b1e965033'}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2026-05-09 14:05:49,618 - INFO - Path: /api/v1/usuarios/ | Method: OPTIONS | IP: 127.0.0.1 | Time: 0.0000s
+2026-05-09 14:05:49,939 - INFO - Path: /api/v1/usuarios/ | Method: GET | IP: 127.0.0.1 | Time: 0.3125s
+2026-05-09 14:05:49,943 - INFO - Path: /api/v1/practicas/ | Method: OPTIONS | IP: 127.0.0.1 | Time: 0.0000s
+2026-05-09 14:05:50,258 - INFO - Path: /api/v1/practicas/ | Method: GET | IP: 127.0.0.1 | Time: 0.3077s
+2026-05-09 14:05:54,109 - ERROR - ERROR CRÍTICO en /api/v1/practicas/mis: (psycopg2.errors.UndefinedColumn) column practicas.horas_acumuladas does not exist
+LINE 1: ...requeridas AS practicas_horas_totales_requeridas, practicas....
+                                                             ^
+
+[SQL: SELECT practicas.id AS practicas_id, practicas.estudiante_id AS practicas_estudiante_id, practicas.tutor_id AS practicas_tutor_id, practicas.supervisor_id AS practicas_supervisor_id, practicas.empresa_id AS practicas_empresa_id, practicas.estado AS practicas_estado, practicas.horas_totales_requeridas AS practicas_horas_totales_requeridas, practicas.horas_acumuladas AS practicas_horas_acumuladas, practicas.fecha_inicio AS practicas_fecha_inicio, practicas.fecha_fin AS practicas_fecha_fin 
+FROM practicas 
+WHERE practicas.estudiante_id = %(estudiante_id_1)s]
+[parameters: {'estudiante_id_1': 'e1493a9e-1a6d-4020-abce-216b1e965033'}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+Traceback (most recent call last):
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+psycopg2.errors.UndefinedColumn: column practicas.horas_acumuladas does not exist
+LINE 1: ...requeridas AS practicas_horas_totales_requeridas, practicas....
+                                                             ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 191, in __call__
+    with recv_stream, send_stream, collapse_excgroups():
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_utils.py", line 87, in collapse_excgroups
+    raise exc
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 193, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\Downloads\SIPGA\backend\main.py", line 47, in add_process_time_header
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\cors.py", line 96, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\cors.py", line 154, in simple_response
+    await self.app(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 120, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 674, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 330, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\concurrency.py", line 32, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\anyio\to_thread.py", line 63, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\anyio\_backends\_asyncio.py", line 2518, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\anyio\_backends\_asyncio.py", line 1002, in run
+    result = context.run(func, *args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\Downloads\SIPGA\backend\routers\practicas.py", line 28, in mis_practicas
+    return crud.obtener_practicas_por_usuario(db, current_user.id, rol)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\Downloads\SIPGA\backend\crud.py", line 147, in obtener_practicas_por_usuario
+    ).all()
+      ^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\query.py", line 2704, in all
+    return self._iter().all()  # type: ignore
+           ^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\query.py", line 2857, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 2351, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 2249, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+             ^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1419, in execute
+    return meth(
+           ^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\sql\elements.py", line 527, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1641, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 2363, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.ProgrammingError: (psycopg2.errors.UndefinedColumn) column practicas.horas_acumuladas does not exist
+LINE 1: ...requeridas AS practicas_horas_totales_requeridas, practicas....
+                                                             ^
+
+[SQL: SELECT practicas.id AS practicas_id, practicas.estudiante_id AS practicas_estudiante_id, practicas.tutor_id AS practicas_tutor_id, practicas.supervisor_id AS practicas_supervisor_id, practicas.empresa_id AS practicas_empresa_id, practicas.estado AS practicas_estado, practicas.horas_totales_requeridas AS practicas_horas_totales_requeridas, practicas.horas_acumuladas AS practicas_horas_acumuladas, practicas.fecha_inicio AS practicas_fecha_inicio, practicas.fecha_fin AS practicas_fecha_fin 
+FROM practicas 
+WHERE practicas.estudiante_id = %(estudiante_id_1)s]
+[parameters: {'estudiante_id_1': 'e1493a9e-1a6d-4020-abce-216b1e965033'}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2026-05-09 14:06:07,280 - INFO - Path: /api/v1/auth/token | Method: POST | IP: 127.0.0.1 | Time: 0.4915s
+2026-05-09 14:06:07,781 - INFO - Path: /api/v1/usuarios/me | Method: GET | IP: 127.0.0.1 | Time: 0.2361s
+2026-05-09 14:06:17,745 - INFO - Path: /api/v1/usuarios/ | Method: GET | IP: 127.0.0.1 | Time: 0.3122s
+2026-05-09 14:06:18,544 - ERROR - ERROR CRÍTICO en /api/v1/practicas/: (psycopg2.errors.UndefinedColumn) column practicas.horas_acumuladas does not exist
+LINE 1: ...requeridas AS practicas_horas_totales_requeridas, practicas....
+                                                             ^
+
+[SQL: SELECT practicas.id AS practicas_id, practicas.estudiante_id AS practicas_estudiante_id, practicas.tutor_id AS practicas_tutor_id, practicas.supervisor_id AS practicas_supervisor_id, practicas.empresa_id AS practicas_empresa_id, practicas.estado AS practicas_estado, practicas.horas_totales_requeridas AS practicas_horas_totales_requeridas, practicas.horas_acumuladas AS practicas_horas_acumuladas, practicas.fecha_inicio AS practicas_fecha_inicio, practicas.fecha_fin AS practicas_fecha_fin 
+FROM practicas]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+Traceback (most recent call last):
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+psycopg2.errors.UndefinedColumn: column practicas.horas_acumuladas does not exist
+LINE 1: ...requeridas AS practicas_horas_totales_requeridas, practicas....
+                                                             ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 191, in __call__
+    with recv_stream, send_stream, collapse_excgroups():
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_utils.py", line 87, in collapse_excgroups
+    raise exc
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 193, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\Downloads\SIPGA\backend\main.py", line 47, in add_process_time_header
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\cors.py", line 96, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\cors.py", line 154, in simple_response
+    await self.app(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 120, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 674, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 330, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\concurrency.py", line 32, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\anyio\to_thread.py", line 63, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\anyio\_backends\_asyncio.py", line 2518, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\anyio\_backends\_asyncio.py", line 1002, in run
+    result = context.run(func, *args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\Downloads\SIPGA\backend\routers\practicas.py", line 36, in listar_practicas
+    return crud.obtener_todas_practicas(db)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\Downloads\SIPGA\backend\crud.py", line 139, in obtener_todas_practicas
+    return db.query(models.Practica).all()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\query.py", line 2704, in all
+    return self._iter().all()  # type: ignore
+           ^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\query.py", line 2857, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 2351, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 2249, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+             ^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1419, in execute
+    return meth(
+           ^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\sql\elements.py", line 527, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1641, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 2363, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.ProgrammingError: (psycopg2.errors.UndefinedColumn) column practicas.horas_acumuladas does not exist
+LINE 1: ...requeridas AS practicas_horas_totales_requeridas, practicas....
+                                                             ^
+
+[SQL: SELECT practicas.id AS practicas_id, practicas.estudiante_id AS practicas_estudiante_id, practicas.tutor_id AS practicas_tutor_id, practicas.supervisor_id AS practicas_supervisor_id, practicas.empresa_id AS practicas_empresa_id, practicas.estado AS practicas_estado, practicas.horas_totales_requeridas AS practicas_horas_totales_requeridas, practicas.horas_acumuladas AS practicas_horas_acumuladas, practicas.fecha_inicio AS practicas_fecha_inicio, practicas.fecha_fin AS practicas_fecha_fin 
+FROM practicas]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2026-05-09 14:06:18,708 - INFO - Path: /api/v1/usuarios/ | Method: GET | IP: 127.0.0.1 | Time: 0.3123s
+2026-05-09 14:06:19,097 - ERROR - ERROR CRÍTICO en /api/v1/practicas/: (psycopg2.errors.UndefinedColumn) column practicas.horas_acumuladas does not exist
+LINE 1: ...requeridas AS practicas_horas_totales_requeridas, practicas....
+                                                             ^
+
+[SQL: SELECT practicas.id AS practicas_id, practicas.estudiante_id AS practicas_estudiante_id, practicas.tutor_id AS practicas_tutor_id, practicas.supervisor_id AS practicas_supervisor_id, practicas.empresa_id AS practicas_empresa_id, practicas.estado AS practicas_estado, practicas.horas_totales_requeridas AS practicas_horas_totales_requeridas, practicas.horas_acumuladas AS practicas_horas_acumuladas, practicas.fecha_inicio AS practicas_fecha_inicio, practicas.fecha_fin AS practicas_fecha_fin 
+FROM practicas]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+Traceback (most recent call last):
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+psycopg2.errors.UndefinedColumn: column practicas.horas_acumuladas does not exist
+LINE 1: ...requeridas AS practicas_horas_totales_requeridas, practicas....
+                                                             ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 191, in __call__
+    with recv_stream, send_stream, collapse_excgroups():
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_utils.py", line 87, in collapse_excgroups
+    raise exc
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 193, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\Downloads\SIPGA\backend\main.py", line 47, in add_process_time_header
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\cors.py", line 96, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\cors.py", line 154, in simple_response
+    await self.app(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 120, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 674, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 330, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\concurrency.py", line 32, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\anyio\to_thread.py", line 63, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\anyio\_backends\_asyncio.py", line 2518, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\anyio\_backends\_asyncio.py", line 1002, in run
+    result = context.run(func, *args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\Downloads\SIPGA\backend\routers\practicas.py", line 36, in listar_practicas
+    return crud.obtener_todas_practicas(db)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\Downloads\SIPGA\backend\crud.py", line 139, in obtener_todas_practicas
+    return db.query(models.Practica).all()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\query.py", line 2704, in all
+    return self._iter().all()  # type: ignore
+           ^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\query.py", line 2857, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 2351, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 2249, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+             ^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1419, in execute
+    return meth(
+           ^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\sql\elements.py", line 527, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1641, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 2363, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.ProgrammingError: (psycopg2.errors.UndefinedColumn) column practicas.horas_acumuladas does not exist
+LINE 1: ...requeridas AS practicas_horas_totales_requeridas, practicas....
+                                                             ^
+
+[SQL: SELECT practicas.id AS practicas_id, practicas.estudiante_id AS practicas_estudiante_id, practicas.tutor_id AS practicas_tutor_id, practicas.supervisor_id AS practicas_supervisor_id, practicas.empresa_id AS practicas_empresa_id, practicas.estado AS practicas_estado, practicas.horas_totales_requeridas AS practicas_horas_totales_requeridas, practicas.horas_acumuladas AS practicas_horas_acumuladas, practicas.fecha_inicio AS practicas_fecha_inicio, practicas.fecha_fin AS practicas_fecha_fin 
+FROM practicas]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2026-05-09 14:06:22,558 - INFO - Path: /api/v1/usuarios/ | Method: GET | IP: 127.0.0.1 | Time: 0.2989s
+2026-05-09 14:06:22,942 - ERROR - ERROR CRÍTICO en /api/v1/practicas/: (psycopg2.errors.UndefinedColumn) column practicas.horas_acumuladas does not exist
+LINE 1: ...requeridas AS practicas_horas_totales_requeridas, practicas....
+                                                             ^
+
+[SQL: SELECT practicas.id AS practicas_id, practicas.estudiante_id AS practicas_estudiante_id, practicas.tutor_id AS practicas_tutor_id, practicas.supervisor_id AS practicas_supervisor_id, practicas.empresa_id AS practicas_empresa_id, practicas.estado AS practicas_estado, practicas.horas_totales_requeridas AS practicas_horas_totales_requeridas, practicas.horas_acumuladas AS practicas_horas_acumuladas, practicas.fecha_inicio AS practicas_fecha_inicio, practicas.fecha_fin AS practicas_fecha_fin 
+FROM practicas]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+Traceback (most recent call last):
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+psycopg2.errors.UndefinedColumn: column practicas.horas_acumuladas does not exist
+LINE 1: ...requeridas AS practicas_horas_totales_requeridas, practicas....
+                                                             ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 191, in __call__
+    with recv_stream, send_stream, collapse_excgroups():
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_utils.py", line 87, in collapse_excgroups
+    raise exc
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 193, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\Downloads\SIPGA\backend\main.py", line 47, in add_process_time_header
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\cors.py", line 96, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\cors.py", line 154, in simple_response
+    await self.app(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 120, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 674, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 330, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\concurrency.py", line 32, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\anyio\to_thread.py", line 63, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\anyio\_backends\_asyncio.py", line 2518, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\anyio\_backends\_asyncio.py", line 1002, in run
+    result = context.run(func, *args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\Downloads\SIPGA\backend\routers\practicas.py", line 36, in listar_practicas
+    return crud.obtener_todas_practicas(db)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\Downloads\SIPGA\backend\crud.py", line 139, in obtener_todas_practicas
+    return db.query(models.Practica).all()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\query.py", line 2704, in all
+    return self._iter().all()  # type: ignore
+           ^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\query.py", line 2857, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 2351, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 2249, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+             ^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1419, in execute
+    return meth(
+           ^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\sql\elements.py", line 527, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1641, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 2363, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.ProgrammingError: (psycopg2.errors.UndefinedColumn) column practicas.horas_acumuladas does not exist
+LINE 1: ...requeridas AS practicas_horas_totales_requeridas, practicas....
+                                                             ^
+
+[SQL: SELECT practicas.id AS practicas_id, practicas.estudiante_id AS practicas_estudiante_id, practicas.tutor_id AS practicas_tutor_id, practicas.supervisor_id AS practicas_supervisor_id, practicas.empresa_id AS practicas_empresa_id, practicas.estado AS practicas_estado, practicas.horas_totales_requeridas AS practicas_horas_totales_requeridas, practicas.horas_acumuladas AS practicas_horas_acumuladas, practicas.fecha_inicio AS practicas_fecha_inicio, practicas.fecha_fin AS practicas_fecha_fin 
+FROM practicas]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2026-05-09 14:06:26,889 - INFO - Path: /api/v1/empresas/ | Method: OPTIONS | IP: 127.0.0.1 | Time: 0.0015s
+2026-05-09 14:06:27,211 - INFO - Path: /api/v1/empresas/ | Method: GET | IP: 127.0.0.1 | Time: 0.3203s
+2026-05-09 14:06:37,943 - INFO - Path: /api/v1/practicas/ | Method: OPTIONS | IP: 127.0.0.1 | Time: 0.0000s
+2026-05-09 14:06:38,325 - ERROR - ERROR CRÍTICO en /api/v1/practicas/: (psycopg2.errors.UndefinedColumn) column "horas_acumuladas" of relation "practicas" does not exist
+LINE 1: ...id, empresa_id, estado, horas_totales_requeridas, horas_acum...
+                                                             ^
+
+[SQL: INSERT INTO practicas (id, estudiante_id, tutor_id, supervisor_id, empresa_id, estado, horas_totales_requeridas, horas_acumuladas, fecha_inicio, fecha_fin) VALUES (%(id)s, %(estudiante_id)s, %(tutor_id)s, %(supervisor_id)s, %(empresa_id)s, %(estado)s, %(horas_totales_requeridas)s, %(horas_acumuladas)s, %(fecha_inicio)s, %(fecha_fin)s)]
+[parameters: {'id': '4a22c821-46fb-4231-acbc-04262fa80b6c', 'estudiante_id': 'e1493a9e-1a6d-4020-abce-216b1e965033', 'tutor_id': '2', 'supervisor_id': None, 'empresa_id': 1, 'estado': 'activa', 'horas_totales_requeridas': 320, 'horas_acumuladas': 0.0, 'fecha_inicio': datetime.datetime(2026, 5, 8, 5, 0, tzinfo=TzInfo(0)), 'fecha_fin': None}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+Traceback (most recent call last):
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+psycopg2.errors.UndefinedColumn: column "horas_acumuladas" of relation "practicas" does not exist
+LINE 1: ...id, empresa_id, estado, horas_totales_requeridas, horas_acum...
+                                                             ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 191, in __call__
+    with recv_stream, send_stream, collapse_excgroups():
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_utils.py", line 87, in collapse_excgroups
+    raise exc
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 193, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\Downloads\SIPGA\backend\main.py", line 47, in add_process_time_header
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\cors.py", line 96, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\cors.py", line 154, in simple_response
+    await self.app(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 120, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 674, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 330, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\concurrency.py", line 32, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\anyio\to_thread.py", line 63, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\anyio\_backends\_asyncio.py", line 2518, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\anyio\_backends\_asyncio.py", line 1002, in run
+    result = context.run(func, *args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\Downloads\SIPGA\backend\routers\practicas.py", line 19, in iniciar_practica
+    return crud.crear_practica(db, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\Downloads\SIPGA\backend\crud.py", line 131, in crear_practica
+    db.commit()
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 2030, in commit
+    trans.commit(_to_root=True)
+  File "<string>", line 2, in commit
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 1311, in commit
+    self._prepare_impl()
+  File "<string>", line 2, in _prepare_impl
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 1286, in _prepare_impl
+    self.session.flush()
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 4331, in flush
+    self._flush(objects)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 4466, in _flush
+    with util.safe_reraise():
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 121, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 4427, in _flush
+    flush_context.execute()
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\unitofwork.py", line 466, in execute
+    rec.execute(self)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\unitofwork.py", line 642, in execute
+    util.preloaded.orm_persistence.save_obj(
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\persistence.py", line 93, in save_obj
+    _emit_insert_statements(
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\persistence.py", line 1233, in _emit_insert_statements
+    result = connection.execute(
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1419, in execute
+    return meth(
+           ^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\sql\elements.py", line 527, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1641, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 2363, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.ProgrammingError: (psycopg2.errors.UndefinedColumn) column "horas_acumuladas" of relation "practicas" does not exist
+LINE 1: ...id, empresa_id, estado, horas_totales_requeridas, horas_acum...
+                                                             ^
+
+[SQL: INSERT INTO practicas (id, estudiante_id, tutor_id, supervisor_id, empresa_id, estado, horas_totales_requeridas, horas_acumuladas, fecha_inicio, fecha_fin) VALUES (%(id)s, %(estudiante_id)s, %(tutor_id)s, %(supervisor_id)s, %(empresa_id)s, %(estado)s, %(horas_totales_requeridas)s, %(horas_acumuladas)s, %(fecha_inicio)s, %(fecha_fin)s)]
+[parameters: {'id': '4a22c821-46fb-4231-acbc-04262fa80b6c', 'estudiante_id': 'e1493a9e-1a6d-4020-abce-216b1e965033', 'tutor_id': '2', 'supervisor_id': None, 'empresa_id': 1, 'estado': 'activa', 'horas_totales_requeridas': 320, 'horas_acumuladas': 0.0, 'fecha_inicio': datetime.datetime(2026, 5, 8, 5, 0, tzinfo=TzInfo(0)), 'fecha_fin': None}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2026-05-09 14:06:40,720 - ERROR - ERROR CRÍTICO en /api/v1/practicas/: (psycopg2.errors.UndefinedColumn) column "horas_acumuladas" of relation "practicas" does not exist
+LINE 1: ...id, empresa_id, estado, horas_totales_requeridas, horas_acum...
+                                                             ^
+
+[SQL: INSERT INTO practicas (id, estudiante_id, tutor_id, supervisor_id, empresa_id, estado, horas_totales_requeridas, horas_acumuladas, fecha_inicio, fecha_fin) VALUES (%(id)s, %(estudiante_id)s, %(tutor_id)s, %(supervisor_id)s, %(empresa_id)s, %(estado)s, %(horas_totales_requeridas)s, %(horas_acumuladas)s, %(fecha_inicio)s, %(fecha_fin)s)]
+[parameters: {'id': 'a9195561-9ba6-4848-9e87-295c8d0a6d37', 'estudiante_id': 'e1493a9e-1a6d-4020-abce-216b1e965033', 'tutor_id': '2', 'supervisor_id': None, 'empresa_id': 1, 'estado': 'activa', 'horas_totales_requeridas': 320, 'horas_acumuladas': 0.0, 'fecha_inicio': datetime.datetime(2026, 5, 8, 5, 0, tzinfo=TzInfo(0)), 'fecha_fin': None}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+Traceback (most recent call last):
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+psycopg2.errors.UndefinedColumn: column "horas_acumuladas" of relation "practicas" does not exist
+LINE 1: ...id, empresa_id, estado, horas_totales_requeridas, horas_acum...
+                                                             ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 191, in __call__
+    with recv_stream, send_stream, collapse_excgroups():
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_utils.py", line 87, in collapse_excgroups
+    raise exc
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 193, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\Downloads\SIPGA\backend\main.py", line 47, in add_process_time_header
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\cors.py", line 96, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\cors.py", line 154, in simple_response
+    await self.app(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 120, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 674, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 330, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\concurrency.py", line 32, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\anyio\to_thread.py", line 63, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\anyio\_backends\_asyncio.py", line 2518, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\anyio\_backends\_asyncio.py", line 1002, in run
+    result = context.run(func, *args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\Downloads\SIPGA\backend\routers\practicas.py", line 19, in iniciar_practica
+    return crud.crear_practica(db, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\Downloads\SIPGA\backend\crud.py", line 131, in crear_practica
+    db.commit()
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 2030, in commit
+    trans.commit(_to_root=True)
+  File "<string>", line 2, in commit
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 1311, in commit
+    self._prepare_impl()
+  File "<string>", line 2, in _prepare_impl
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 1286, in _prepare_impl
+    self.session.flush()
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 4331, in flush
+    self._flush(objects)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 4466, in _flush
+    with util.safe_reraise():
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 121, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 4427, in _flush
+    flush_context.execute()
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\unitofwork.py", line 466, in execute
+    rec.execute(self)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\unitofwork.py", line 642, in execute
+    util.preloaded.orm_persistence.save_obj(
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\persistence.py", line 93, in save_obj
+    _emit_insert_statements(
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\persistence.py", line 1233, in _emit_insert_statements
+    result = connection.execute(
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1419, in execute
+    return meth(
+           ^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\sql\elements.py", line 527, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1641, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 2363, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.ProgrammingError: (psycopg2.errors.UndefinedColumn) column "horas_acumuladas" of relation "practicas" does not exist
+LINE 1: ...id, empresa_id, estado, horas_totales_requeridas, horas_acum...
+                                                             ^
+
+[SQL: INSERT INTO practicas (id, estudiante_id, tutor_id, supervisor_id, empresa_id, estado, horas_totales_requeridas, horas_acumuladas, fecha_inicio, fecha_fin) VALUES (%(id)s, %(estudiante_id)s, %(tutor_id)s, %(supervisor_id)s, %(empresa_id)s, %(estado)s, %(horas_totales_requeridas)s, %(horas_acumuladas)s, %(fecha_inicio)s, %(fecha_fin)s)]
+[parameters: {'id': 'a9195561-9ba6-4848-9e87-295c8d0a6d37', 'estudiante_id': 'e1493a9e-1a6d-4020-abce-216b1e965033', 'tutor_id': '2', 'supervisor_id': None, 'empresa_id': 1, 'estado': 'activa', 'horas_totales_requeridas': 320, 'horas_acumuladas': 0.0, 'fecha_inicio': datetime.datetime(2026, 5, 8, 5, 0, tzinfo=TzInfo(0)), 'fecha_fin': None}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2026-05-09 14:06:40,892 - ERROR - ERROR CRÍTICO en /api/v1/practicas/: (psycopg2.errors.UndefinedColumn) column "horas_acumuladas" of relation "practicas" does not exist
+LINE 1: ...id, empresa_id, estado, horas_totales_requeridas, horas_acum...
+                                                             ^
+
+[SQL: INSERT INTO practicas (id, estudiante_id, tutor_id, supervisor_id, empresa_id, estado, horas_totales_requeridas, horas_acumuladas, fecha_inicio, fecha_fin) VALUES (%(id)s, %(estudiante_id)s, %(tutor_id)s, %(supervisor_id)s, %(empresa_id)s, %(estado)s, %(horas_totales_requeridas)s, %(horas_acumuladas)s, %(fecha_inicio)s, %(fecha_fin)s)]
+[parameters: {'id': '9aab0482-6ba5-4bec-bd9b-df8c44920141', 'estudiante_id': 'e1493a9e-1a6d-4020-abce-216b1e965033', 'tutor_id': '2', 'supervisor_id': None, 'empresa_id': 1, 'estado': 'activa', 'horas_totales_requeridas': 320, 'horas_acumuladas': 0.0, 'fecha_inicio': datetime.datetime(2026, 5, 8, 5, 0, tzinfo=TzInfo(0)), 'fecha_fin': None}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+Traceback (most recent call last):
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+psycopg2.errors.UndefinedColumn: column "horas_acumuladas" of relation "practicas" does not exist
+LINE 1: ...id, empresa_id, estado, horas_totales_requeridas, horas_acum...
+                                                             ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 191, in __call__
+    with recv_stream, send_stream, collapse_excgroups():
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_utils.py", line 87, in collapse_excgroups
+    raise exc
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 193, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\Downloads\SIPGA\backend\main.py", line 47, in add_process_time_header
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\cors.py", line 96, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\cors.py", line 154, in simple_response
+    await self.app(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 120, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 674, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 330, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\concurrency.py", line 32, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\anyio\to_thread.py", line 63, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\anyio\_backends\_asyncio.py", line 2518, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\anyio\_backends\_asyncio.py", line 1002, in run
+    result = context.run(func, *args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\Downloads\SIPGA\backend\routers\practicas.py", line 19, in iniciar_practica
+    return crud.crear_practica(db, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\Downloads\SIPGA\backend\crud.py", line 131, in crear_practica
+    db.commit()
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 2030, in commit
+    trans.commit(_to_root=True)
+  File "<string>", line 2, in commit
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 1311, in commit
+    self._prepare_impl()
+  File "<string>", line 2, in _prepare_impl
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 1286, in _prepare_impl
+    self.session.flush()
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 4331, in flush
+    self._flush(objects)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 4466, in _flush
+    with util.safe_reraise():
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 121, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 4427, in _flush
+    flush_context.execute()
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\unitofwork.py", line 466, in execute
+    rec.execute(self)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\unitofwork.py", line 642, in execute
+    util.preloaded.orm_persistence.save_obj(
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\persistence.py", line 93, in save_obj
+    _emit_insert_statements(
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\persistence.py", line 1233, in _emit_insert_statements
+    result = connection.execute(
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1419, in execute
+    return meth(
+           ^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\sql\elements.py", line 527, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1641, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 2363, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.ProgrammingError: (psycopg2.errors.UndefinedColumn) column "horas_acumuladas" of relation "practicas" does not exist
+LINE 1: ...id, empresa_id, estado, horas_totales_requeridas, horas_acum...
+                                                             ^
+
+[SQL: INSERT INTO practicas (id, estudiante_id, tutor_id, supervisor_id, empresa_id, estado, horas_totales_requeridas, horas_acumuladas, fecha_inicio, fecha_fin) VALUES (%(id)s, %(estudiante_id)s, %(tutor_id)s, %(supervisor_id)s, %(empresa_id)s, %(estado)s, %(horas_totales_requeridas)s, %(horas_acumuladas)s, %(fecha_inicio)s, %(fecha_fin)s)]
+[parameters: {'id': '9aab0482-6ba5-4bec-bd9b-df8c44920141', 'estudiante_id': 'e1493a9e-1a6d-4020-abce-216b1e965033', 'tutor_id': '2', 'supervisor_id': None, 'empresa_id': 1, 'estado': 'activa', 'horas_totales_requeridas': 320, 'horas_acumuladas': 0.0, 'fecha_inicio': datetime.datetime(2026, 5, 8, 5, 0, tzinfo=TzInfo(0)), 'fecha_fin': None}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2026-05-09 14:06:41,266 - ERROR - ERROR CRÍTICO en /api/v1/practicas/: (psycopg2.errors.UndefinedColumn) column "horas_acumuladas" of relation "practicas" does not exist
+LINE 1: ...id, empresa_id, estado, horas_totales_requeridas, horas_acum...
+                                                             ^
+
+[SQL: INSERT INTO practicas (id, estudiante_id, tutor_id, supervisor_id, empresa_id, estado, horas_totales_requeridas, horas_acumuladas, fecha_inicio, fecha_fin) VALUES (%(id)s, %(estudiante_id)s, %(tutor_id)s, %(supervisor_id)s, %(empresa_id)s, %(estado)s, %(horas_totales_requeridas)s, %(horas_acumuladas)s, %(fecha_inicio)s, %(fecha_fin)s)]
+[parameters: {'id': 'f51cd6c3-19f6-4790-90e7-6bbe77fa2310', 'estudiante_id': 'e1493a9e-1a6d-4020-abce-216b1e965033', 'tutor_id': '2', 'supervisor_id': None, 'empresa_id': 1, 'estado': 'activa', 'horas_totales_requeridas': 320, 'horas_acumuladas': 0.0, 'fecha_inicio': datetime.datetime(2026, 5, 8, 5, 0, tzinfo=TzInfo(0)), 'fecha_fin': None}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+Traceback (most recent call last):
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+psycopg2.errors.UndefinedColumn: column "horas_acumuladas" of relation "practicas" does not exist
+LINE 1: ...id, empresa_id, estado, horas_totales_requeridas, horas_acum...
+                                                             ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 191, in __call__
+    with recv_stream, send_stream, collapse_excgroups():
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_utils.py", line 87, in collapse_excgroups
+    raise exc
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 193, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\Downloads\SIPGA\backend\main.py", line 47, in add_process_time_header
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\cors.py", line 96, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\cors.py", line 154, in simple_response
+    await self.app(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 120, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 674, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 330, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\concurrency.py", line 32, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\anyio\to_thread.py", line 63, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\anyio\_backends\_asyncio.py", line 2518, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\anyio\_backends\_asyncio.py", line 1002, in run
+    result = context.run(func, *args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\Downloads\SIPGA\backend\routers\practicas.py", line 19, in iniciar_practica
+    return crud.crear_practica(db, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\Downloads\SIPGA\backend\crud.py", line 131, in crear_practica
+    db.commit()
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 2030, in commit
+    trans.commit(_to_root=True)
+  File "<string>", line 2, in commit
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 1311, in commit
+    self._prepare_impl()
+  File "<string>", line 2, in _prepare_impl
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 1286, in _prepare_impl
+    self.session.flush()
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 4331, in flush
+    self._flush(objects)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 4466, in _flush
+    with util.safe_reraise():
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 121, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 4427, in _flush
+    flush_context.execute()
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\unitofwork.py", line 466, in execute
+    rec.execute(self)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\unitofwork.py", line 642, in execute
+    util.preloaded.orm_persistence.save_obj(
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\persistence.py", line 93, in save_obj
+    _emit_insert_statements(
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\persistence.py", line 1233, in _emit_insert_statements
+    result = connection.execute(
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1419, in execute
+    return meth(
+           ^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\sql\elements.py", line 527, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1641, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 2363, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.ProgrammingError: (psycopg2.errors.UndefinedColumn) column "horas_acumuladas" of relation "practicas" does not exist
+LINE 1: ...id, empresa_id, estado, horas_totales_requeridas, horas_acum...
+                                                             ^
+
+[SQL: INSERT INTO practicas (id, estudiante_id, tutor_id, supervisor_id, empresa_id, estado, horas_totales_requeridas, horas_acumuladas, fecha_inicio, fecha_fin) VALUES (%(id)s, %(estudiante_id)s, %(tutor_id)s, %(supervisor_id)s, %(empresa_id)s, %(estado)s, %(horas_totales_requeridas)s, %(horas_acumuladas)s, %(fecha_inicio)s, %(fecha_fin)s)]
+[parameters: {'id': 'f51cd6c3-19f6-4790-90e7-6bbe77fa2310', 'estudiante_id': 'e1493a9e-1a6d-4020-abce-216b1e965033', 'tutor_id': '2', 'supervisor_id': None, 'empresa_id': 1, 'estado': 'activa', 'horas_totales_requeridas': 320, 'horas_acumuladas': 0.0, 'fecha_inicio': datetime.datetime(2026, 5, 8, 5, 0, tzinfo=TzInfo(0)), 'fecha_fin': None}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2026-05-09 14:06:41,493 - ERROR - ERROR CRÍTICO en /api/v1/practicas/: (psycopg2.errors.UndefinedColumn) column "horas_acumuladas" of relation "practicas" does not exist
+LINE 1: ...id, empresa_id, estado, horas_totales_requeridas, horas_acum...
+                                                             ^
+
+[SQL: INSERT INTO practicas (id, estudiante_id, tutor_id, supervisor_id, empresa_id, estado, horas_totales_requeridas, horas_acumuladas, fecha_inicio, fecha_fin) VALUES (%(id)s, %(estudiante_id)s, %(tutor_id)s, %(supervisor_id)s, %(empresa_id)s, %(estado)s, %(horas_totales_requeridas)s, %(horas_acumuladas)s, %(fecha_inicio)s, %(fecha_fin)s)]
+[parameters: {'id': '2f011ccf-7354-4a13-bb1e-9937124ffcf0', 'estudiante_id': 'e1493a9e-1a6d-4020-abce-216b1e965033', 'tutor_id': '2', 'supervisor_id': None, 'empresa_id': 1, 'estado': 'activa', 'horas_totales_requeridas': 320, 'horas_acumuladas': 0.0, 'fecha_inicio': datetime.datetime(2026, 5, 8, 5, 0, tzinfo=TzInfo(0)), 'fecha_fin': None}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+Traceback (most recent call last):
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+psycopg2.errors.UndefinedColumn: column "horas_acumuladas" of relation "practicas" does not exist
+LINE 1: ...id, empresa_id, estado, horas_totales_requeridas, horas_acum...
+                                                             ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 191, in __call__
+    with recv_stream, send_stream, collapse_excgroups():
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_utils.py", line 87, in collapse_excgroups
+    raise exc
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 193, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\Downloads\SIPGA\backend\main.py", line 47, in add_process_time_header
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\cors.py", line 96, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\cors.py", line 154, in simple_response
+    await self.app(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 120, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 674, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 330, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\concurrency.py", line 32, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\anyio\to_thread.py", line 63, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\anyio\_backends\_asyncio.py", line 2518, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\anyio\_backends\_asyncio.py", line 1002, in run
+    result = context.run(func, *args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\Downloads\SIPGA\backend\routers\practicas.py", line 19, in iniciar_practica
+    return crud.crear_practica(db, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\Downloads\SIPGA\backend\crud.py", line 131, in crear_practica
+    db.commit()
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 2030, in commit
+    trans.commit(_to_root=True)
+  File "<string>", line 2, in commit
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 1311, in commit
+    self._prepare_impl()
+  File "<string>", line 2, in _prepare_impl
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 1286, in _prepare_impl
+    self.session.flush()
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 4331, in flush
+    self._flush(objects)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 4466, in _flush
+    with util.safe_reraise():
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 121, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 4427, in _flush
+    flush_context.execute()
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\unitofwork.py", line 466, in execute
+    rec.execute(self)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\unitofwork.py", line 642, in execute
+    util.preloaded.orm_persistence.save_obj(
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\persistence.py", line 93, in save_obj
+    _emit_insert_statements(
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\persistence.py", line 1233, in _emit_insert_statements
+    result = connection.execute(
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1419, in execute
+    return meth(
+           ^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\sql\elements.py", line 527, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1641, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 2363, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.ProgrammingError: (psycopg2.errors.UndefinedColumn) column "horas_acumuladas" of relation "practicas" does not exist
+LINE 1: ...id, empresa_id, estado, horas_totales_requeridas, horas_acum...
+                                                             ^
+
+[SQL: INSERT INTO practicas (id, estudiante_id, tutor_id, supervisor_id, empresa_id, estado, horas_totales_requeridas, horas_acumuladas, fecha_inicio, fecha_fin) VALUES (%(id)s, %(estudiante_id)s, %(tutor_id)s, %(supervisor_id)s, %(empresa_id)s, %(estado)s, %(horas_totales_requeridas)s, %(horas_acumuladas)s, %(fecha_inicio)s, %(fecha_fin)s)]
+[parameters: {'id': '2f011ccf-7354-4a13-bb1e-9937124ffcf0', 'estudiante_id': 'e1493a9e-1a6d-4020-abce-216b1e965033', 'tutor_id': '2', 'supervisor_id': None, 'empresa_id': 1, 'estado': 'activa', 'horas_totales_requeridas': 320, 'horas_acumuladas': 0.0, 'fecha_inicio': datetime.datetime(2026, 5, 8, 5, 0, tzinfo=TzInfo(0)), 'fecha_fin': None}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2026-05-09 14:22:20,423 - INFO - Path: /api/v1/auth/token | Method: POST | IP: 127.0.0.1 | Time: 0.6286s
+2026-05-09 14:22:20,726 - INFO - Path: /api/v1/usuarios/me | Method: OPTIONS | IP: 127.0.0.1 | Time: 0.0000s
+2026-05-09 14:22:20,973 - INFO - Path: /api/v1/usuarios/me | Method: GET | IP: 127.0.0.1 | Time: 0.2439s
+2026-05-09 14:22:26,303 - INFO - Path: /api/v1/practicas/mis | Method: OPTIONS | IP: 127.0.0.1 | Time: 0.0012s
+2026-05-09 14:22:26,692 - ERROR - ERROR CRÍTICO en /api/v1/practicas/mis: (psycopg2.errors.UndefinedColumn) column practicas.horas_acumuladas does not exist
+LINE 1: ...requeridas AS practicas_horas_totales_requeridas, practicas....
+                                                             ^
+
+[SQL: SELECT practicas.id AS practicas_id, practicas.estudiante_id AS practicas_estudiante_id, practicas.tutor_id AS practicas_tutor_id, practicas.supervisor_id AS practicas_supervisor_id, practicas.empresa_id AS practicas_empresa_id, practicas.estado AS practicas_estado, practicas.horas_totales_requeridas AS practicas_horas_totales_requeridas, practicas.horas_acumuladas AS practicas_horas_acumuladas, practicas.fecha_inicio AS practicas_fecha_inicio, practicas.fecha_fin AS practicas_fecha_fin 
+FROM practicas 
+WHERE practicas.estudiante_id = %(estudiante_id_1)s]
+[parameters: {'estudiante_id_1': 'e1493a9e-1a6d-4020-abce-216b1e965033'}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+Traceback (most recent call last):
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+psycopg2.errors.UndefinedColumn: column practicas.horas_acumuladas does not exist
+LINE 1: ...requeridas AS practicas_horas_totales_requeridas, practicas....
+                                                             ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 191, in __call__
+    with recv_stream, send_stream, collapse_excgroups():
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_utils.py", line 87, in collapse_excgroups
+    raise exc
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 193, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\Downloads\SIPGA\backend\main.py", line 47, in add_process_time_header
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\cors.py", line 96, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\cors.py", line 154, in simple_response
+    await self.app(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 120, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 674, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 330, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\concurrency.py", line 32, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\anyio\to_thread.py", line 63, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\anyio\_backends\_asyncio.py", line 2518, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\anyio\_backends\_asyncio.py", line 1002, in run
+    result = context.run(func, *args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\Downloads\SIPGA\backend\routers\practicas.py", line 54, in mis_practicas
+    return crud.obtener_practicas_por_usuario(db, current_user.id, rol)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\Downloads\SIPGA\backend\crud.py", line 147, in obtener_practicas_por_usuario
+    ).all()
+      ^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\query.py", line 2704, in all
+    return self._iter().all()  # type: ignore
+           ^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\query.py", line 2857, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 2351, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 2249, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+             ^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1419, in execute
+    return meth(
+           ^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\sql\elements.py", line 527, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1641, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 2363, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.ProgrammingError: (psycopg2.errors.UndefinedColumn) column practicas.horas_acumuladas does not exist
+LINE 1: ...requeridas AS practicas_horas_totales_requeridas, practicas....
+                                                             ^
+
+[SQL: SELECT practicas.id AS practicas_id, practicas.estudiante_id AS practicas_estudiante_id, practicas.tutor_id AS practicas_tutor_id, practicas.supervisor_id AS practicas_supervisor_id, practicas.empresa_id AS practicas_empresa_id, practicas.estado AS practicas_estado, practicas.horas_totales_requeridas AS practicas_horas_totales_requeridas, practicas.horas_acumuladas AS practicas_horas_acumuladas, practicas.fecha_inicio AS practicas_fecha_inicio, practicas.fecha_fin AS practicas_fecha_fin 
+FROM practicas 
+WHERE practicas.estudiante_id = %(estudiante_id_1)s]
+[parameters: {'estudiante_id_1': 'e1493a9e-1a6d-4020-abce-216b1e965033'}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2026-05-09 14:22:28,659 - ERROR - ERROR CRÍTICO en /api/v1/practicas/mis: (psycopg2.errors.UndefinedColumn) column practicas.horas_acumuladas does not exist
+LINE 1: ...requeridas AS practicas_horas_totales_requeridas, practicas....
+                                                             ^
+
+[SQL: SELECT practicas.id AS practicas_id, practicas.estudiante_id AS practicas_estudiante_id, practicas.tutor_id AS practicas_tutor_id, practicas.supervisor_id AS practicas_supervisor_id, practicas.empresa_id AS practicas_empresa_id, practicas.estado AS practicas_estado, practicas.horas_totales_requeridas AS practicas_horas_totales_requeridas, practicas.horas_acumuladas AS practicas_horas_acumuladas, practicas.fecha_inicio AS practicas_fecha_inicio, practicas.fecha_fin AS practicas_fecha_fin 
+FROM practicas 
+WHERE practicas.estudiante_id = %(estudiante_id_1)s]
+[parameters: {'estudiante_id_1': 'e1493a9e-1a6d-4020-abce-216b1e965033'}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+Traceback (most recent call last):
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+psycopg2.errors.UndefinedColumn: column practicas.horas_acumuladas does not exist
+LINE 1: ...requeridas AS practicas_horas_totales_requeridas, practicas....
+                                                             ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 191, in __call__
+    with recv_stream, send_stream, collapse_excgroups():
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_utils.py", line 87, in collapse_excgroups
+    raise exc
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 193, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\Downloads\SIPGA\backend\main.py", line 47, in add_process_time_header
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\cors.py", line 96, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\cors.py", line 154, in simple_response
+    await self.app(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 120, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 674, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 330, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\concurrency.py", line 32, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\anyio\to_thread.py", line 63, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\anyio\_backends\_asyncio.py", line 2518, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\anyio\_backends\_asyncio.py", line 1002, in run
+    result = context.run(func, *args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\Downloads\SIPGA\backend\routers\practicas.py", line 54, in mis_practicas
+    return crud.obtener_practicas_por_usuario(db, current_user.id, rol)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\Downloads\SIPGA\backend\crud.py", line 147, in obtener_practicas_por_usuario
+    ).all()
+      ^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\query.py", line 2704, in all
+    return self._iter().all()  # type: ignore
+           ^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\query.py", line 2857, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 2351, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 2249, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+             ^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1419, in execute
+    return meth(
+           ^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\sql\elements.py", line 527, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1641, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 2363, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.ProgrammingError: (psycopg2.errors.UndefinedColumn) column practicas.horas_acumuladas does not exist
+LINE 1: ...requeridas AS practicas_horas_totales_requeridas, practicas....
+                                                             ^
+
+[SQL: SELECT practicas.id AS practicas_id, practicas.estudiante_id AS practicas_estudiante_id, practicas.tutor_id AS practicas_tutor_id, practicas.supervisor_id AS practicas_supervisor_id, practicas.empresa_id AS practicas_empresa_id, practicas.estado AS practicas_estado, practicas.horas_totales_requeridas AS practicas_horas_totales_requeridas, practicas.horas_acumuladas AS practicas_horas_acumuladas, practicas.fecha_inicio AS practicas_fecha_inicio, practicas.fecha_fin AS practicas_fecha_fin 
+FROM practicas 
+WHERE practicas.estudiante_id = %(estudiante_id_1)s]
+[parameters: {'estudiante_id_1': 'e1493a9e-1a6d-4020-abce-216b1e965033'}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2026-05-09 14:22:30,549 - INFO - Path: /api/v1/usuarios/me | Method: GET | IP: 127.0.0.1 | Time: 0.2240s
+2026-05-09 14:24:45,561 - INFO - Path: /api/v1/auth/token | Method: POST | IP: 127.0.0.1 | Time: 0.5213s
+2026-05-09 14:24:46,135 - INFO - Path: /api/v1/usuarios/me | Method: GET | IP: 127.0.0.1 | Time: 0.2260s
+2026-05-09 14:24:48,850 - INFO - Path: /api/v1/usuarios/ | Method: OPTIONS | IP: 127.0.0.1 | Time: 0.0000s
+2026-05-09 14:24:49,179 - INFO - Path: /api/v1/usuarios/ | Method: GET | IP: 127.0.0.1 | Time: 0.3245s
+2026-05-09 14:24:49,188 - INFO - Path: /api/v1/practicas/ | Method: OPTIONS | IP: 127.0.0.1 | Time: 0.0000s
+2026-05-09 14:24:49,975 - ERROR - ERROR CRÍTICO en /api/v1/practicas/: (psycopg2.errors.UndefinedColumn) column practicas.horas_acumuladas does not exist
+LINE 1: ...requeridas AS practicas_horas_totales_requeridas, practicas....
+                                                             ^
+
+[SQL: SELECT practicas.id AS practicas_id, practicas.estudiante_id AS practicas_estudiante_id, practicas.tutor_id AS practicas_tutor_id, practicas.supervisor_id AS practicas_supervisor_id, practicas.empresa_id AS practicas_empresa_id, practicas.estado AS practicas_estado, practicas.horas_totales_requeridas AS practicas_horas_totales_requeridas, practicas.horas_acumuladas AS practicas_horas_acumuladas, practicas.fecha_inicio AS practicas_fecha_inicio, practicas.fecha_fin AS practicas_fecha_fin 
+FROM practicas]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+Traceback (most recent call last):
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+psycopg2.errors.UndefinedColumn: column practicas.horas_acumuladas does not exist
+LINE 1: ...requeridas AS practicas_horas_totales_requeridas, practicas....
+                                                             ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 191, in __call__
+    with recv_stream, send_stream, collapse_excgroups():
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_utils.py", line 87, in collapse_excgroups
+    raise exc
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 193, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\Downloads\SIPGA\backend\main.py", line 47, in add_process_time_header
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\cors.py", line 96, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\cors.py", line 154, in simple_response
+    await self.app(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 120, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 674, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 330, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\concurrency.py", line 32, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\anyio\to_thread.py", line 63, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\anyio\_backends\_asyncio.py", line 2518, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\anyio\_backends\_asyncio.py", line 1002, in run
+    result = context.run(func, *args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\Downloads\SIPGA\backend\routers\practicas.py", line 63, in listar_practicas
+    return crud.obtener_todas_practicas(db)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\Downloads\SIPGA\backend\crud.py", line 139, in obtener_todas_practicas
+    return db.query(models.Practica).all()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\query.py", line 2704, in all
+    return self._iter().all()  # type: ignore
+           ^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\query.py", line 2857, in _iter
+    result: Union[ScalarResult[_T], Result[_T]] = self.session.execute(
+                                                  ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 2351, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 2249, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\context.py", line 306, in orm_execute_statement
+    result = conn.execute(
+             ^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1419, in execute
+    return meth(
+           ^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\sql\elements.py", line 527, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1641, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 2363, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.ProgrammingError: (psycopg2.errors.UndefinedColumn) column practicas.horas_acumuladas does not exist
+LINE 1: ...requeridas AS practicas_horas_totales_requeridas, practicas....
+                                                             ^
+
+[SQL: SELECT practicas.id AS practicas_id, practicas.estudiante_id AS practicas_estudiante_id, practicas.tutor_id AS practicas_tutor_id, practicas.supervisor_id AS practicas_supervisor_id, practicas.empresa_id AS practicas_empresa_id, practicas.estado AS practicas_estado, practicas.horas_totales_requeridas AS practicas_horas_totales_requeridas, practicas.horas_acumuladas AS practicas_horas_acumuladas, practicas.fecha_inicio AS practicas_fecha_inicio, practicas.fecha_fin AS practicas_fecha_fin 
+FROM practicas]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2026-05-09 14:24:50,808 - INFO - Path: /api/v1/empresas/ | Method: OPTIONS | IP: 127.0.0.1 | Time: 0.0000s
+2026-05-09 14:24:51,124 - INFO - Path: /api/v1/empresas/ | Method: GET | IP: 127.0.0.1 | Time: 0.3120s
+2026-05-09 14:25:08,123 - INFO - Path: /api/v1/practicas/ | Method: OPTIONS | IP: 127.0.0.1 | Time: 0.0000s
+2026-05-09 14:25:08,753 - ERROR - ERROR CRÍTICO en /api/v1/practicas/: (psycopg2.errors.UndefinedColumn) column "horas_acumuladas" of relation "practicas" does not exist
+LINE 1: ...id, empresa_id, estado, horas_totales_requeridas, horas_acum...
+                                                             ^
+
+[SQL: INSERT INTO practicas (id, estudiante_id, tutor_id, supervisor_id, empresa_id, estado, horas_totales_requeridas, horas_acumuladas, fecha_inicio, fecha_fin) VALUES (%(id)s, %(estudiante_id)s, %(tutor_id)s, %(supervisor_id)s, %(empresa_id)s, %(estado)s, %(horas_totales_requeridas)s, %(horas_acumuladas)s, %(fecha_inicio)s, %(fecha_fin)s)]
+[parameters: {'id': '3cf32edd-0a32-4d11-82aa-03cb6e1cc00b', 'estudiante_id': 'e1493a9e-1a6d-4020-abce-216b1e965033', 'tutor_id': '2', 'supervisor_id': None, 'empresa_id': 1, 'estado': 'activa', 'horas_totales_requeridas': 320, 'horas_acumuladas': 0.0, 'fecha_inicio': datetime.datetime(2026, 5, 11, 5, 0, tzinfo=TzInfo(0)), 'fecha_fin': None}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+Traceback (most recent call last):
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+psycopg2.errors.UndefinedColumn: column "horas_acumuladas" of relation "practicas" does not exist
+LINE 1: ...id, empresa_id, estado, horas_totales_requeridas, horas_acum...
+                                                             ^
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 191, in __call__
+    with recv_stream, send_stream, collapse_excgroups():
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_utils.py", line 87, in collapse_excgroups
+    raise exc
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 193, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\Downloads\SIPGA\backend\main.py", line 47, in add_process_time_header
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\cors.py", line 96, in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\cors.py", line 154, in simple_response
+    await self.app(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 120, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 674, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\fastapi\routing.py", line 330, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\starlette\concurrency.py", line 32, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\anyio\to_thread.py", line 63, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\anyio\_backends\_asyncio.py", line 2518, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\anyio\_backends\_asyncio.py", line 1002, in run
+    result = context.run(func, *args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\Downloads\SIPGA\backend\routers\practicas.py", line 44, in iniciar_practica
+    return crud.crear_practica(db, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\Downloads\SIPGA\backend\crud.py", line 131, in crear_practica
+    db.commit()
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 2030, in commit
+    trans.commit(_to_root=True)
+  File "<string>", line 2, in commit
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 1311, in commit
+    self._prepare_impl()
+  File "<string>", line 2, in _prepare_impl
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\state_changes.py", line 137, in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 1286, in _prepare_impl
+    self.session.flush()
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 4331, in flush
+    self._flush(objects)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 4466, in _flush
+    with util.safe_reraise():
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 121, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\session.py", line 4427, in _flush
+    flush_context.execute()
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\unitofwork.py", line 466, in execute
+    rec.execute(self)
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\unitofwork.py", line 642, in execute
+    util.preloaded.orm_persistence.save_obj(
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\persistence.py", line 93, in save_obj
+    _emit_insert_statements(
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\orm\persistence.py", line 1233, in _emit_insert_statements
+    result = connection.execute(
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1419, in execute
+    return meth(
+           ^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\sql\elements.py", line 527, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1641, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 2363, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+  File "C:\Users\asus\AppData\Local\Programs\Python\Python312\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+sqlalchemy.exc.ProgrammingError: (psycopg2.errors.UndefinedColumn) column "horas_acumuladas" of relation "practicas" does not exist
+LINE 1: ...id, empresa_id, estado, horas_totales_requeridas, horas_acum...
+                                                             ^
+
+[SQL: INSERT INTO practicas (id, estudiante_id, tutor_id, supervisor_id, empresa_id, estado, horas_totales_requeridas, horas_acumuladas, fecha_inicio, fecha_fin) VALUES (%(id)s, %(estudiante_id)s, %(tutor_id)s, %(supervisor_id)s, %(empresa_id)s, %(estado)s, %(horas_totales_requeridas)s, %(horas_acumuladas)s, %(fecha_inicio)s, %(fecha_fin)s)]
+[parameters: {'id': '3cf32edd-0a32-4d11-82aa-03cb6e1cc00b', 'estudiante_id': 'e1493a9e-1a6d-4020-abce-216b1e965033', 'tutor_id': '2', 'supervisor_id': None, 'empresa_id': 1, 'estado': 'activa', 'horas_totales_requeridas': 320, 'horas_acumuladas': 0.0, 'fecha_inicio': datetime.datetime(2026, 5, 11, 5, 0, tzinfo=TzInfo(0)), 'fecha_fin': None}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2026-05-09 14:29:57,607 - INFO - Path: /api/v1/auth/token | Method: POST | IP: 127.0.0.1 | Time: 0.5681s
+2026-05-09 14:29:58,066 - INFO - Path: /api/v1/usuarios/me | Method: GET | IP: 127.0.0.1 | Time: 0.2490s
+2026-05-09 14:30:00,195 - INFO - Path: /api/v1/usuarios/ | Method: GET | IP: 127.0.0.1 | Time: 0.3033s
+2026-05-09 14:30:01,166 - INFO - Path: /api/v1/practicas/ | Method: GET | IP: 127.0.0.1 | Time: 0.9585s
+2026-05-09 14:30:44,295 - INFO - Path: /api/v1/auth/token | Method: POST | IP: 127.0.0.1 | Time: 0.4849s
+2026-05-09 14:30:44,842 - INFO - Path: /api/v1/usuarios/me | Method: GET | IP: 127.0.0.1 | Time: 0.2209s
+2026-05-09 14:30:46,491 - INFO - Path: /api/v1/practicas/mis | Method: GET | IP: 127.0.0.1 | Time: 0.4569s
+2026-05-09 14:30:49,647 - INFO - Path: /api/v1/practicas/mis | Method: GET | IP: 127.0.0.1 | Time: 0.4535s
+2026-05-09 14:30:49,654 - INFO - Path: /api/v1/seguimientos/practica/02ce7293-43b0-4778-8fc2-5b8c9b7068e1 | Method: OPTIONS | IP: 127.0.0.1 | Time: 0.0000s
+2026-05-09 14:30:50,055 - INFO - Path: /api/v1/seguimientos/practica/02ce7293-43b0-4778-8fc2-5b8c9b7068e1 | Method: GET | IP: 127.0.0.1 | Time: 0.3932s
+2026-05-09 14:30:52,729 - INFO - Path: /api/v1/practicas/mis | Method: GET | IP: 127.0.0.1 | Time: 0.4538s
+2026-05-09 14:30:55,599 - INFO - Path: /api/v1/seguimientos/practica/02ce7293-43b0-4778-8fc2-5b8c9b7068e1 | Method: GET | IP: 127.0.0.1 | Time: 0.3738s
+2026-05-09 14:31:08,523 - INFO - Path: /api/v1/practicas/mis | Method: GET | IP: 127.0.0.1 | Time: 0.4459s
+2026-05-09 14:31:22,660 - INFO - Path: /api/v1/practicas/02ce7293-43b0-4778-8fc2-5b8c9b7068e1/reporte-pdf | Method: GET | IP: 127.0.0.1 | Time: 0.0053s
+2026-05-09 14:31:22,843 - INFO - Path: /favicon.ico | Method: GET | IP: 127.0.0.1 | Time: 0.0011s
+2026-05-09 14:31:42,086 - INFO - Path: /api/v1/auth/token | Method: POST | IP: 127.0.0.1 | Time: 0.5883s
+2026-05-09 14:31:48,964 - INFO - Path: /api/v1/auth/token | Method: POST | IP: 127.0.0.1 | Time: 0.4927s
+2026-05-09 14:31:49,462 - INFO - Path: /api/v1/usuarios/me | Method: GET | IP: 127.0.0.1 | Time: 0.2242s
+2026-05-09 14:31:51,191 - INFO - Path: /api/v1/usuarios/ | Method: GET | IP: 127.0.0.1 | Time: 0.2985s
+2026-05-09 14:32:36,267 - INFO - Path: /api/v1/usuarios/ | Method: OPTIONS | IP: 127.0.0.1 | Time: 0.0000s
+2026-05-09 14:32:37,239 - INFO - Path: /api/v1/usuarios/ | Method: POST | IP: 127.0.0.1 | Time: 0.9675s
+2026-05-09 14:32:37,556 - INFO - Path: /api/v1/usuarios/ | Method: GET | IP: 127.0.0.1 | Time: 0.3087s
+2026-05-09 14:32:51,640 - INFO - Path: /api/v1/usuarios/ | Method: GET | IP: 127.0.0.1 | Time: 0.3032s
+2026-05-09 14:32:52,195 - INFO - Path: /api/v1/practicas/ | Method: GET | IP: 127.0.0.1 | Time: 0.5367s
+2026-05-09 14:32:54,291 - INFO - Path: /api/v1/empresas/ | Method: GET | IP: 127.0.0.1 | Time: 0.3083s
+2026-05-09 14:33:09,290 - INFO - Path: /api/v1/practicas/ | Method: POST | IP: 127.0.0.1 | Time: 1.1293s
+2026-05-09 14:33:09,606 - INFO - Path: /api/v1/usuarios/ | Method: GET | IP: 127.0.0.1 | Time: 0.2999s
+2026-05-09 14:33:10,230 - INFO - Path: /api/v1/practicas/ | Method: GET | IP: 127.0.0.1 | Time: 0.6241s
+2026-05-09 14:33:33,107 - INFO - Path: /api/v1/auth/token | Method: POST | IP: 127.0.0.1 | Time: 0.4870s
+2026-05-09 14:33:33,361 - INFO - Path: /api/v1/usuarios/me | Method: OPTIONS | IP: 127.0.0.1 | Time: 0.0000s
+2026-05-09 14:33:33,596 - INFO - Path: /api/v1/usuarios/me | Method: GET | IP: 127.0.0.1 | Time: 0.2310s
+2026-05-09 14:33:36,478 - INFO - Path: /api/v1/practicas/mis | Method: OPTIONS | IP: 127.0.0.1 | Time: 0.0000s
+2026-05-09 14:33:37,010 - INFO - Path: /api/v1/practicas/mis | Method: GET | IP: 127.0.0.1 | Time: 0.5275s
+2026-05-09 14:33:37,323 - INFO - Path: /api/v1/usuarios/ | Method: GET | IP: 127.0.0.1 | Time: 0.2996s
+2026-05-09 14:33:37,335 - INFO - Path: /api/v1/seguimientos/practica/66cf3e7a-4cf5-490f-adb4-a22b41532b1b | Method: OPTIONS | IP: 127.0.0.1 | Time: 0.0000s
+2026-05-09 14:33:37,707 - INFO - Path: /api/v1/seguimientos/practica/02ce7293-43b0-4778-8fc2-5b8c9b7068e1 | Method: GET | IP: 127.0.0.1 | Time: 0.3722s
+2026-05-09 14:33:38,129 - INFO - Path: /api/v1/seguimientos/practica/66cf3e7a-4cf5-490f-adb4-a22b41532b1b | Method: GET | IP: 127.0.0.1 | Time: 0.7894s
+2026-05-09 14:33:40,193 - INFO - Path: /api/v1/usuarios/ | Method: GET | IP: 127.0.0.1 | Time: 0.2905s
+2026-05-09 14:33:40,760 - INFO - Path: /api/v1/practicas/mis | Method: GET | IP: 127.0.0.1 | Time: 0.5459s
+2026-05-09 14:33:46,197 - INFO - Path: /api/v1/practicas/02ce7293-43b0-4778-8fc2-5b8c9b7068e1 | Method: OPTIONS | IP: 127.0.0.1 | Time: 0.0000s
+2026-05-09 14:33:46,509 - INFO - Path: /api/v1/practicas/02ce7293-43b0-4778-8fc2-5b8c9b7068e1 | Method: PATCH | IP: 127.0.0.1 | Time: 0.3073s
+2026-05-09 14:33:49,412 - INFO - Path: /api/v1/practicas/mis | Method: GET | IP: 127.0.0.1 | Time: 0.5587s
+2026-05-09 14:33:49,807 - INFO - Path: /api/v1/seguimientos/practica/66cf3e7a-4cf5-490f-adb4-a22b41532b1b | Method: GET | IP: 127.0.0.1 | Time: 0.3790s
+2026-05-09 14:33:49,818 - INFO - Path: /api/v1/seguimientos/practica/02ce7293-43b0-4778-8fc2-5b8c9b7068e1 | Method: GET | IP: 127.0.0.1 | Time: 0.3936s
+2026-05-09 14:33:51,307 - INFO - Path: /api/v1/practicas/mis | Method: GET | IP: 127.0.0.1 | Time: 0.5309s
+2026-05-09 14:33:51,688 - INFO - Path: /api/v1/seguimientos/practica/02ce7293-43b0-4778-8fc2-5b8c9b7068e1 | Method: GET | IP: 127.0.0.1 | Time: 0.3761s
+2026-05-09 14:33:54,056 - INFO - Path: /api/v1/usuarios/ | Method: GET | IP: 127.0.0.1 | Time: 0.2958s
+2026-05-09 14:33:54,609 - INFO - Path: /api/v1/practicas/mis | Method: GET | IP: 127.0.0.1 | Time: 0.5346s

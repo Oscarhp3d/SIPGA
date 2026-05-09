@@ -135,70 +135,102 @@ async function cargarUsuario() {
 // ══════════════════════════════════════
 // CONTROL DE ROLES
 // ══════════════════════════════════════
+
+/**
+ * Menús visibles por rol:
+ *
+ * coordinador → todo
+ * tutor       → dashboard, log (solo lectura), validacion, practicas, reportes, config
+ * supervisor  → dashboard, validacion, practicas, config
+ * estudiante  → dashboard, log (registrar), practicas, config
+ *
+ * Regla: se ocultan los menús que el rol NO debe ver.
+ * El backend es la barrera real; esto es solo UI.
+ */
 function ajustarVistaPorRol(rol) {
 
-  const menuUsuarios =
-    document.querySelector('[data-page="usuarios"]');
+  // Helper: oculta el ítem de sidebar con data-page="X"
+  const ocultarMenu = (page) => {
+    const el = document.querySelector(`[data-page="${page}"]`);
+    if (el) el.style.display = 'none';
+  };
 
-  const menuValidacion =
-    document.querySelector('[data-page="validacion"]');
+  // Helper: oculta un elemento por ID
+  const ocultarEl = (id) => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  };
 
-  const menuConfig =
-    document.querySelector('[data-page="config"]');
+  // ─────────────────────────────────────
+  // COORDINADOR — acceso total, no se oculta nada
+  // ─────────────────────────────────────
+  if (rol === 'coordinador') {
+    // Todo visible. No hay restricciones en UI.
+    return;
+  }
 
-  // =========================
-  // ESTUDIANTE
-  // =========================
-  if (rol === 'estudiante') {
+  // ─────────────────────────────────────
+  // TUTOR
+  // Puede: ver dashboard, validar horas, ver prácticas, ver reportes básicos, config
+  // NO puede: gestionar usuarios, gestionar empresas
+  // ─────────────────────────────────────
+  if (rol === 'tutor') {
+    ocultarMenu('usuarios');
+    ocultarMenu('empresas');
 
-    if (menuUsuarios)
-      menuUsuarios.style.display = 'none';
+    // En el dashboard principal, ocultar KPIs que son solo del coordinador
+    ocultarKPIsAdmin();
+    return;
+  }
 
-    if (menuConfig)
-      menuConfig.style.display = 'none';
-
-    if (menuValidacion)
-      menuValidacion.style.display = 'none';
+  // ─────────────────────────────────────
+  // SUPERVISOR
+  // Puede: ver dashboard, validar asistencia/actividades, ver sus prácticas, config
+  // NO puede: gestionar usuarios, empresas, reportes globales, log de horas
+  // ─────────────────────────────────────
+  if (rol === 'supervisor') {
+    ocultarMenu('usuarios');
+    ocultarMenu('empresas');
+    ocultarMenu('reportes');
+    ocultarMenu('log');
 
     ocultarKPIsAdmin();
+    return;
   }
 
-  // =========================
-  // SUPERVISOR
-  // =========================
-  if (rol === 'supervisor') {
+  // ─────────────────────────────────────
+  // ESTUDIANTE
+  // Puede: dashboard propio, registrar horas (log), ver sus prácticas, config
+  // NO puede: validar, ver otros usuarios, empresas, reportes generales
+  // ─────────────────────────────────────
+  if (rol === 'estudiante') {
+    ocultarMenu('validacion');
+    ocultarMenu('usuarios');
+    ocultarMenu('empresas');
+    ocultarMenu('reportes');
 
-    if (menuUsuarios)
-      menuUsuarios.style.display = 'none';
+    // Ocultar KPIs administrativos del dashboard
+    ocultarKPIsAdmin();
 
-    if (menuConfig)
-      menuConfig.style.display = 'none';
+    // Ocultar el botón "Validar Seleccionados" del dashboard
+    const btnValidarSeleccionados = document.querySelector(
+      '#seccionDashboard button'
+    );
+    if (btnValidarSeleccionados) {
+      btnValidarSeleccionados.style.display = 'none';
+    }
   }
-
-  // =========================
-  // TUTOR
-  // =========================
-  if (rol === 'tutor') {
-
-    if (menuConfig)
-      menuConfig.style.display = 'none';
-  }
-
-  // coordinador ve todo
 }
 
 function ocultarKPIsAdmin() {
-
-  const kpiPasantias =
-    document.getElementById('kpiPasantias');
-
-  const kpiValidaciones =
-    document.getElementById('kpiValidaciones');
-
+  // KPI "Pasantías Activas" — dato global, solo coordinador/tutor
+  const kpiPasantias = document.getElementById('kpiPasantias');
   if (kpiPasantias?.parentElement) {
     kpiPasantias.parentElement.style.display = 'none';
   }
 
+  // KPI "Validaciones Pendientes" — solo roles validadores
+  const kpiValidaciones = document.getElementById('kpiValidaciones');
   if (kpiValidaciones?.parentElement) {
     kpiValidaciones.parentElement.style.display = 'none';
   }

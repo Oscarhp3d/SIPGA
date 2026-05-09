@@ -412,7 +412,7 @@
             <h1 class="font-syne text-2xl font-bold text-slate-800">Gestión de Usuarios</h1>
             <p class="text-sm text-slate-400 mt-1">Administra los usuarios registrados en el sistema.</p>
           </div>
-          <button onclick="abrirModalUsuario()" class="px-4 py-2 text-xs font-semibold text-white rounded-xl hover:opacity-90 transition-all flex items-center gap-2" style="background:#0d1b2e;">
+          <button onclick="abrirModalUsuario()" id="btnNuevoUsuario" class="px-4 py-2 text-xs font-semibold text-white rounded-xl hover:opacity-90 transition-all flex items-center gap-2" style="background:#0d1b2e;">
             <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
             Nuevo Usuario
           </button>
@@ -835,33 +835,70 @@
       document.getElementById('topbarAvatar').textContent =
         user.nombre.charAt(0).toUpperCase();
 
-      // ── Control de sidebar por rol ──────────────────────
+      // ── Control de sidebar y UI por rol ──────────────────
       const ocultar = (page) => {
         const el = document.querySelector(`[data-page="${page}"]`);
         if (el) el.style.display = 'none';
       };
+      const ocultarId = (id) => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = 'none';
+      };
+      const ocultarKPIsAdmin = () => {
+        const kp = document.getElementById('kpiPasantias');
+        if (kp?.parentElement) kp.parentElement.style.display = 'none';
+        const kv = document.getElementById('kpiValidaciones');
+        if (kv?.parentElement) kv.parentElement.style.display = 'none';
+      };
 
-      if (user.rol === 'estudiante') {
-        // Solo ve: dashboard, log, sus prácticas, config
-        ocultar('validacion');
-        ocultar('usuarios');
-        ocultar('empresas');
-        ocultar('reportes');
+      if (user.rol === 'coordinador') {
+        // Acceso total — no se oculta nada
+
       } else if (user.rol === 'tutor') {
-        // Ve: dashboard, log, validación, prácticas
+        // Ve: dashboard, log (lectura), validacion, practicas, reportes basicos, config
+        // NO ve: usuarios, empresas
         ocultar('usuarios');
         ocultar('empresas');
-        ocultar('reportes');
-        ocultar('config');
+        ocultarKPIsAdmin();
+
       } else if (user.rol === 'supervisor') {
-        // Ve: dashboard, validación, prácticas
+        // Ve: dashboard, validacion, practicas, config
+        // NO ve: log, usuarios, empresas, reportes globales
         ocultar('log');
         ocultar('usuarios');
         ocultar('empresas');
         ocultar('reportes');
-        ocultar('config');
+        ocultarKPIsAdmin();
+
+      } else if (user.rol === 'estudiante') {
+        // Ve: dashboard propio, log (registrar sus horas), practicas (las suyas), config
+        // NO ve: validacion, usuarios, empresas, reportes
+        ocultar('validacion');
+        ocultar('usuarios');
+        ocultar('empresas');
+        ocultar('reportes');
+        ocultarKPIsAdmin();
+        // Ocultar botón "Validar Seleccionados" en tabla del dashboard
+        const btnVal = document.querySelector('#seccionDashboard .flex.items-center.justify-between button');
+        if (btnVal) btnVal.style.display = 'none';
       }
-      // coordinador ve todo — no se oculta nada
+      // Guardar rol globalmente para usarlo en renderizados posteriores
+      window.currentUserRol = user.rol;
+
+      // Ocultar botones de acción que solo el coordinador puede usar
+      if (user.rol !== 'coordinador') {
+        const btnNuevoUsuario = document.getElementById('btnNuevoUsuario');
+        if (btnNuevoUsuario) btnNuevoUsuario.style.display = 'none';
+
+        const btnNuevaEmpresa = document.querySelector('#seccionEmpresas button[onclick="abrirModalEmpresa()"]');
+        if (btnNuevaEmpresa) btnNuevaEmpresa.style.display = 'none';
+
+        const btnNuevaPractica = document.querySelector('#seccionPracticas button[onclick="abrirModalPractica()"]');
+        if (btnNuevaPractica) btnNuevaPractica.style.display = 'none';
+      }
+      // Para estudiante: ocultar el botón "Registrar Horas" no (lo necesitan),
+      // pero sí verificar que el log de validaciones del dashboard no muestre acciones
+
 
     } catch (error) {
       console.error(error);
@@ -963,6 +1000,7 @@
 
           <td class="px-3 py-3 flex gap-3">
 
+            ${window.currentUserRol === 'coordinador' ? `
             <button
               data-id="${usuario.id}" data-action="editar"
               class="btn-accion text-[10px] font-semibold text-blue-600 hover:text-blue-800">
@@ -974,6 +1012,9 @@
               class="btn-accion text-[10px] font-semibold text-red-600 hover:text-red-800">
               Eliminar
             </button>
+            ` : `
+            <span class="text-[10px] text-slate-400 italic">Solo lectura</span>
+            `}
 
           </td>
 
@@ -1600,16 +1641,21 @@
       if (Object.keys(_usuariosMapa).length === 0) {
         const resU = await fetch(`${API_URL}/usuarios/`, { headers: { Authorization: `Bearer ${token}` } });
         if (resU.ok) {
-          const us = await resU.ok ? await resU.json() : [];
+          // FIX: era "await resU.ok ? ..." — resU.ok es boolean, no la respuesta
+          const us = await resU.json();
           us.forEach(u => { _usuariosMapa[u.id] = u; });
         }
       }
 
       // Obtener seguimientos de todas las prácticas
+      // FIX: si una práctica devuelve 403 (IDOR), se retorna [] en lugar de fallar toda la carga
       const promesas = practicas.map(p =>
         fetch(`${API_URL}/seguimientos/practica/${p.id}`, {
           headers: { Authorization: `Bearer ${token}` }
-        }).then(r => r.ok ? r.json() : [])
+        }).then(r => {
+          if (r.status === 403) return []; // sin acceso a esa práctica — ignorar silenciosamente
+          return r.ok ? r.json() : [];
+        }).catch(() => [])
       );
       const resultados = await Promise.all(promesas);
       const todos = resultados.flat();
@@ -1624,6 +1670,7 @@
       if (kpiPend) kpiPend.textContent = _seguimientosPendientes.length;
 
     } catch (e) {
+      console.error('[cargarValidacion] Error:', e);
       tbody.innerHTML = `<tr><td colspan="5" class="px-5 py-8 text-center text-sm text-red-400">Error al cargar validaciones.</td></tr>`;
     }
   }
@@ -1823,22 +1870,27 @@
     tbody.innerHTML = `<tr><td colspan="6" class="px-5 py-8 text-center text-sm text-slate-300">Cargando prácticas...</td></tr>`;
 
     try {
-      // Cargar usuarios para mapear IDs a nombres
-      const resU = await fetch(`${API_URL}/usuarios/`, { headers: { Authorization: `Bearer ${token}` } });
-      if (resU.ok) {
-        const usuarios = await resU.json();
-        _usuariosMapa = {};
-        usuarios.forEach(u => { _usuariosMapa[u.id] = u; });
+      // FIX: coordinador usa GET /practicas/ (todas), otros roles usan GET /practicas/mis
+      const endpointPrac = window.currentUserRol === 'coordinador'
+        ? `${API_URL}/practicas/`
+        : `${API_URL}/practicas/mis`;
+
+      // Cargar usuarios para mapear IDs a nombres (solo coordinador y tutor tienen acceso)
+      if (window.currentUserRol === 'coordinador' || window.currentUserRol === 'tutor') {
+        const resU = await fetch(`${API_URL}/usuarios/`, { headers: { Authorization: `Bearer ${token}` } });
+        if (resU.ok) {
+          const usuarios = await resU.json();
+          _usuariosMapa = {};
+          usuarios.forEach(u => { _usuariosMapa[u.id] = u; });
+        }
       }
 
-      // Cargar prácticas — el backend devuelve lista si es coordinador
-      const res = await fetch(`${API_URL}/practicas/`, { headers: { Authorization: `Bearer ${token}` } });
+      const res = await fetch(endpointPrac, { headers: { Authorization: `Bearer ${token}` } });
 
       if (!res.ok) {
-        // Si el endpoint GET / no existe aún, mostrar estado pendiente
         tbody.innerHTML = `<tr><td colspan="6" class="px-5 py-8 text-center text-sm text-slate-400">
-          El endpoint de listado de prácticas aún no está implementado en el backend.<br>
-          <span class="text-[11px] text-slate-300">Implementar GET /practicas/ en el router.</span>
+          No tienes prácticas registradas o no tienes acceso.<br>
+          <span class="text-[11px] text-slate-300">Código: ${res.status}</span>
         </td></tr>`;
         actualizarKpisPracticas([]);
         return;
@@ -1850,6 +1902,7 @@
       registrarListenerPracticas();
 
     } catch (err) {
+      console.error('[cargarPracticas]', err);
       tbody.innerHTML = `<tr><td colspan="6" class="px-5 py-8 text-center text-sm text-red-400">Error al cargar prácticas</td></tr>`;
     }
   }
@@ -2063,9 +2116,9 @@
           </select>
         </div>
         <div>
-          <label class="block text-xs mb-1">Tutor</label>
+          <label class="block text-xs mb-1">Tutor <span class="text-slate-400">(opcional — se auto-asigna por programa)</span></label>
           <select id="npTutor" class="w-full px-3 py-2 border rounded-xl text-sm">
-            <option value="">— Seleccionar —</option>${optsTut}
+            <option value="">— Auto-asignar por programa —</option>${optsTut}
           </select>
         </div>
         <div>
@@ -2101,16 +2154,19 @@
     const fechaRaw = document.getElementById('npFechaInicio').value;
     const fechaISO = fechaRaw ? new Date(fechaRaw + 'T00:00:00').toISOString() : null;
 
+    const tutorVal = document.getElementById('npTutor').value;
+
     const body = {
       estudiante_id: document.getElementById('npEstudiante').value,
-      tutor_id:      document.getElementById('npTutor').value,
+      // FIX: tutor_id es opcional — si está vacío se omite para que el backend lo auto-asigne
+      ...(tutorVal ? { tutor_id: tutorVal } : {}),
       empresa_id:    parseInt(document.getElementById('npEmpresa').value),
       horas_totales_requeridas: parseInt(document.getElementById('npHoras').value) || 320,
       fecha_inicio:  fechaISO,
     };
 
-    if (!body.estudiante_id || !body.tutor_id || !body.empresa_id || isNaN(body.empresa_id)) {
-      err.textContent = 'Estudiante, tutor y empresa son obligatorios.';
+    if (!body.estudiante_id || !body.empresa_id || isNaN(body.empresa_id)) {
+      err.textContent = 'Estudiante y empresa son obligatorios.';
       err.classList.remove('hidden');
       return;
     }
@@ -2130,7 +2186,8 @@
       cerrarModal();
       cargarPracticas();
     } catch (e) {
-      err.textContent = 'Error de conexión';
+      console.error('[crearPractica]', e);
+      err.textContent = 'Error de conexión. Verifica que el servidor esté activo.';
       err.classList.remove('hidden');
     }
   }

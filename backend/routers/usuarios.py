@@ -1,6 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List
+import sys, os
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import models, schemas, crud, auth
 from database import get_db
 
@@ -31,10 +33,6 @@ def leer_perfil(current_user: models.Usuario = Depends(auth.get_current_user)):
     """Obtiene el perfil del usuario autenticado."""
     return current_user
 
-
-# ══════════════════════════════════════
-# ACTUALIZAR USUARIO
-# ══════════════════════════════════════
 @router.put("/{usuario_id}", response_model=schemas.UsuarioResponse)
 def actualizar_usuario(
     usuario_id: str,
@@ -43,32 +41,20 @@ def actualizar_usuario(
     admin=Depends(auth.verificar_rol(["coordinador"]))
 ):
     db_user = db.query(models.Usuario).filter(models.Usuario.id == usuario_id).first()
-
     if not db_user:
         raise HTTPException(status_code=404, detail="Usuario no encontrado")
-
     if usuario.nombre:
         db_user.nombre = usuario.nombre
-
     if usuario.correo:
         db_user.correo = usuario.correo
-
     if usuario.rol:
         db_user.rol = usuario.rol
-
-    # 🔐 SOLO si manda password
     if usuario.password:
         db_user.password_hash = auth.hash_password(usuario.password)
-
     db.commit()
     db.refresh(db_user)
-
     return db_user
 
-
-# ══════════════════════════════════════
-# ELIMINAR USUARIO
-# ══════════════════════════════════════
 @router.delete("/{usuario_id}")
 def eliminar_usuario(
     usuario_id: str,
@@ -76,16 +62,9 @@ def eliminar_usuario(
     admin=Depends(auth.verificar_rol(["coordinador"]))
 ):
     """Eliminar usuario (Solo Coordinador)."""
-
     db_user = db.query(models.Usuario).filter(models.Usuario.id == usuario_id).first()
-
     if not db_user:
-        raise HTTPException(
-            status_code=404,
-            detail="Usuario no encontrado"
-        )
-
+        raise HTTPException(status_code=404, detail="Usuario no encontrado")
     db.delete(db_user)
     db.commit()
-
     return {"message": "Usuario eliminado correctamente"}

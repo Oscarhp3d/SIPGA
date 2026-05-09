@@ -14,37 +14,28 @@ from config import settings
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f"{settings.API_V1_STR}/auth/token")
 
-# --- FUNCIONES DE CONTRASEÑA ---
+# --- CONTRASEÑAS ---
 def hash_password(password: str) -> str:
-    """Genera un hash seguro para la contraseña."""
-    return pwd_context.hash(password)
+    return pwd_context.hash(password[:72])
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    """Verifica si la contraseña coincide con el hash."""
     try:
-        # 🔥 SOLUCIÓN: limitar a 72 bytes (bcrypt)
-        plain_password = plain_password[:72]
-        return pwd_context.verify(plain_password, hashed_password)
+        return pwd_context.verify(plain_password[:72], hashed_password)
     except Exception:
-        # 👇 evita que el servidor se caiga con error 500
         return False
 
-# --- FUNCIONES DE TOKEN ---
+# --- TOKENS JWT ---
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
-    """Crea un JWT firmado para el usuario."""
     to_encode = data.copy()
-    if expires_delta:
-        expire = datetime.utcnow() + expires_delta
-    else:
-        expire = datetime.utcnow() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-    
+    expire = datetime.utcnow() + (expires_delta or timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES))
     to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
-    return encoded_jwt
+    return jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
 
-# --- OBTENER USUARIO ACTUAL ---
-def get_current_user(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)) -> models.Usuario:
-    """Dependencia para validar el token y obtener el usuario actual."""
+# --- USUARIO ACTUAL ---
+def get_current_user(
+    db: Session = Depends(get_db),
+    token: str = Depends(oauth2_scheme)
+) -> models.Usuario:
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="No se pudo validar el acceso",
@@ -57,22 +48,19 @@ def get_current_user(db: Session = Depends(get_db), token: str = Depends(oauth2_
             raise credentials_exception
     except JWTError:
         raise credentials_exception
-    
-    # ✅ CORRECTO: usar "correo"
+
     user = db.query(models.Usuario).filter(models.Usuario.correo == username).first()
-    
     if user is None:
         raise credentials_exception
-    return user 
+    return user
 
 # --- CONTROL DE ROLES ---
 def verificar_rol(roles_permitidos: List[str]):
-    """Generador de dependencias para verificar roles específicos."""
     def role_checker(user: models.Usuario = Depends(get_current_user)):
         user_rol = user.rol.value if hasattr(user.rol, 'value') else user.rol
         if user_rol not in roles_permitidos:
             raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN, 
+                status_code=status.HTTP_403_FORBIDDEN,
                 detail="No tienes permisos suficientes para realizar esta acción"
             )
         return user
