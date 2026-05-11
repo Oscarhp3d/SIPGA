@@ -6,20 +6,12 @@ import auth
 from datetime import datetime
 
 
-# ══════════════════════════════════════════
-# AUDITORÍA
-# ══════════════════════════════════════════
-
 def create_audit_log(db: Session, usuario_id: str, accion: str, ip: str) -> models.AuditLog:
     db_log = models.AuditLog(usuario_id=usuario_id, accion=accion, ip_origen=ip)
     db.add(db_log)
     db.commit()
     return db_log
 
-
-# ══════════════════════════════════════════
-# USUARIOS
-# ══════════════════════════════════════════
 
 def obtener_usuarios(db: Session) -> List[models.Usuario]:
     return db.query(models.Usuario).all()
@@ -52,10 +44,6 @@ def crear_usuario(db: Session, usuario: schemas.UsuarioCreate) -> models.Usuario
     db.refresh(db_usuario)
     return db_usuario
 
-
-# ══════════════════════════════════════════
-# ASIGNACIONES TUTOR → CARRERA
-# ══════════════════════════════════════════
 
 def asignar_tutor_a_programa(
     db: Session, data: schemas.AsignacionTutorCreate
@@ -99,9 +87,6 @@ def obtener_tutor_por_programa(
     return None
 
 
-# ══════════════════════════════════════════
-# PRÁCTICAS
-# ══════════════════════════════════════════
 
 def crear_practica(db: Session, data: schemas.PracticaCreate) -> models.Practica:
     """
@@ -167,10 +152,6 @@ def reasignar_tutor_practica(
     db.refresh(practica)
     return practica
 
-
-# ══════════════════════════════════════════
-# SEGUIMIENTOS
-# ══════════════════════════════════════════
 
 def registrar_seguimiento(
     db: Session, seguimiento: schemas.SeguimientoCreate
@@ -295,9 +276,7 @@ def actualizar_evidencia(
     return db_seg
 
 
-# ══════════════════════════════════════════
-# EMPRESAS
-# ══════════════════════════════════════════
+
 
 def crear_empresa(db: Session, empresa: schemas.EmpresaCreate) -> models.Empresa:
     db_empresa = models.Empresa(
@@ -313,10 +292,6 @@ def crear_empresa(db: Session, empresa: schemas.EmpresaCreate) -> models.Empresa
 def obtener_empresas(db: Session) -> List[models.Empresa]:
     return db.query(models.Empresa).all()
 
-
-# ══════════════════════════════════════════
-# DASHBOARDS POR ROL
-# ══════════════════════════════════════════
 
 def dashboard_coordinador(db: Session) -> dict:
     total_estudiantes = db.query(models.Usuario).filter(

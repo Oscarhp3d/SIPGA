@@ -10,11 +10,9 @@ import models
 from database import get_db
 from config import settings
 
-# --- CONFIGURACIÓN ---
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f"{settings.API_V1_STR}/auth/token")
 
-# --- CONTRASEÑAS ---
 def hash_password(password: str) -> str:
     return pwd_context.hash(password[:72])
 
@@ -24,14 +22,13 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
     except Exception:
         return False
 
-# --- TOKENS JWT ---
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
     to_encode = data.copy()
     expire = datetime.utcnow() + (expires_delta or timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES))
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
 
-# --- USUARIO ACTUAL ---
+
 def get_current_user(
     db: Session = Depends(get_db),
     token: str = Depends(oauth2_scheme)
@@ -54,7 +51,7 @@ def get_current_user(
         raise credentials_exception
     return user
 
-# --- CONTROL DE ROLES ---
+
 def verificar_rol(roles_permitidos: List[str]):
     def role_checker(user: models.Usuario = Depends(get_current_user)):
         user_rol = user.rol.value if hasattr(user.rol, 'value') else user.rol

@@ -6,23 +6,22 @@ import os
 import time
 import sys
 
-# Añadir el directorio actual al path para que los imports funcionen en Render
+
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-# Importaciones locales
+
 import models
 from database import engine
 from config import settings
 from routers import auth_router, usuarios, practicas, seguimientos, empresas, coordinador, tutor, estudiante, supervisor
 
-# 1. CONFIGURACIÓN DE LOGS
 logging.basicConfig(
     filename='auditoria_sipra.log',
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
 
-# 2. INICIALIZACIÓN DE BASE DE DATOS
+
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
@@ -31,7 +30,7 @@ app = FastAPI(
     version=settings.VERSION,
 )
 
-# 3. CORS (una sola vez)
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.ALLOWED_ORIGINS,
@@ -40,7 +39,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# 4. MIDDLEWARE DE TIEMPO Y AUDITORÍA
+
 @app.middleware("http")
 async def add_process_time_header(request: Request, call_next):
     start_time = time.time()
@@ -50,7 +49,6 @@ async def add_process_time_header(request: Request, call_next):
     logging.info(f"Path: {request.url.path} | Method: {request.method} | IP: {request.client.host} | Time: {process_time:.4f}s")
     return response
 
-# 5. MANEJO DE EXCEPCIONES GLOBALES
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
     logging.error(f"ERROR CRÍTICO en {request.url.path}: {str(exc)}", exc_info=True)
@@ -62,7 +60,7 @@ async def global_exception_handler(request: Request, exc: Exception):
         }
     )
 
-# 6. INCLUSIÓN DE ROUTERS — base
+
 app.include_router(auth_router.router,  prefix=settings.API_V1_STR)
 app.include_router(usuarios.router,     prefix=settings.API_V1_STR)
 app.include_router(practicas.router,    prefix=settings.API_V1_STR)
@@ -75,7 +73,7 @@ app.include_router(tutor.router,        prefix=settings.API_V1_STR)
 app.include_router(estudiante.router,   prefix=settings.API_V1_STR)
 app.include_router(supervisor.router,   prefix=settings.API_V1_STR)
 
-# 8. HEALTH CHECK
+
 @app.get("/", tags=["Health Check"])
 def root():
     return {
@@ -84,5 +82,5 @@ def root():
         "docs": "/docs"
     }
 
-# 9. ASEGURAR CARPETA DE EVIDENCIAS
+
 os.makedirs(settings.UPLOAD_DIR, exist_ok=True)

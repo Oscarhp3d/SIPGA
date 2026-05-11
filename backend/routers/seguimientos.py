@@ -71,12 +71,12 @@ async def subir_evidencia(
     if not seguimiento:
         raise HTTPException(status_code=404, detail="Seguimiento no encontrado")
         
-    # IDOR Protection
+
     practica = crud.obtener_practica(db, seguimiento.practica_id)
     if practica.estudiante_id != current_user.id:
         raise HTTPException(status_code=403, detail="No es dueño de este seguimiento")
 
-    # Validaciones de archivo
+
     ALLOWED_TYPES = ["application/pdf", "image/jpeg", "image/png"]
     if archivo.content_type not in ALLOWED_TYPES:
         raise HTTPException(status_code=400, detail="Formato no permitido. Solo PDFs, JPG o PNG.")

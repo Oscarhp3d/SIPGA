@@ -1,7 +1,3 @@
-"""
-Router del Estudiante.
-El estudiante ve su práctica, registra actividades y sube evidencias.
-"""
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
 from sqlalchemy.orm import Session
 from typing import List

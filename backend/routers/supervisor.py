@@ -1,7 +1,4 @@
-"""
-Router del Supervisor empresarial.
-Valida las horas de sus practicantes.
-"""
+
 from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from typing import List

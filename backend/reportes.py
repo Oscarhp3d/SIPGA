@@ -8,20 +8,19 @@ def generar_pdf_practica(estudiante_nombre: str, empresa: str, seguimientos: lis
     p = canvas.Canvas(buffer, pagesize=letter)
     width, height = letter
 
-    # --- ENCABEZADO INSTITUCIONAL ---
+
     p.setFont("Helvetica-Bold", 14)
     p.drawCentredString(width/2, height - 50, "CORPORACION UNIVERSITARIA RAFAEL NUÑEZ")
     p.setFont("Helvetica", 12)
     p.drawCentredString(width/2, height - 70, "SIPRA: Sistema de Información para el Seguimiento de Prácticas")
     
-    # --- DATOS DEL ESTUDIANTE Y EMPRESA ---
     p.setFont("Helvetica-Bold", 10)
     p.drawString(50, height - 100, f"ESTUDIANTE: {estudiante_nombre}")
     p.drawString(50, height - 115, f"EMPRESA: {empresa}")
     p.drawString(50, height - 130, f"FECHA DE REPORTE: {datetime.now().strftime('%Y-%m-%d %H:%M')}")
     p.line(50, height - 140, 550, height - 140)
 
-    # --- TABLA DE ACTIVIDADES ---
+
     y = height - 165
     p.drawString(50, y, "Fecha")
     p.drawString(120, y, "Descripción Actividad")
@@ -31,19 +30,18 @@ def generar_pdf_practica(estudiante_nombre: str, empresa: str, seguimientos: lis
     p.setFont("Helvetica", 9)
     total_horas = 0
     for s in seguimientos:
-        if y < 100: # Salto de página
+        if y < 100: 
             p.showPage()
             y = height - 50
         
         p.drawString(50, y, str(s.fecha_actividad.date()))
-        # Truncar descripción si es muy larga para que no se desordene
         desc = (s.descripcion[:65] + '..') if len(s.descripcion) > 65 else s.descripcion
         p.drawString(120, y, desc)
         p.drawString(450, y, f"{s.horas_realizadas}h")
         total_horas += s.horas_realizadas
         y -= 20
 
-    # --- RESUMEN FINAL ---
+
     p.line(50, y, 550, y)
     y -= 20
     p.setFont("Helvetica-Bold", 10)

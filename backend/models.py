@@ -5,7 +5,7 @@ import datetime
 import uuid
 import enum
 
-# --- ENUMS ---
+
 class UserRole(str, enum.Enum):
     estudiante  = "estudiante"
     tutor       = "tutor"
@@ -21,7 +21,7 @@ class StatusEnum(str, enum.Enum):
 userrole_type   = Enum(UserRole,  name="userrole",   create_type=False)
 statusenum_type = Enum(StatusEnum, name="statusenum", create_type=False)
 
-# --- MODELOS ---
+
 
 class Usuario(Base):
     __tablename__ = "usuarios"
@@ -110,7 +110,7 @@ class AuditLog(Base):
     __tablename__ = "logs_auditoria"
 
     id         = Column(Integer, primary_key=True, index=True)
-    usuario_id = Column(String, nullable=True)   # Sin FK formal para preservar historial
+    usuario_id = Column(String, nullable=True)   
     accion     = Column(String)
     fecha      = Column(DateTime, default=datetime.datetime.utcnow)
     ip_origen  = Column(String)

@@ -3,9 +3,6 @@ from typing import Optional, List
 from datetime import datetime
 from models import UserRole, StatusEnum
 
-# ══════════════════════════════════════════
-# USUARIO
-# ══════════════════════════════════════════
 
 class UsuarioBase(BaseModel):
     nombre: str = Field(..., example="Juan Pérez")
@@ -29,10 +26,6 @@ class UsuarioResponse(UsuarioBase):
     model_config = {"from_attributes": True}
 
 
-# ══════════════════════════════════════════
-# EMPRESA
-# ══════════════════════════════════════════
-
 class EmpresaBase(BaseModel):
     nombre: str = Field(..., example="Tech Solutions S.A.S.")
     nit: str = Field(..., example="900.123.456-1")
@@ -45,10 +38,6 @@ class EmpresaResponse(EmpresaBase):
     id: int
     model_config = {"from_attributes": True}
 
-
-# ══════════════════════════════════════════
-# ASIGNACIÓN TUTOR POR CARRERA
-# ══════════════════════════════════════════
 
 class AsignacionTutorCreate(BaseModel):
     tutor_id: str
@@ -64,13 +53,9 @@ class AsignacionTutorResponse(BaseModel):
     model_config = {"from_attributes": True}
 
 
-# ══════════════════════════════════════════
-# PRÁCTICA
-# ══════════════════════════════════════════
 
 class PracticaBase(BaseModel):
     estudiante_id: str
-    # FIX: tutor_id es opcional — el backend lo auto-asigna por programa si no se envía
     tutor_id: Optional[str] = None
     supervisor_id: Optional[str] = None
     empresa_id: int
@@ -91,16 +76,13 @@ class PracticaResponse(PracticaBase):
     id: str
     estado: str
     horas_acumuladas: float = 0.0
-    # Datos anidados opcionales (para el dashboard)
     estudiante: Optional[UsuarioResponse] = None
     tutor: Optional[UsuarioResponse] = None
     empresa: Optional[EmpresaResponse] = None
     model_config = {"from_attributes": True}
 
 
-# ══════════════════════════════════════════
-# SEGUIMIENTO
-# ══════════════════════════════════════════
+
 
 class SeguimientoBase(BaseModel):
     practica_id: str
@@ -136,9 +118,7 @@ class SeguimientoResponse(SeguimientoBase):
     model_config = {"from_attributes": True}
 
 
-# ══════════════════════════════════════════
-# AUTH
-# ══════════════════════════════════════════
+
 
 class Token(BaseModel):
     access_token: str
@@ -151,9 +131,7 @@ class TokenData(BaseModel):
     rol: Optional[str] = None
 
 
-# ══════════════════════════════════════════
-# AUDITORÍA
-# ══════════════════════════════════════════
+
 
 class AuditLogResponse(BaseModel):
     id: int
@@ -164,9 +142,7 @@ class AuditLogResponse(BaseModel):
     model_config = {"from_attributes": True}
 
 
-# ══════════════════════════════════════════
-# DASHBOARDS POR ROL
-# ══════════════════════════════════════════
+
 
 class DashboardCoordinador(BaseModel):
     total_estudiantes: int
