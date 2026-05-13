@@ -11,7 +11,42 @@ class UsuarioBase(BaseModel):
     programa_academico: Optional[str] = Field(None, example="Tecnología en Desarrollo de Sistemas")
 
 class UsuarioCreate(UsuarioBase):
+    """
+    Usado por el coordinador para crear usuarios internamente.
+    El consentimiento queda registrado automáticamente en nombre de la institución.
+    """
     password: str = Field(..., min_length=8)
+
+
+class RegistroPublicoCreate(BaseModel):
+    """
+    Endpoint público POST /auth/registro.
+    El usuario se registra por cuenta propia y DEBE aceptar explícitamente
+    la política de tratamiento de datos (Ley 1581/2012 + Decreto 1377/2013).
+    """
+    nombre:             str      = Field(..., example="Juan Pérez")
+    correo:             EmailStr = Field(..., example="juan@universidad.edu.co")
+    password:           str      = Field(..., min_length=8)
+    programa_academico: Optional[str] = None
+    acepto_politica:    bool     = Field(
+        ...,
+        description="El titular debe aceptar la política de datos (Ley 1581/2012)."
+    )
+    version_politica:   str      = Field(
+        default="v1.0",
+        description="Versión del documento de política aceptado."
+    )
+
+    @field_validator("acepto_politica")
+    @classmethod
+    def debe_aceptar(cls, v: bool) -> bool:
+        if not v:
+            raise ValueError(
+                "Debe aceptar la política de tratamiento de datos para registrarse "
+                "(Ley 1581 de 2012 / Decreto 1377 de 2013)."
+            )
+        return v
+
 
 class UsuarioUpdate(BaseModel):
     nombre: Optional[str] = None
@@ -21,8 +56,11 @@ class UsuarioUpdate(BaseModel):
     programa_academico: Optional[str] = None
 
 class UsuarioResponse(UsuarioBase):
-    id: str
-    fecha_creacion: datetime
+    id:                   str
+    fecha_creacion:       datetime
+    acepto_politica:      bool
+    fecha_consentimiento: Optional[datetime] = None
+    version_politica:     Optional[str]      = None
     model_config = {"from_attributes": True}
 
 

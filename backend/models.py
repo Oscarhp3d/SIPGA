@@ -34,6 +34,13 @@ class Usuario(Base):
     programa_academico = Column(String, nullable=True)
     fecha_creacion     = Column(DateTime, default=datetime.datetime.utcnow)
 
+    # ── Consentimiento informado — Ley 1581/2012 + Decreto 1377/2013 ────────
+    # El titular debe aceptar la política de tratamiento de datos antes
+    # de que el sistema pueda almacenar cualquier dato personal suyo.
+    acepto_politica        = Column(Boolean, nullable=False, default=False)
+    fecha_consentimiento   = Column(DateTime, nullable=True)
+    version_politica       = Column(String(20), nullable=True)   # ej: "v1.0"
+
     audit_logs = relationship(
         "AuditLog",
         primaryjoin="Usuario.id == AuditLog.usuario_id",

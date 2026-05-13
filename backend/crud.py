@@ -32,12 +32,45 @@ def obtener_estudiantes(db: Session) -> List[models.Usuario]:
     return obtener_usuarios_por_rol(db, models.UserRole.estudiante)
 
 def crear_usuario(db: Session, usuario: schemas.UsuarioCreate) -> models.Usuario:
+    """
+    Crea un usuario desde el panel del coordinador.
+    El consentimiento se registra automáticamente porque la institución
+    actúa como responsable del tratamiento al vincular al actor.
+    """
     db_usuario = models.Usuario(
         nombre=usuario.nombre,
         correo=usuario.correo,
         password_hash=auth.hash_password(usuario.password),
         rol=usuario.rol,
-        programa_academico=usuario.programa_academico
+        programa_academico=usuario.programa_academico,
+        acepto_politica=True,
+        fecha_consentimiento=datetime.utcnow(),
+        version_politica="v1.0",
+    )
+    db.add(db_usuario)
+    db.commit()
+    db.refresh(db_usuario)
+    return db_usuario
+
+
+def registrar_usuario_publico(
+    db: Session,
+    datos: schemas.RegistroPublicoCreate,
+) -> models.Usuario:
+    """
+    Registro iniciado por el propio usuario (endpoint público /auth/registro).
+    Persiste la aceptación explícita de la política de datos con marca de
+    tiempo, cumpliendo Art. 9 Ley 1581/2012 y Art. 4 Decreto 1377/2013.
+    """
+    db_usuario = models.Usuario(
+        nombre=datos.nombre,
+        correo=datos.correo,
+        password_hash=auth.hash_password(datos.password),
+        rol=models.UserRole.estudiante,       # rol por defecto al auto-registrarse
+        programa_academico=datos.programa_academico,
+        acepto_politica=True,                 # validado en el schema (ValueError si False)
+        fecha_consentimiento=datetime.utcnow(),
+        version_politica=datos.version_politica,
     )
     db.add(db_usuario)
     db.commit()

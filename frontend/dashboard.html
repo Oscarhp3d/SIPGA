@@ -1020,101 +1020,112 @@
   }
 
 
-  function abrirModalUsuario() {
+ function abrirModalUsuario() {
 
-    document.getElementById('modalTitulo')
-      .textContent = 'Nuevo Usuario';
+  document.getElementById('modalTitulo')
+    .textContent = 'Nuevo Usuario';
 
-    document.getElementById('modalContenido')
-      .innerHTML = `
+  document.getElementById('modalContenido')
+    .innerHTML = `
 
-      <div class="space-y-4">
+    <div class="space-y-4">
 
-        <input type="hidden" id="usuarioId"/>
+      <input type="hidden" id="usuarioId"/>
 
-        <div>
-          <label class="block text-xs mb-1">Nombre</label>
+      <div>
+        <label class="block text-xs mb-1">Nombre</label>
 
-          <input
-            type="text"
-            id="nuNombre"
-            class="w-full px-3 py-2 border rounded-xl"
-          />
-        </div>
+        <input
+          type="text"
+          id="nuNombre"
+          class="w-full px-3 py-2 border rounded-xl"
+        />
+      </div>
 
-        <div>
-          <label class="block text-xs mb-1">Correo</label>
+      <div>
+        <label class="block text-xs mb-1">Correo</label>
 
-          <input
-            type="email"
-            id="nuCorreo"
-            class="w-full px-3 py-2 border rounded-xl"
-          />
-        </div>
+        <input
+          type="email"
+          id="nuCorreo"
+          class="w-full px-3 py-2 border rounded-xl"
+        />
+      </div>
 
-        <div>
-          <label class="block text-xs mb-1">Contraseña</label>
+      <div>
+        <label class="block text-xs mb-1">Contraseña</label>
 
-          <input
-            type="password"
-            id="nuPassword"
-            class="w-full px-3 py-2 border rounded-xl"
-          />
-        </div>
+        <input
+          type="password"
+          id="nuPassword"
+          class="w-full px-3 py-2 border rounded-xl"
+        />
+      </div>
 
-        <div>
-          <label class="block text-xs mb-1">Rol</label>
+      <div>
+        <label class="block text-xs mb-1">Rol</label>
 
-          <select
-            id="nuRol"
-            class="w-full px-3 py-2 border rounded-xl">
+        <select
+          id="nuRol"
+          class="w-full px-3 py-2 border rounded-xl">
 
-            <option value="estudiante">Estudiante</option>
-            <option value="tutor">Tutor</option>
-            <option value="supervisor">Supervisor</option>
-            <option value="coordinador">Coordinador</option>
+          <option value="estudiante">Estudiante</option>
+          <option value="tutor">Tutor</option>
+          <option value="supervisor">Supervisor</option>
+          <option value="coordinador">Coordinador</option>
 
-          </select>
-        </div>
+        </select>
+      </div>
 
-        <div>
-          <label class="block text-xs mb-1">
-            Programa Académico
-          </label>
+      <div>
+        <label class="block text-xs mb-1">
+          Programa Académico
+        </label>
 
-          <input
-            type="text"
-            id="nuPrograma"
-            class="w-full px-3 py-2 border rounded-xl"
-          />
-        </div>
+        <input
+          type="text"
+          id="nuPrograma"
+          class="w-full px-3 py-2 border rounded-xl"
+        />
+      </div>
 
-        <div id="nuError"
-             class="text-xs text-red-500 hidden">
-        </div>
+      <div id="nuError"
+           class="text-xs text-red-500 hidden">
+      </div>
 
-        <div class="flex gap-3 pt-2">
+      <div class="bg-blue-50 border border-blue-200 text-blue-800 rounded-xl p-3">
+        <p class="text-xs leading-relaxed">
+          <strong>Aviso de tratamiento de datos personales:</strong><br>
+          Al crear este usuario, la institución certifica que el titular ha sido informado
+          sobre el tratamiento de sus datos personales conforme a la Ley 1581 de 2012
+          y las políticas de privacidad institucionales.
+        </p>
+      </div>
 
-          <button
-            onclick="cerrarModal()"
-            class="flex-1 py-2 border rounded-xl">
-            Cancelar
-          </button>
+      <div class="flex gap-3 pt-2 justify-end">
 
-          <button
-            onclick="crearUsuario()"
-            class="flex-1 py-2 rounded-xl text-white"
-            style="background:#0d1b2e;">
-            Guardar
-          </button>
+        <button
+          onclick="cerrarModal()"
+          class="px-4 py-1.5 text-sm border rounded-lg">
+          Cancelar
+        </button>
 
-        </div>
+        <button
+          onclick="crearUsuario()"
+          class="px-4 py-1.5 text-sm rounded-lg text-white"
+          style="background:#0d1b2e;">
+          Guardar
+        </button>
 
       </div>
-    `;
 
-    abrirModal();
-  }
+    </div>
+  `;
+
+  abrirModal();
+}
+
+ 
 
 
   async function crearUsuario() {
