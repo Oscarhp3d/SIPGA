@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>SIPRA — Dashboard</title>
+  <title>SIPGA — Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
@@ -37,30 +37,27 @@
     .badge-estudiante  { background:#fef3c7; color:#92400e; }
     .badge-supervisor  { background:#ede9fe; color:#5b21b6; }
 
-    /* Secciones ocultas por defecto */
     .seccion { display: none; }
     .seccion.activa { display: block; }
 
-    /* Animación suave al cambiar sección */
+   
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(6px); }
       to   { opacity: 1; transform: translateY(0); }
     }
     .seccion.activa { animation: fadeIn 0.2s ease; }
 
-    /* Modal */
+
     #modalOverlay { display:none; }
     #modalOverlay.open { display:flex; }
 
-    /* Tooltip logout */
+  
     #btnLogout:hover { background: rgba(255,255,255,0.08); }
   </style>
 </head>
 <body class="bg-slate-100 min-h-screen flex">
 
-  <!-- ══════════════════════════════════
-       SIDEBAR
-  ══════════════════════════════════ -->
+
   <aside class="w-52 min-h-screen flex flex-col fixed top-0 left-0 z-30"
          style="background: linear-gradient(180deg, #0d1b2e 0%, #112240 100%);">
 
@@ -79,7 +76,7 @@
       </div>
     </div>
 
-    <!-- Navegación -->
+
     <nav class="flex-1 px-3 py-4 space-y-1">
       <a href="#" class="nav-item active flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer" data-page="dashboard">
         <svg class="w-4 h-4 text-white/70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -145,14 +142,14 @@
       </a>
     </nav>
 
-    <!-- Estado servidor + Logout -->
+
     <div class="px-5 py-4 border-t border-white/10">
       <div class="text-white/30 text-[10px] mb-1.5">Estado del Servidor</div>
       <div class="flex items-center gap-2 mb-4">
         <div class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div>
         <span class="text-white/60 text-xs">Operativo</span>
       </div>
-      <!-- BOTÓN CERRAR SESIÓN -->
+   
       <button id="btnLogout"
               class="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg transition-colors cursor-pointer group">
         <svg class="w-4 h-4 text-red-400 group-hover:text-red-300 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -165,12 +162,10 @@
     </div>
   </aside>
 
-  <!-- ══════════════════════════════════
-       CONTENIDO PRINCIPAL
-  ══════════════════════════════════ -->
+
   <main class="ml-52 flex-1 flex flex-col min-h-screen">
 
-    <!-- TOPBAR -->
+
     <header class="bg-white border-b border-slate-100 px-6 py-3 flex items-center gap-4 sticky top-0 z-20">
       <div class="flex-1 relative">
         <svg class="w-4 h-4 text-slate-300 absolute left-3 top-1/2 -translate-y-1/2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -197,12 +192,9 @@
       </div>
     </header>
 
-    <!-- BODY -->
     <div class="flex-1 p-6">
 
-      <!-- ══════════════════════════════
-           SECCIÓN: DASHBOARD
-      ══════════════════════════════ -->
+
       <div id="seccionDashboard" class="seccion activa">
         <div class="mb-6">
           <h1 class="font-syne text-2xl font-bold text-slate-800">
@@ -211,7 +203,7 @@
           <p class="text-sm text-slate-400 mt-1">Aquí tienes el resumen administrativo de la plataforma SIPRA para hoy.</p>
         </div>
 
-        <!-- KPIs -->
+
         <div class="grid grid-cols-3 gap-4 mb-6">
           <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
             <div class="flex items-start justify-between mb-4">
@@ -254,7 +246,7 @@
           </div>
         </div>
 
-        <!-- Gráfica + Actividad -->
+
         <div class="grid grid-cols-3 gap-4 mb-6">
           <div class="col-span-2 bg-white rounded-2xl p-5 border border-slate-100 shadow-sm">
             <div class="flex items-start justify-between mb-1">
@@ -280,7 +272,7 @@
           </div>
         </div>
 
-        <!-- Tabla validaciones -->
+    
         <div class="bg-white rounded-2xl border border-slate-100 shadow-sm">
           <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100">
             <h2 class="font-syne font-semibold text-slate-800 text-sm">Validaciones Pendientes</h2>
@@ -309,9 +301,7 @@
         </div>
       </div>
 
-      <!-- ══════════════════════════════
-           SECCIÓN: LOG DE HORAS
-      ══════════════════════════════ -->
+
       <div id="seccionLog" class="seccion">
         <div class="mb-6 flex items-center justify-between">
           <div>
@@ -356,9 +346,7 @@
         </div>
       </div>
 
-      <!-- ══════════════════════════════
-           SECCIÓN: VALIDACIÓN
-      ══════════════════════════════ -->
+
       <div id="seccionValidacion" class="seccion">
         <div class="mb-6">
           <h1 class="font-syne text-2xl font-bold text-slate-800">Validación de Actividades</h1>
@@ -403,9 +391,7 @@
         </div>
       </div>
 
-      <!-- ══════════════════════════════
-           SECCIÓN: USUARIOS
-      ══════════════════════════════ -->
+  
       <div id="seccionUsuarios" class="seccion">
         <div class="mb-6 flex items-center justify-between">
           <div>
@@ -450,9 +436,7 @@
         </div>
       </div>
 
-      <!-- ══════════════════════════════
-           SECCIÓN: CONFIGURACIÓN
-      ══════════════════════════════ -->
+
       <div id="seccionConfig" class="seccion">
         <div class="mb-6">
           <h1 class="font-syne text-2xl font-bold text-slate-800">Configuración</h1>
@@ -460,7 +444,7 @@
         </div>
 
         <div class="grid grid-cols-2 gap-6">
-          <!-- Perfil -->
+   
           <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
             <h2 class="font-syne font-semibold text-slate-800 text-sm mb-5">Datos del Perfil</h2>
             <div class="space-y-4">
@@ -482,7 +466,6 @@
             </div>
           </div>
 
-          <!-- Seguridad -->
           <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
             <h2 class="font-syne font-semibold text-slate-800 text-sm mb-5">Seguridad</h2>
             <div class="space-y-4">
@@ -519,9 +502,7 @@
         </div>
       </div>
 
-      <!-- ══════════════════════════════
-           SECCIÓN: EMPRESAS
-      ══════════════════════════════ -->
+
       <div id="seccionEmpresas" class="seccion">
         <div class="mb-6 flex items-center justify-between">
           <div>
@@ -551,9 +532,7 @@
         </div>
       </div>
 
-      <!-- ══════════════════════════════
-           SECCIÓN: PRÁCTICAS
-      ══════════════════════════════ -->
+
       <div id="seccionPracticas" class="seccion">
         <div class="mb-6 flex items-center justify-between">
           <div>
@@ -566,7 +545,7 @@
           </button>
         </div>
 
-        <!-- KPIs prácticas -->
+
         <div class="grid grid-cols-4 gap-4 mb-6">
           <div class="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm">
             <div class="text-[10px] font-semibold text-slate-400 uppercase tracking-wide mb-1">Total</div>
@@ -620,16 +599,14 @@
         </div>
       </div>
 
-      <!-- ══════════════════════════════
-           SECCIÓN: REPORTES
-      ══════════════════════════════ -->
+  
       <div id="seccionReportes" class="seccion">
         <div class="mb-6">
           <h1 class="font-syne text-2xl font-bold text-slate-800">Reportes</h1>
           <p class="text-sm text-slate-400 mt-1">Genera y descarga reportes PDF de las prácticas académicas.</p>
         </div>
 
-        <!-- Resumen estadístico -->
+ 
         <div class="grid grid-cols-3 gap-4 mb-6">
           <div class="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm col-span-2">
             <h2 class="font-syne font-semibold text-slate-800 text-sm mb-4">Distribución por Estado</h2>
@@ -653,7 +630,7 @@
           </div>
         </div>
 
-        <!-- Tabla de prácticas para reportes -->
+   
         <div class="bg-white rounded-2xl border border-slate-100 shadow-sm">
           <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
             <h2 class="font-syne font-semibold text-slate-800 text-sm">Prácticas — Descarga de Reportes PDF</h2>
@@ -679,12 +656,10 @@
         </div>
       </div>
 
-    </div><!-- fin .p-6 -->
+    </div>
   </main>
 
-  <!-- ══════════════════════════════════
-       MODAL: REGISTRAR HORAS
-  ══════════════════════════════════ -->
+
   <div id="modalOverlay" class="fixed inset-0 z-50 items-center justify-center bg-black/40 backdrop-blur-sm">
     <div id="modalBox" class="bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 p-6">
       <div class="flex items-center justify-between mb-5">
@@ -696,15 +671,14 @@
         </button>
       </div>
       <div id="modalContenido">
-        <!-- Se llena dinámicamente -->
+  
       </div>
     </div>
   </div>
 
  <script>
-  // ══════════════════════════════════════
-  // CONFIG API
-  // ══════════════════════════════════════
+
+
   const API_URL =
     window.location.hostname === 'localhost' ||
     window.location.hostname === '127.0.0.1'
@@ -715,9 +689,8 @@
     localStorage.getItem('token') ||
     sessionStorage.getItem('token');
 
-  // ══════════════════════════════════════
-  // NAVEGACIÓN SIDEBAR
-  // ══════════════════════════════════════
+
+
   const secciones = {
     dashboard: document.getElementById('seccionDashboard'),
     log: document.getElementById('seccionLog'),
@@ -755,9 +728,6 @@
     });
   });
 
-  // ══════════════════════════════════════
-  // LOGOUT
-  // ══════════════════════════════════════
   function cerrarSesion() {
     localStorage.removeItem('token');
     sessionStorage.removeItem('token');
@@ -771,9 +741,7 @@
   document.getElementById('btnLogoutConfig')
     .addEventListener('click', cerrarSesion);
 
-  // ══════════════════════════════════════
-  // MODAL
-  // ══════════════════════════════════════
+
   function abrirModal() {
     document
       .getElementById('modalOverlay')
@@ -793,7 +761,7 @@
       }
     });
 
-  // Listener delegado en el modal para capturar "Guardar Cambios"
+
   document.getElementById('modalBox')
     .addEventListener('click', e => {
       const btn = e.target.closest('.btn-accion');
@@ -803,14 +771,9 @@
       if (action === 'guardar-edicion') guardarEdicion(id);
     });
 
-  // ══════════════════════════════════════
-  // VARIABLES
-  // ══════════════════════════════════════
+
   let _usuarios = [];
 
-  // ══════════════════════════════════════
-  // CARGAR USUARIO ACTUAL
-  // ══════════════════════════════════════
   async function cargarPerfil() {
     try {
       const res = await fetch(`${API_URL}/usuarios/me`, {
@@ -835,7 +798,7 @@
       document.getElementById('topbarAvatar').textContent =
         user.nombre.charAt(0).toUpperCase();
 
-      // ── Control de sidebar y UI por rol ──────────────────
+
       const ocultar = (page) => {
         const el = document.querySelector(`[data-page="${page}"]`);
         if (el) el.style.display = 'none';
@@ -855,15 +818,13 @@
         // Acceso total — no se oculta nada
 
       } else if (user.rol === 'tutor') {
-        // Ve: dashboard, log (lectura), validacion, practicas, reportes basicos, config
-        // NO ve: usuarios, empresas
+
         ocultar('usuarios');
         ocultar('empresas');
         ocultarKPIsAdmin();
 
       } else if (user.rol === 'supervisor') {
-        // Ve: dashboard, validacion, practicas, config
-        // NO ve: log, usuarios, empresas, reportes globales
+
         ocultar('log');
         ocultar('usuarios');
         ocultar('empresas');
@@ -871,21 +832,20 @@
         ocultarKPIsAdmin();
 
       } else if (user.rol === 'estudiante') {
-        // Ve: dashboard propio, log (registrar sus horas), practicas (las suyas), config
-        // NO ve: validacion, usuarios, empresas, reportes
+
         ocultar('validacion');
         ocultar('usuarios');
         ocultar('empresas');
         ocultar('reportes');
         ocultarKPIsAdmin();
-        // Ocultar botón "Validar Seleccionados" en tabla del dashboard
+
         const btnVal = document.querySelector('#seccionDashboard .flex.items-center.justify-between button');
         if (btnVal) btnVal.style.display = 'none';
       }
-      // Guardar rol globalmente para usarlo en renderizados posteriores
+
       window.currentUserRol = user.rol;
 
-      // Ocultar botones de acción que solo el coordinador puede usar
+  
       if (user.rol !== 'coordinador') {
         const btnNuevoUsuario = document.getElementById('btnNuevoUsuario');
         if (btnNuevoUsuario) btnNuevoUsuario.style.display = 'none';
@@ -896,8 +856,7 @@
         const btnNuevaPractica = document.querySelector('#seccionPracticas button[onclick="abrirModalPractica()"]');
         if (btnNuevaPractica) btnNuevaPractica.style.display = 'none';
       }
-      // Para estudiante: ocultar el botón "Registrar Horas" no (lo necesitan),
-      // pero sí verificar que el log de validaciones del dashboard no muestre acciones
+
 
 
     } catch (error) {
@@ -905,9 +864,7 @@
     }
   }
 
-  // ══════════════════════════════════════
-  // CARGAR TABLA USUARIOS
-  // ══════════════════════════════════════
+
   async function cargarTablaUsuarios() {
     const tbody = document.getElementById('tablaUsuarios');
 
@@ -946,9 +903,6 @@
     }
   }
 
-  // ══════════════════════════════════════
-  // RENDER TABLA
-  // ══════════════════════════════════════
   function renderTablaUsuarios(lista) {
 
     const tbody = document.getElementById('tablaUsuarios');
@@ -1023,7 +977,6 @@
     }).join('');
   }
 
-  // Event listener delegado para la tabla de usuarios (se registra una sola vez)
   let _tablaListenerRegistrado = false;
   function registrarListenerTabla() {
     if (_tablaListenerRegistrado) return;
@@ -1039,9 +992,7 @@
     });
   }
 
-  // ══════════════════════════════════════
-  // FILTRAR USUARIOS
-  // ══════════════════════════════════════
+
   function filtrarUsuarios() {
 
     const texto = document
@@ -1068,9 +1019,7 @@
     renderTablaUsuarios(filtrados);
   }
 
-  // ══════════════════════════════════════
-  // MODAL NUEVO USUARIO
-  // ══════════════════════════════════════
+
   function abrirModalUsuario() {
 
     document.getElementById('modalTitulo')
@@ -1167,9 +1116,7 @@
     abrirModal();
   }
 
-  // ══════════════════════════════════════
-  // CREAR USUARIO
-  // ══════════════════════════════════════
+
   async function crearUsuario() {
 
     const err = document.getElementById('nuError');
@@ -1214,9 +1161,7 @@
     }
   }
 
-  // ══════════════════════════════════════
-  // EDITAR USUARIO
-  // ══════════════════════════════════════
+
   async function editarUsuario(id) {
 
     const usuario = _usuarios.find(u => u.id === id);
@@ -1303,9 +1248,7 @@
     abrirModal();
   }
 
-  // ══════════════════════════════════════
-  // GUARDAR EDICIÓN
-  // ══════════════════════════════════════
+
   async function guardarEdicion(id) {
 
     const pwVal = document.getElementById('editPassword').value;
@@ -1351,9 +1294,7 @@
     }
   }
 
-  // ══════════════════════════════════════
-  // ELIMINAR USUARIO
-  // ══════════════════════════════════════
+
   async function eliminarUsuario(id) {
 
     if (!confirm('¿Eliminar usuario?')) return;
@@ -1383,9 +1324,7 @@
     }
   }
 
-  // ══════════════════════════════════════
-  // CONFIG
-  // ══════════════════════════════════════
+
   async function cargarDatosConfig() {
 
     try {
@@ -1414,11 +1353,9 @@
   }
 
 
-  // ══════════════════════════════════════
-  // LOG DE HORAS (SEGUIMIENTOS)
-  // ══════════════════════════════════════
+
   let _seguimientos = [];
-  let _miPracticaId = null; // practica_id del estudiante logueado
+  let _miPracticaId = null; 
 
   async function cargarLog() {
     const tbody = document.getElementById('tablaLog');
@@ -1427,7 +1364,7 @@
     tbody.innerHTML = `<tr><td colspan="5" class="px-5 py-8 text-center text-sm text-slate-300">Cargando...</td></tr>`;
 
     try {
-      // Primero obtener la práctica del usuario actual
+
       if (!_miPracticaId) {
         const endpoint = window.currentUserRol === 'coordinador'
           ? `${API_URL}/practicas/`
@@ -1497,7 +1434,7 @@
         </tr>`;
     }).join('');
 
-    // Listener para botón Enviar (cambiar estado a 'enviado')
+
     tbody.querySelectorAll('.btn-log-enviar').forEach(btn => {
       btn.addEventListener('click', () => enviarSeguimiento(btn.dataset.id));
     });
@@ -1528,7 +1465,7 @@
   }
 
   async function abrirModalLog() {
-    // Si no sabemos el practica_id todavía, intentar cargarlo
+
     if (!_miPracticaId) await cargarLog();
 
     if (!_miPracticaId) {
@@ -1609,9 +1546,8 @@
     }
   }
 
-  // ══════════════════════════════════════
-  // VALIDACIÓN DE ACTIVIDADES
-  // ══════════════════════════════════════
+
+
   let _seguimientosPendientes = [];
 
   async function cargarValidacion() {
@@ -1621,7 +1557,7 @@
     tbody.innerHTML = `<tr><td colspan="5" class="px-5 py-8 text-center text-sm text-slate-300">Cargando...</td></tr>`;
 
     try {
-      // Cargar prácticas según el rol
+  
       const endpointPrac = window.currentUserRol === 'coordinador'
         ? `${API_URL}/practicas/`
         : `${API_URL}/practicas/mis`;
@@ -1637,7 +1573,7 @@
         return;
       }
 
-      // Cargar mapa de usuarios si está vacío
+
       if (Object.keys(_usuariosMapa).length === 0) {
         const resU = await fetch(`${API_URL}/usuarios/`, { headers: { Authorization: `Bearer ${token}` } });
         if (resU.ok) {
@@ -1647,25 +1583,23 @@
         }
       }
 
-      // Obtener seguimientos de todas las prácticas
-      // FIX: si una práctica devuelve 403 (IDOR), se retorna [] en lugar de fallar toda la carga
+
       const promesas = practicas.map(p =>
         fetch(`${API_URL}/seguimientos/practica/${p.id}`, {
           headers: { Authorization: `Bearer ${token}` }
         }).then(r => {
-          if (r.status === 403) return []; // sin acceso a esa práctica — ignorar silenciosamente
+          if (r.status === 403) return []; 
           return r.ok ? r.json() : [];
         }).catch(() => [])
       );
       const resultados = await Promise.all(promesas);
       const todos = resultados.flat();
 
-      // Solo los enviados (pendientes de validación)
+
       _seguimientosPendientes = todos.filter(s => s.estado === 'enviado');
 
       renderTablaValidacion(_seguimientosPendientes, practicas);
 
-      // Actualizar KPIs
       const kpiPend = document.getElementById('valPendientes');
       if (kpiPend) kpiPend.textContent = _seguimientosPendientes.length;
 
@@ -1684,7 +1618,7 @@
       return;
     }
 
-    // Mapa practica_id → estudiante
+
     const practicaMapa = {};
     if (practicas) practicas.forEach(p => { practicaMapa[p.id] = p; });
 
@@ -1706,7 +1640,7 @@
         </tr>`;
     }).join('');
 
-    // Listeners
+
     tbody.querySelectorAll('.btn-val-aprobar').forEach(btn => {
       btn.addEventListener('click', () => validarActividad(btn.dataset.id, 'aprobado'));
     });
@@ -1765,10 +1699,6 @@
     cerrarModal();
     validarActividad(id, 'rechazado', obs);
   }
-
-  // ══════════════════════════════════════
-  // EMPRESAS
-  // ══════════════════════════════════════
   let _empresas = [];
 
   async function cargarEmpresas() {
@@ -1859,18 +1789,16 @@
     }
   }
 
-  // ══════════════════════════════════════
-  // PRÁCTICAS
-  // ══════════════════════════════════════
+
   let _practicas = [];
-  let _usuariosMapa = {}; // id → usuario
+  let _usuariosMapa = {}; 
 
   async function cargarPracticas() {
     const tbody = document.getElementById('tablaPracticas');
     tbody.innerHTML = `<tr><td colspan="6" class="px-5 py-8 text-center text-sm text-slate-300">Cargando prácticas...</td></tr>`;
 
     try {
-      // FIX: coordinador usa GET /practicas/ (todas), otros roles usan GET /practicas/mis
+
       const endpointPrac = window.currentUserRol === 'coordinador'
         ? `${API_URL}/practicas/`
         : `${API_URL}/practicas/mis`;
@@ -2048,7 +1976,7 @@
   }
 
   async function aprobarPractica(id) {
-    // PATCH estado a 'activa' — ajustar según endpoint real del backend
+
     if (!confirm('¿Marcar esta práctica como activa/aprobada?')) return;
     try {
       const res = await fetch(`${API_URL}/practicas/${id}`, {
@@ -2068,7 +1996,7 @@
   }
 
   async function abrirModalPractica() {
-    // Si el mapa está vacío (el coordinador no pasó por la sección Usuarios), cargarlo ahora
+
     if (Object.keys(_usuariosMapa).length === 0) {
       try {
         const resU = await fetch(`${API_URL}/usuarios/`, {
@@ -2084,7 +2012,7 @@
       }
     }
 
-    // Cargar empresas si la lista está vacía
+
     if (_empresas.length === 0) {
       try {
         const resE = await fetch(`${API_URL}/empresas/`, {
@@ -2096,7 +2024,7 @@
       }
     }
 
-    // Construir selects de usuarios desde el mapa ya cargado
+
     const estudiantes = Object.values(_usuariosMapa).filter(u => u.rol === 'estudiante');
     const tutores     = Object.values(_usuariosMapa).filter(u => u.rol === 'tutor');
 
@@ -2192,9 +2120,7 @@
     }
   }
 
-  // ══════════════════════════════════════
-  // REPORTES
-  // ══════════════════════════════════════
+
   let _practicasReporte = [];
   let _chartReportes = null;
 
@@ -2356,10 +2282,6 @@
     a.download = `SIPRA_Practicas_${new Date().toISOString().slice(0,10)}.csv`;
     a.click();
   }
-
-  // ══════════════════════════════════════
-  // INIT
-  // ══════════════════════════════════════
   cargarPerfil();
 </script>
 </body>

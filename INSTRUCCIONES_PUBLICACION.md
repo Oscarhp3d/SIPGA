@@ -2,7 +2,7 @@
 
 He configurado todo para que puedas publicar el backend y tus compañeros solo tengan que preocuparse por el diseño del frontend.
 
-## ✅ Lo que ya hice:
+##  Lo que ya hice:
 1. **Esquema en Supabase**: Ya creé todas las tablas y tipos (Enums) en tu proyecto de Supabase usando el script `dump_schema.py`.
 2. **Archivos de Despliegue**: Creé `backend/Procfile` y `render.yaml` en la raíz para que puedas subirlo a **Render** fácilmente.
 3. **Optimización de Dependencias**: Corregí `backend/requirements.txt` para incluir `gunicorn` y arreglar errores de formato.
@@ -10,7 +10,7 @@ He configurado todo para que puedas publicar el backend y tus compañeros solo t
 
 ---
 
-## 🛠️ Pasos para completar la publicación:
+##  Pasos para completar la publicación:
 
 ### 1. Obtener la URL de Supabase
 Ve a tu proyecto de Supabase y busca:
@@ -30,7 +30,7 @@ Ve a tu proyecto de Supabase y busca:
 En `frontend/index.html`, busca la línea 46 y cambia la URL por la que te dio Render:
 
 ```javascript
-: "https://sipra-backend.onrender.com"; // <-- Tu URL de Render aquí
+: "https://sipra-backend.onrender.com"; 
 ```
 
 ### 4. ¿Cómo trabajarán tus compañeros?

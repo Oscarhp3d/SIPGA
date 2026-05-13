@@ -7,7 +7,6 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import auth
 from database import get_db
 from config import settings
-import os
 
 router = APIRouter(prefix="/seguimientos", tags=["Seguimientos"])
 
@@ -18,7 +17,6 @@ def reportar_actividad(
     current_user=Depends(auth.verificar_rol(["estudiante"]))
 ):
     """Registra un nuevo seguimiento (Solo Estudiantes)."""
-    # Verificar que la práctica pertenece al estudiante
     practica = crud.obtener_practica(db, seguimiento.practica_id)
     if not practica or practica.estudiante_id != current_user.id:
         raise HTTPException(status_code=403, detail="No puede reportar en una práctica que no le pertenece")
@@ -51,13 +49,24 @@ async def validar_seguimiento(
     current_user=Depends(auth.verificar_rol(["tutor", "supervisor", "coordinador"]))
 ):
     """Valida un seguimiento (Tutor, Supervisor, Coordinador)."""
-    res = crud.validar_seguimiento(
+    seg = crud.obtener_seguimiento(db, id)
+    if not seg:
+        raise HTTPException(status_code=404, detail="Seguimiento no encontrado")
+
+    practica = crud.obtener_practica(db, seg.practica_id)
+    if not practica:
+        raise HTTPException(status_code=404, detail="Práctica no encontrada")
+
+    rol = current_user.rol.value if hasattr(current_user.rol, "value") else current_user.rol
+    if rol == "tutor" and practica.tutor_id != current_user.id:
+        raise HTTPException(status_code=403, detail="Este seguimiento no pertenece a tus estudiantes")
+    if rol == "supervisor" and practica.supervisor_id != current_user.id:
+        raise HTTPException(status_code=403, detail="Este practicante no está bajo tu supervisión")
+
+    return crud.validar_seguimiento(
         db, id, update_data.estado, current_user.id, 
         update_data.observaciones_tutor, request.client.host
     )
-    if not res:
-        raise HTTPException(status_code=404, detail="Seguimiento no encontrado")
-    return res
 
 @router.post("/{id}/subir-evidencia")
 async def subir_evidencia(
@@ -70,12 +79,10 @@ async def subir_evidencia(
     seguimiento = crud.obtener_seguimiento(db, id)
     if not seguimiento:
         raise HTTPException(status_code=404, detail="Seguimiento no encontrado")
-        
 
     practica = crud.obtener_practica(db, seguimiento.practica_id)
     if practica.estudiante_id != current_user.id:
         raise HTTPException(status_code=403, detail="No es dueño de este seguimiento")
-
 
     ALLOWED_TYPES = ["application/pdf", "image/jpeg", "image/png"]
     if archivo.content_type not in ALLOWED_TYPES:

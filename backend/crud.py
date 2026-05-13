@@ -249,7 +249,7 @@ def validar_seguimiento(
     db.refresh(db_seg)
     create_audit_log(
         db, revisor_id,
-        f"VALIDACIÓN [{estado.upper()}] seguimiento={seguimiento_id}",
+        f"VALIDACIÓN [{estado.value.upper()}] seguimiento={seguimiento_id}",
         ip
     )
     return db_seg

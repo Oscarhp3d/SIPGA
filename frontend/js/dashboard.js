@@ -1,18 +1,10 @@
-/* ══════════════════════════════════════
-   SIPRA — Dashboard Logic
-   Archivo: frontend/js/dashboard.js
-   ══════════════════════════════════════ */
-
-// ✅ URL dinámica
 const API_URL =
   window.location.hostname === 'localhost' ||
   window.location.hostname === '127.0.0.1'
     ? 'http://127.0.0.1:8000/api/v1'
     : `${window.location.origin}/api/v1`;
 
-// ══════════════════════════════════════
-// TOKEN
-// ══════════════════════════════════════
+
 function getToken() {
   return (
     localStorage.getItem('token') ||
@@ -27,14 +19,11 @@ function authHeaders() {
   };
 }
 
-// Si no hay token → login
 if (!getToken()) {
   window.location.href = 'login.html';
 }
 
-// ══════════════════════════════════════
-// LOGOUT
-// ══════════════════════════════════════
+
 function cerrarSesion() {
   localStorage.removeItem('token');
   sessionStorage.removeItem('token');
@@ -42,15 +31,11 @@ function cerrarSesion() {
   window.location.href = 'login.html';
 }
 
-// ══════════════════════════════════════
-// USUARIO ACTUAL
-// ══════════════════════════════════════
+
 window.userRol = null;
 window.currentUser = null;
 
-// ══════════════════════════════════════
-// OBTENER PERFIL
-// ══════════════════════════════════════
+
 async function cargarUsuario() {
   try {
     const res = await fetch(`${API_URL}/usuarios/me`, {
@@ -68,15 +53,15 @@ async function cargarUsuario() {
 
     const user = await res.json();
 
-    // Guardar globalmente
+
     window.currentUser = user;
     window.userRol = user.rol;
 
-    // Nombre corto
+  
     const primerNombre =
       user.nombre?.split(' ')[0] || 'Usuario';
 
-    // Traducción rol
+
     const rolesES = {
       coordinador: 'Coordinador',
       tutor: 'Tutor Académico',
@@ -87,7 +72,7 @@ async function cargarUsuario() {
     const rolLabel =
       rolesES[user.rol] || user.rol;
 
-    // DOM
+
     const nombreUsuario =
       document.getElementById('nombreUsuario');
 
@@ -112,7 +97,7 @@ async function cargarUsuario() {
       topbarRol.textContent = rolLabel;
     }
 
-    // Avatar
+
     if (topbarAvatar) {
       const iniciales = user.nombre
         .split(' ')
@@ -124,7 +109,7 @@ async function cargarUsuario() {
       topbarAvatar.textContent = iniciales;
     }
 
-    // Aplicar permisos
+
     ajustarVistaPorRol(user.rol);
 
   } catch (err) {
@@ -132,62 +117,35 @@ async function cargarUsuario() {
   }
 }
 
-// ══════════════════════════════════════
-// CONTROL DE ROLES
-// ══════════════════════════════════════
 
-/**
- * Menús visibles por rol:
- *
- * coordinador → todo
- * tutor       → dashboard, log (solo lectura), validacion, practicas, reportes, config
- * supervisor  → dashboard, validacion, practicas, config
- * estudiante  → dashboard, log (registrar), practicas, config
- *
- * Regla: se ocultan los menús que el rol NO debe ver.
- * El backend es la barrera real; esto es solo UI.
- */
 function ajustarVistaPorRol(rol) {
 
-  // Helper: oculta el ítem de sidebar con data-page="X"
   const ocultarMenu = (page) => {
     const el = document.querySelector(`[data-page="${page}"]`);
     if (el) el.style.display = 'none';
   };
 
-  // Helper: oculta un elemento por ID
   const ocultarEl = (id) => {
     const el = document.getElementById(id);
     if (el) el.style.display = 'none';
   };
 
-  // ─────────────────────────────────────
-  // COORDINADOR — acceso total, no se oculta nada
-  // ─────────────────────────────────────
+
   if (rol === 'coordinador') {
-    // Todo visible. No hay restricciones en UI.
+
     return;
   }
 
-  // ─────────────────────────────────────
-  // TUTOR
-  // Puede: ver dashboard, validar horas, ver prácticas, ver reportes básicos, config
-  // NO puede: gestionar usuarios, gestionar empresas
-  // ─────────────────────────────────────
+
   if (rol === 'tutor') {
     ocultarMenu('usuarios');
     ocultarMenu('empresas');
 
-    // En el dashboard principal, ocultar KPIs que son solo del coordinador
     ocultarKPIsAdmin();
     return;
   }
 
-  // ─────────────────────────────────────
-  // SUPERVISOR
-  // Puede: ver dashboard, validar asistencia/actividades, ver sus prácticas, config
-  // NO puede: gestionar usuarios, empresas, reportes globales, log de horas
-  // ─────────────────────────────────────
+ 
   if (rol === 'supervisor') {
     ocultarMenu('usuarios');
     ocultarMenu('empresas');
@@ -198,11 +156,7 @@ function ajustarVistaPorRol(rol) {
     return;
   }
 
-  // ─────────────────────────────────────
-  // ESTUDIANTE
-  // Puede: dashboard propio, registrar horas (log), ver sus prácticas, config
-  // NO puede: validar, ver otros usuarios, empresas, reportes generales
-  // ─────────────────────────────────────
+
   if (rol === 'estudiante') {
     ocultarMenu('validacion');
     ocultarMenu('usuarios');
@@ -236,50 +190,44 @@ function ocultarKPIsAdmin() {
   }
 }
 
-// ══════════════════════════════════════
-// KPIs
-// ══════════════════════════════════════
+
 async function cargarKPIs() {
-
   try {
+    const rol = window.userRol;
 
-    const res = await fetch(
-      `${API_URL}/usuarios/`,
-      { headers: authHeaders() }
-    );
-
-    if (res.ok) {
-
-      const usuarios = await res.json();
-
-      const estudiantes =
-        usuarios.filter(
-          u => u.rol === 'estudiante'
-        );
-
-      const el =
-        document.getElementById('kpiPasantias');
-
-      if (el) {
-        el.textContent =
-          estudiantes.length.toLocaleString('es-CO');
-      }
-
+    // KPI Pasantías activas: solo coordinador/tutor
+    const resUsuarios = await fetch(`${API_URL}/usuarios/`, { headers: authHeaders() });
+    if (resUsuarios.ok) {
+      const usuarios = await resUsuarios.json();
+      const estudiantes = usuarios.filter(u => u.rol === 'estudiante');
+      const el = document.getElementById('kpiPasantias');
+      if (el) el.textContent = estudiantes.length.toLocaleString('es-CO');
     }
 
-    const ahora = new Date();
-
-    const horas =
-      (
-        ahora.getHours() * 38 +
-        ahora.getMinutes() * 2
-      ).toLocaleString('es-CO');
-
-    const kpiHoras =
-      document.getElementById('kpiHoras');
-
+    // KPI Horas acumuladas: datos reales según el rol
+    const kpiHoras = document.getElementById('kpiHoras');
     if (kpiHoras) {
-      kpiHoras.textContent = horas + 'h';
+      if (rol === 'coordinador') {
+        const resDash = await fetch(`${API_URL}/coordinador/dashboard`, { headers: authHeaders() });
+        if (resDash.ok) {
+          // El dashboard del coordinador no devuelve horas totales directamente;
+          // se muestra la cantidad de prácticas activas como referencia
+          const dash = await resDash.json();
+          kpiHoras.textContent = dash.total_practicas_activas + ' activas';
+        }
+      } else if (rol === 'tutor') {
+        const resDash = await fetch(`${API_URL}/tutor/dashboard`, { headers: authHeaders() });
+        if (resDash.ok) {
+          const dash = await resDash.json();
+          kpiHoras.textContent = (dash.total_horas_validadas || 0).toLocaleString('es-CO') + 'h';
+        }
+      } else if (rol === 'estudiante') {
+        const resDash = await fetch(`${API_URL}/estudiante/dashboard`, { headers: authHeaders() });
+        if (resDash.ok) {
+          const dash = await resDash.json();
+          kpiHoras.textContent = (dash.horas_acumuladas || 0).toLocaleString('es-CO') + 'h';
+        }
+      }
     }
 
   } catch (err) {
@@ -287,9 +235,7 @@ async function cargarKPIs() {
   }
 }
 
-// ══════════════════════════════════════
-// ACTIVIDAD
-// ══════════════════════════════════════
+
 function cargarActividadReciente() {
 
   const container =
@@ -304,132 +250,135 @@ function cargarActividadReciente() {
   `;
 }
 
-// ══════════════════════════════════════
-// TABLA VALIDACIONES
-// ══════════════════════════════════════
+
 async function cargarTablaValidaciones() {
-
-  const tbody =
-    document.getElementById('tablaValidaciones');
-
+  const tbody = document.getElementById('tablaValidaciones');
   if (!tbody) return;
 
+  const rol = window.userRol;
+
+  // Solo tutor, supervisor y coordinador ven seguimientos pendientes de validación
+  if (!['coordinador', 'tutor', 'supervisor'].includes(rol)) {
+    tbody.innerHTML = `<tr><td colspan="6" class="px-5 py-8 text-center text-slate-400">No aplica para tu rol</td></tr>`;
+    return;
+  }
+
   try {
+    // Elegir el endpoint de pendientes según el rol
+    let endpointPendientes;
+    if (rol === 'tutor') endpointPendientes = `${API_URL}/tutor/pendientes`;
+    else if (rol === 'supervisor') endpointPendientes = `${API_URL}/supervisor/pendientes`;
+    else endpointPendientes = `${API_URL}/coordinador/dashboard`;  // coordinador usa dashboard
 
-    const res = await fetch(
-      `${API_URL}/usuarios/`,
-      { headers: authHeaders() }
-    );
+    let seguimientos = [];
 
-    if (!res.ok) {
-      throw new Error('Sin acceso');
+    if (rol === 'coordinador') {
+      // Para el coordinador, mostrar todos los seguimientos pendientes globales
+      // obtenidos desde el dashboard
+      const resDash = await fetch(endpointPendientes, { headers: authHeaders() });
+      if (resDash.ok) {
+        const dash = await resDash.json();
+        const kpi = document.getElementById('kpiValidaciones');
+        if (kpi) kpi.textContent = dash.seguimientos_pendientes;
+      }
+      // Cargar practicas para listar seguimientos
+      const resPracticas = await fetch(`${API_URL}/practicas/`, { headers: authHeaders() });
+      if (resPracticas.ok) {
+        const practicas = await resPracticas.json();
+        for (const p of practicas.slice(0, 20)) {
+          const resSeg = await fetch(`${API_URL}/seguimientos/practica/${p.id}`, { headers: authHeaders() });
+          if (resSeg.ok) {
+            const segs = await resSeg.json();
+            seguimientos.push(...segs.filter(s => s.estado === 'enviado').map(s => ({ ...s, _practica: p })));
+          }
+        }
+      }
+    } else {
+      const res = await fetch(endpointPendientes, { headers: authHeaders() });
+      if (!res.ok) throw new Error('Sin acceso');
+      seguimientos = await res.json();
+      const kpi = document.getElementById('kpiValidaciones');
+      if (kpi) kpi.textContent = seguimientos.length;
     }
 
-    const usuarios = await res.json();
-
-    const estudiantes =
-      usuarios.filter(
-        u => u.rol === 'estudiante'
-      );
-
-    if (estudiantes.length === 0) {
-
-      tbody.innerHTML = `
-        <tr>
-          <td colspan="6"
-            class="px-5 py-8 text-center">
-            No hay estudiantes registrados
-          </td>
-        </tr>
-      `;
-
+    if (seguimientos.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="6" class="px-5 py-8 text-center text-slate-400">No hay seguimientos pendientes de validación</td></tr>`;
       return;
     }
 
-    tbody.innerHTML = estudiantes.map(u => `
+    const coloresEstado = {
+      enviado:  'bg-amber-100 text-amber-700',
+      aprobado: 'bg-green-100 text-green-700',
+      rechazado:'bg-red-100 text-red-700',
+      borrador: 'bg-slate-100 text-slate-600',
+    };
 
-      <tr class="border-b">
+    tbody.innerHTML = seguimientos.map(s => {
+      const practica = s._practica || null;
+      const estudianteNombre = practica?.estudiante?.nombre || 'Estudiante';
+      const empresaNombre   = practica?.empresa?.nombre   || 'Empresa';
+      const estadoLabel = s.estado.charAt(0).toUpperCase() + s.estado.slice(1);
+      const colorClase  = coloresEstado[s.estado] || 'bg-slate-100 text-slate-600';
+      const fecha = s.fecha_actividad ? new Date(s.fecha_actividad).toLocaleDateString('es-CO') : '—';
 
-        <td class="px-5 py-3">
-          <input type="checkbox">
-        </td>
-
+      return `
+      <tr class="border-b hover:bg-slate-50 transition-colors">
+        <td class="px-5 py-3"><input type="checkbox" data-id="${s.id}"></td>
         <td class="px-3 py-3">
-          <div class="font-medium">
-            ${u.nombre}
-          </div>
-
-          <div class="text-xs text-slate-400">
-            ${u.correo}
-          </div>
+          <div class="font-medium">${estudianteNombre}</div>
+          <div class="text-xs text-slate-400">${fecha} · ${s.horas_realizadas}h</div>
         </td>
-
+        <td class="px-3 py-3 text-sm">${s.descripcion.slice(0, 50)}${s.descripcion.length > 50 ? '…' : ''}</td>
+        <td class="px-3 py-3 text-sm">${empresaNombre}</td>
         <td class="px-3 py-3">
-          Ingeniería
+          <span class="${colorClase} px-2 py-1 rounded-full text-xs">${estadoLabel}</span>
         </td>
-
-        <td class="px-3 py-3">
-          Empresa Demo
+        <td class="px-3 py-3 flex gap-2">
+          <button class="text-blue-600 text-xs hover:underline" onclick="verSeguimiento('${s.id}')">Ver</button>
+          ${['coordinador','tutor'].includes(rol) ? `
+          <button class="text-emerald-600 text-xs hover:underline" onclick="aprobarSeguimiento('${s.id}')">Aprobar</button>
+          <button class="text-red-500 text-xs hover:underline"     onclick="rechazarSeguimiento('${s.id}')">Rechazar</button>
+          ` : ''}
         </td>
-
-        <td class="px-3 py-3">
-          <span class="bg-amber-100 text-amber-700 px-2 py-1 rounded-full text-xs">
-            Pendiente
-          </span>
-        </td>
-
-        <td class="px-3 py-3">
-
-          <button
-            class="text-blue-600 text-xs mr-2">
-            Ver
-          </button>
-
-          ${
-            ['coordinador', 'tutor']
-              .includes(window.userRol)
-            ?
-            `
-            <button
-              class="text-emerald-600 text-xs">
-              Validar
-            </button>
-            `
-            : ''
-          }
-
-        </td>
-
-      </tr>
-
-    `).join('');
-
-    // KPI validaciones
-    const kpi =
-      document.getElementById('kpiValidaciones');
-
-    if (kpi) {
-      kpi.textContent = estudiantes.length;
-    }
+      </tr>`;
+    }).join('');
 
   } catch (err) {
-
     console.error(err);
-
-    tbody.innerHTML = `
-      <tr>
-        <td colspan="6"
-          class="text-center py-8">
-          No tienes permisos
-        </td>
-      </tr>
-    `;
+    tbody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-slate-400">No tienes permisos para ver esta sección</td></tr>`;
   }
 }
 
-// ══════════════════════════════════════
-// GRÁFICA
-// ══════════════════════════════════════
+// Acciones de validación desde la tabla
+async function aprobarSeguimiento(id) {
+  await _validarSeguimiento(id, 'aprobado');
+}
+async function rechazarSeguimiento(id) {
+  await _validarSeguimiento(id, 'rechazado');
+}
+async function verSeguimiento(id) {
+  alert('Seguimiento ID: ' + id);
+}
+async function _validarSeguimiento(id, estado) {
+  try {
+    const res = await fetch(`${API_URL}/seguimientos/${id}/validar`, {
+      method: 'PATCH',
+      headers: authHeaders(),
+      body: JSON.stringify({ estado }),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      alert('Error: ' + (err.detail || 'No se pudo validar'));
+      return;
+    }
+    await cargarTablaValidaciones();
+    await cargarKPIs();
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+
 function inicializarGrafica() {
 
   const canvas =
@@ -460,9 +409,7 @@ function inicializarGrafica() {
   });
 }
 
-// ══════════════════════════════════════
-// SECCIONES
-// ══════════════════════════════════════
+
 const secciones = {
   dashboard:
     document.getElementById('seccionDashboard'),
@@ -480,9 +427,6 @@ const secciones = {
     document.getElementById('seccionConfig'),
 };
 
-// ══════════════════════════════════════
-// CAMBIAR SECCIÓN
-// ══════════════════════════════════════
 function mostrarSeccion(pagina) {
 
   Object.values(secciones).forEach(sec => {
@@ -499,9 +443,7 @@ function mostrarSeccion(pagina) {
   }
 }
 
-// ══════════════════════════════════════
-// SIDEBAR
-// ══════════════════════════════════════
+
 document.querySelectorAll('.nav-item')
 .forEach(item => {
 
@@ -524,14 +466,12 @@ document.querySelectorAll('.nav-item')
   });
 });
 
-// ══════════════════════════════════════
-// INIT
-// ══════════════════════════════════════
+
 document.addEventListener(
   'DOMContentLoaded',
   async () => {
 
-    // Logout
+
     const btnLogout =
       document.getElementById('btnLogout');
 
@@ -552,7 +492,6 @@ document.addEventListener(
 
     inicializarGrafica();
 
-    // Sección inicial
     mostrarSeccion('dashboard');
   }
 );

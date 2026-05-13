@@ -1,14 +1,8 @@
-/* ══════════════════════════════════════
-   SIPRA — Login Logic
-   Archivo: frontend/js/login.js
-   ══════════════════════════════════════ */
-
-// ✅ CORREGIDO: URL dinámica según entorno (era 'http://127.0.0.1:8000/api/v1' fijo)
 const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
   ? 'http://127.0.0.1:8000/api/v1'
   : `${window.location.origin}/api/v1`;
 
-// ── Referencias al DOM ──
+
 const emailInput = document.getElementById('email');
 const passInput  = document.getElementById('password');
 const btnLogin   = document.getElementById('btnLogin');
@@ -17,9 +11,7 @@ const eyeIcon    = document.getElementById('eyeIcon');
 const rememberMe = document.getElementById('remember');
 const errorMsg   = document.getElementById('errorMsg');
 
-// ══════════════════════════════════════
-// MOSTRAR / OCULTAR CONTRASEÑA
-// ══════════════════════════════════════
+
 togglePass.addEventListener('click', () => {
   const isPassword = passInput.type === 'password';
   passInput.type = isPassword ? 'text' : 'password';
@@ -32,9 +24,7 @@ togglePass.addEventListener('click', () => {
        <circle cx="12" cy="12" r="3"/>`;
 });
 
-// ══════════════════════════════════════
-// MENSAJES DE ERROR
-// ══════════════════════════════════════
+
 function showError(msg) {
   errorMsg.textContent = msg;
   errorMsg.classList.add('show');
@@ -44,9 +34,7 @@ function hideError() {
   errorMsg.classList.remove('show');
 }
 
-// ══════════════════════════════════════
-// VALIDACIÓN
-// ══════════════════════════════════════
+
 function validate() {
   if (!emailInput.value.trim()) {
     showError('Por favor ingresa tu correo o usuario.');
@@ -61,19 +49,12 @@ function validate() {
   return true;
 }
 
-// ══════════════════════════════════════
-// HELPER: obtener token (localStorage o sessionStorage)
-// ✅ CORREGIDO: el login guarda en uno u otro según "Mantener sesión",
-//    esta función unifica la lectura para que dashboard.js y otros
-//    módulos siempre encuentren el token independientemente de dónde quedó.
-// ══════════════════════════════════════
+
 function getToken() {
   return localStorage.getItem('token') || sessionStorage.getItem('token');
 }
 
-// ══════════════════════════════════════
-// HELPER: headers de autenticación
-// ══════════════════════════════════════
+
 function getAuthHeaders() {
   const token = getToken();
   return {
@@ -82,9 +63,7 @@ function getAuthHeaders() {
   };
 }
 
-// ══════════════════════════════════════
-// INICIO DE SESIÓN → conecta con FastAPI
-// ══════════════════════════════════════
+
 async function handleLogin() {
   hideError();
   if (!validate()) return;
@@ -93,7 +72,7 @@ async function handleLogin() {
   btnLogin.textContent = 'Verificando...';
 
   try {
-    // FastAPI OAuth2 requiere FormData con "username" y "password"
+  
     const formData = new FormData();
     formData.append('username', emailInput.value.trim());
     formData.append('password', passInput.value);
@@ -110,11 +89,11 @@ async function handleLogin() {
 
     const data = await res.json();
 
-    // Guardar token según "Mantener sesión"
+
     const storage = rememberMe.checked ? localStorage : sessionStorage;
     storage.setItem('token', data.access_token);
 
-    // Redirigir al dashboard
+    
     window.location.href = 'dashboard.html';
 
   } catch (err) {
@@ -125,9 +104,7 @@ async function handleLogin() {
   }
 }
 
-// ══════════════════════════════════════
-// EVENTOS
-// ══════════════════════════════════════
+
 btnLogin.addEventListener('click', handleLogin);
 
 [emailInput, passInput].forEach(input => {

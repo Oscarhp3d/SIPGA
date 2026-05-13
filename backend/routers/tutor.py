@@ -1,7 +1,4 @@
-"""
-Router del Tutor.
-El tutor ve sus estudiantes asignados y valida sus seguimientos.
-"""
+
 from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from typing import List
