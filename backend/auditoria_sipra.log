@@ -7565,3 +7565,13 @@ LINE 1: ...id, empresa_id, estado, horas_totales_requeridas, horas_acum...
 2026-05-13 17:12:55,409 - INFO - Path: /api/v1/usuarios/me | Method: OPTIONS | IP: 127.0.0.1 | Time: 0.0000s
 2026-05-13 17:12:56,186 - INFO - Path: /api/v1/usuarios/me | Method: GET | IP: 127.0.0.1 | Time: 0.7713s
 2026-05-13 17:12:57,962 - INFO - Path: /api/v1/usuarios/ | Method: GET | IP: 127.0.0.1 | Time: 0.7167s
+2026-05-13 17:27:45,158 - INFO - Path: /api/v1/auth/token | Method: POST | IP: 127.0.0.1 | Time: 0.6263s
+2026-05-13 17:27:45,388 - INFO - Path: /api/v1/usuarios/me | Method: OPTIONS | IP: 127.0.0.1 | Time: 0.0000s
+2026-05-13 17:27:45,646 - INFO - Path: /api/v1/usuarios/me | Method: GET | IP: 127.0.0.1 | Time: 0.2544s
+2026-05-13 17:27:48,366 - INFO - Path: /api/v1/usuarios/ | Method: OPTIONS | IP: 127.0.0.1 | Time: 0.0000s
+2026-05-13 17:27:48,700 - INFO - Path: /api/v1/usuarios/ | Method: GET | IP: 127.0.0.1 | Time: 0.3286s
+2026-05-13 17:32:43,672 - INFO - Path: /api/v1/usuarios/me | Method: GET | IP: 127.0.0.1 | Time: 21.7684s
+2026-05-13 17:33:38,229 - INFO - Path: /api/v1/usuarios/me | Method: OPTIONS | IP: 127.0.0.1 | Time: 0.0000s
+2026-05-13 17:33:38,488 - INFO - Path: /api/v1/usuarios/me | Method: GET | IP: 127.0.0.1 | Time: 0.2561s
+2026-05-13 17:33:41,485 - INFO - Path: /api/v1/usuarios/ | Method: GET | IP: 127.0.0.1 | Time: 0.3077s
+2026-05-13 17:35:33,072 - INFO - Path: /api/v1/usuarios/me | Method: GET | IP: 127.0.0.1 | Time: 0.2366s
