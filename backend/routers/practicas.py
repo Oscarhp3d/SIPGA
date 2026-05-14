@@ -86,7 +86,7 @@ def actualizar_practica(
     practica_id: str,
     data: schemas.PracticaUpdate,
     db: Session = Depends(get_db),
-    admin=Depends(auth.verificar_rol(["coordinador"]))
+    admin=Depends(auth.verificar_rol(["coordinador", "tutor"]))
 ):
     """Actualiza el estado u otros campos de una práctica (Solo Coordinadores)."""
     practica = crud.obtener_practica(db, practica_id)
