@@ -2106,7 +2106,7 @@ async function crearUsuario() {
     set('pracFinalizadasKpi', finalizadas);
   }
 
-  function renderTablaPracticas(lista) {
+ function renderTablaPracticas(lista) {
     const tbody = document.getElementById('tablaPracticas');
 
     if (!lista.length) {
@@ -2149,7 +2149,7 @@ async function crearUsuario() {
           <td class="px-3 py-3 flex gap-2">
             <button data-id="${p.id}" data-action="ver-practica"
                     class="btn-practica text-[10px] font-semibold text-blue-600 hover:text-blue-800">Ver</button>
-            ${p.estado !== 'finalizada' ? `
+            ${p.estado === 'pendiente' ? `
             <button data-id="${p.id}" data-action="aprobar-practica"
                     class="btn-practica text-[10px] font-semibold text-emerald-600 hover:text-emerald-800">Aprobar</button>
             ` : ''}
@@ -2157,7 +2157,6 @@ async function crearUsuario() {
         </tr>`;
     }).join('');
   }
-
   let _practicaListenerOk = false;
   function registrarListenerPracticas() {
     if (_practicaListenerOk) return;
@@ -2233,8 +2232,7 @@ async function crearUsuario() {
     abrirModal();
   }
 
-  async function aprobarPractica(id) {
-
+ async function aprobarPractica(id) {
     if (!confirm('¿Marcar esta práctica como activa/aprobada?')) return;
     try {
       const res = await fetch(`${API_URL}/practicas/${id}`, {
@@ -2247,12 +2245,12 @@ async function crearUsuario() {
         Toast.fire({icon: 'error', title: 'No se pudo aprobar: ' + (d.detail || res.status)});
         return;
       }
+      Toast.fire({icon: 'success', title: 'Práctica aprobada correctamente'});
       cargarPracticas();
     } catch (err) {
       Toast.fire({icon: 'error', title: 'Error de conexión: ' + err.message});
     }
   }
-
   async function abrirModalPractica() {
 
     if (Object.keys(_usuariosMapa).length === 0) {
