@@ -21,19 +21,16 @@ def iniciar_practica(
     Si no se envía tutor_id, el backend lo auto-asigna según el programa del estudiante.
     Si tampoco existe asignación automática, la práctica queda sin tutor (se asigna luego).
     """
-    # Validar que el estudiante existe
     estudiante = crud.obtener_usuario_por_id(db, data.estudiante_id)
     if not estudiante:
         raise HTTPException(status_code=404, detail="Estudiante no encontrado")
     if estudiante.rol != models.UserRole.estudiante:
         raise HTTPException(status_code=400, detail="El usuario indicado no tiene rol de estudiante")
 
-    # Validar empresa
     empresa = db.query(models.Empresa).filter(models.Empresa.id == data.empresa_id).first()
     if not empresa:
         raise HTTPException(status_code=404, detail="Empresa no encontrada")
 
-    # Validar tutor si se envió explícitamente
     if data.tutor_id:
         tutor = crud.obtener_usuario_por_id(db, data.tutor_id)
         if not tutor:
@@ -57,15 +54,18 @@ def mis_practicas(
 @router.get("/", response_model=List[schemas.PracticaResponse])
 def listar_practicas(
     db: Session = Depends(get_db),
-    admin=Depends(auth.verificar_rol(["coordinador"]))
+    current_user=Depends(auth.verificar_rol(["coordinador", "tutor"]))
 ):
-    """Lista todas las prácticas (Solo Coordinadores)."""
+    """Lista prácticas. Coordinador ve todas; Tutor ve solo las suyas."""
+    rol = current_user.rol.value if hasattr(current_user.rol, 'value') else current_user.rol
+    if rol == "tutor":
+        return crud.obtener_practicas_por_usuario(db, current_user.id, rol)
     return crud.obtener_todas_practicas(db)
 
 
 @router.get("/{practica_id}", response_model=schemas.PracticaResponse)
 def obtener_practica(
-    practica_id: str,
+    practica_id: int,
     db: Session = Depends(get_db),
     current_user: models.Usuario = Depends(auth.get_current_user)
 ):
@@ -83,7 +83,7 @@ def obtener_practica(
 
 @router.patch("/{practica_id}", response_model=schemas.PracticaResponse)
 def actualizar_practica(
-    practica_id: str,
+    practica_id: int,
     data: schemas.PracticaUpdate,
     db: Session = Depends(get_db),
     admin=Depends(auth.verificar_rol(["coordinador", "tutor"]))
@@ -121,7 +121,7 @@ def actualizar_practica(
 
 @router.get("/{practica_id}/reporte-pdf")
 def descargar_reporte(
-    practica_id: str,
+    practica_id: int,
     db: Session = Depends(get_db),
     current_user: models.Usuario = Depends(auth.get_current_user)
 ):
