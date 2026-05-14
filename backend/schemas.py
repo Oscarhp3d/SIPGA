@@ -63,6 +63,8 @@ class UsuarioResponse(UsuarioBase):
     acepto_politica:      bool
     fecha_consentimiento: Optional[datetime] = None
     version_politica:     Optional[str]      = None
+    # Sobreescribe sin min_length para tolerar datos existentes en BD con valor vacío
+    programa_academico:   Optional[str]      = Field(None, max_length=150)
     model_config = {"from_attributes": True}
 
 
@@ -129,9 +131,7 @@ class PracticaResponse(PracticaBase):
 
 
 class SeguimientoBase(BaseModel):
-    practica_id: int                 # ← cambiado: str → int
-    descripcion: str = Field(..., min_length=15)
-    practica_id: str
+    practica_id: int
     descripcion: str = Field(..., min_length=15, max_length=2000)
     horas_realizadas: float = Field(..., gt=0, le=12)
     fecha_actividad: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
@@ -147,7 +147,9 @@ class SeguimientoBase(BaseModel):
     @classmethod
     def validar_fecha(cls, v):
         now = datetime.now(timezone.utc)
-        # Allow a tiny margin for execution time delay if comparing strict now
+        # Normalizar v a timezone-aware si viene sin timezone
+        if v.tzinfo is None:
+            v = v.replace(tzinfo=timezone.utc)
         if v > now:
             raise ValueError("La fecha de la actividad no puede ser futura")
         if v.year != now.year:
