@@ -10,7 +10,7 @@ from config import settings
 
 router = APIRouter(prefix="/seguimientos", tags=["Seguimientos"])
 
-@router.post("/", response_model=schemas.SeguimientoResponse)
+@router.post("/", response_model=schemas.SeguimientoResponse, status_code=status.HTTP_201_CREATED)
 def reportar_actividad(
     seguimiento: schemas.SeguimientoCreate,
     db: Session = Depends(get_db),

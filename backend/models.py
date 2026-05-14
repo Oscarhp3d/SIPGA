@@ -31,7 +31,7 @@ class Usuario(Base):
     password_hash      = Column(String(255), nullable=False)
     rol                = Column(userrole_type, default=UserRole.estudiante)
     programa_academico = Column(String, nullable=True)
-    fecha_creacion     = Column(DateTime, default=datetime.datetime.utcnow)
+    fecha_creacion     = Column(DateTime, default=lambda: datetime.datetime.now(datetime.timezone.utc))
 
     acepto_politica      = Column(Boolean, nullable=False, default=False)
     fecha_consentimiento = Column(DateTime, nullable=True)
@@ -62,7 +62,7 @@ class AsignacionTutor(Base):
     id                 = Column(Integer, primary_key=True, index=True)
     tutor_id           = Column(String, ForeignKey("usuarios.id"), nullable=False)
     programa_academico = Column(String(200), nullable=False)
-    fecha_asignacion   = Column(DateTime, default=datetime.datetime.utcnow)
+    fecha_asignacion   = Column(DateTime, default=lambda: datetime.datetime.now(datetime.timezone.utc))
     activa             = Column(Boolean, default=True)
 
     tutor = relationship("Usuario", foreign_keys=[tutor_id])
@@ -93,30 +93,47 @@ class Practica(Base):
 class Seguimiento(Base):
     __tablename__ = "seguimientos"
 
-    # ← Cambiado: Integer autoincremental en lugar de UUID
-    id               = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    practica_id      = Column(Integer, ForeignKey("practicas.id"))   # ← Integer también
-    fecha_actividad  = Column(DateTime, default=datetime.datetime.utcnow)
-    descripcion      = Column(Text, nullable=False)
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+
+    practica_id = Column(Integer, ForeignKey("practicas.id"))
+
+    fecha_actividad = Column(
+        DateTime,
+        default=lambda: datetime.datetime.now(datetime.timezone.utc)
+    )
+
+    descripcion = Column(Text, nullable=False)
+
     horas_realizadas = Column(Float, nullable=False)
-    estado           = Column(statusenum_type, default=StatusEnum.borrador)
-    validado_tutor      = Column(Boolean, default=False)
+
+    estado = Column(
+        statusenum_type,
+        default=StatusEnum.borrador
+    )
+
+    validado_tutor = Column(Boolean, default=False)
+
     validado_supervisor = Column(Boolean, default=False)
+
     observaciones_tutor = Column(Text, nullable=True)
-    evidencia_url       = Column(String, nullable=True)
-    archivo_evidencia   = Column(String, nullable=True)
-    is_deleted          = Column(Boolean, default=False)
 
-    practica = relationship("Practica", back_populates="seguimientos")
+    evidencia_url = Column(String, nullable=True)
 
+    archivo_evidencia = Column(String, nullable=True)
 
+    is_deleted = Column(Boolean, default=False)
+
+    practica = relationship(
+        "Practica",
+        back_populates="seguimientos"
+    )
 class AuditLog(Base):
     __tablename__ = "logs_auditoria"
 
     id         = Column(Integer, primary_key=True, index=True)
     usuario_id = Column(String, nullable=True)
     accion     = Column(String)
-    fecha      = Column(DateTime, default=datetime.datetime.utcnow)
+    fecha      = Column(DateTime, default=lambda: datetime.datetime.now(datetime.timezone.utc))
     ip_origen  = Column(String)
 
     usuario = relationship(

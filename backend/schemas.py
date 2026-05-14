@@ -1,17 +1,22 @@
-from pydantic import BaseModel, EmailStr, Field, field_validator
+from pydantic import BaseModel, EmailStr, Field, field_validator, model_validator
 from typing import Optional, List
-from datetime import datetime
+from datetime import datetime, timezone
 from models import UserRole, StatusEnum
 
 
 class UsuarioBase(BaseModel):
-    nombre: str = Field(..., example="Juan Pérez")
-    correo: EmailStr = Field(..., example="juan.perez@universidad.edu.co")
+    nombre: str = Field(..., min_length=3, max_length=150, json_schema_extra={"examples": ["Juan Pérez"]})
+    correo: EmailStr = Field(..., max_length=255, json_schema_extra={"examples": ["juan.perez@universidad.edu.co"]})
     rol: UserRole = UserRole.estudiante
-    programa_academico: Optional[str] = Field(None, example="Tecnología en Desarrollo de Sistemas")
+    programa_academico: Optional[str] = Field(None, min_length=3, max_length=150, json_schema_extra={"examples": ["Tecnología en Desarrollo de Sistemas"]})
 
 class UsuarioCreate(UsuarioBase):
     password: str = Field(..., min_length=8)
+    """
+    Usado por el coordinador para crear usuarios internamente.
+    El consentimiento queda registrado automáticamente en nombre de la institución.
+    """
+    password: str = Field(..., min_length=8, max_length=64)
 
 class RegistroPublicoCreate(BaseModel):
     nombre:             str      = Field(..., example="Juan Pérez")
@@ -20,6 +25,23 @@ class RegistroPublicoCreate(BaseModel):
     programa_academico: Optional[str] = None
     acepto_politica:    bool     = Field(..., description="Ley 1581/2012")
     version_politica:   str      = Field(default="v1.0")
+    """
+    Endpoint público POST /auth/registro.
+    El usuario se registra por cuenta propia y DEBE aceptar explícitamente
+    la política de tratamiento de datos (Ley 1581/2012 + Decreto 1377/2013).
+    """
+    nombre:             str      = Field(..., min_length=3, max_length=150, json_schema_extra={"examples": ["Juan Pérez"]})
+    correo:             EmailStr = Field(..., max_length=255, json_schema_extra={"examples": ["juan@universidad.edu.co"]})
+    password:           str      = Field(..., min_length=8, max_length=64)
+    programa_academico: Optional[str] = Field(None, min_length=3, max_length=150)
+    acepto_politica:    bool     = Field(
+        ...,
+        description="El titular debe aceptar la política de datos (Ley 1581/2012)."
+    )
+    version_politica:   str      = Field(
+        default="v1.0",
+        description="Versión del documento de política aceptado."
+    )
 
     @field_validator("acepto_politica")
     @classmethod
@@ -29,11 +51,11 @@ class RegistroPublicoCreate(BaseModel):
         return v
 
 class UsuarioUpdate(BaseModel):
-    nombre: Optional[str] = None
-    correo: Optional[EmailStr] = None
-    password: Optional[str] = None
+    nombre: Optional[str] = Field(None, min_length=3, max_length=150)
+    correo: Optional[EmailStr] = Field(None, max_length=255)
+    password: Optional[str] = Field(None, min_length=8, max_length=64)
     rol: Optional[UserRole] = None
-    programa_academico: Optional[str] = None
+    programa_academico: Optional[str] = Field(None, min_length=3, max_length=150)
 
 class UsuarioResponse(UsuarioBase):
     id:                   str
@@ -45,9 +67,9 @@ class UsuarioResponse(UsuarioBase):
 
 
 class EmpresaBase(BaseModel):
-    nombre: str = Field(..., example="Tech Solutions S.A.S.")
-    nit: str = Field(..., example="900.123.456-1")
-    direccion: str = Field(..., example="Calle 100 #15-20")
+    nombre: str = Field(..., min_length=3, max_length=150, json_schema_extra={"examples": ["Tech Solutions S.A.S."]})
+    nit: str = Field(..., min_length=5, max_length=20, pattern=r"^[0-9A-Za-z\.-]+$", json_schema_extra={"examples": ["900.123.456-1"]})
+    direccion: str = Field(..., min_length=5, max_length=255, json_schema_extra={"examples": ["Calle 100 #15-20"]})
 
 class EmpresaCreate(EmpresaBase):
     pass
@@ -59,7 +81,7 @@ class EmpresaResponse(EmpresaBase):
 
 class AsignacionTutorCreate(BaseModel):
     tutor_id: str
-    programa_academico: str = Field(..., example="Tecnología en Desarrollo de Sistemas")
+    programa_academico: str = Field(..., min_length=3, max_length=150, json_schema_extra={"examples": ["Tecnología en Desarrollo de Sistemas"]})
 
 class AsignacionTutorResponse(BaseModel):
     id: int
@@ -75,10 +97,17 @@ class PracticaBase(BaseModel):
     estudiante_id: str
     tutor_id: Optional[str] = None
     supervisor_id: Optional[str] = None
-    empresa_id: int
-    horas_totales_requeridas: int = 320
+    empresa_id: int = Field(..., gt=0)
+    horas_totales_requeridas: int = Field(320, gt=0, le=2000)
     fecha_inicio: Optional[datetime] = None
     fecha_fin: Optional[datetime] = None
+
+    @model_validator(mode='after')
+    def validar_fechas(self):
+        if self.fecha_inicio and self.fecha_fin:
+            if self.fecha_fin < self.fecha_inicio:
+                raise ValueError("La fecha de fin no puede ser anterior a la fecha de inicio")
+        return self
 
 class PracticaCreate(PracticaBase):
     pass
@@ -102,14 +131,27 @@ class PracticaResponse(PracticaBase):
 class SeguimientoBase(BaseModel):
     practica_id: int                 # ← cambiado: str → int
     descripcion: str = Field(..., min_length=15)
+    practica_id: str
+    descripcion: str = Field(..., min_length=15, max_length=2000)
     horas_realizadas: float = Field(..., gt=0, le=12)
-    fecha_actividad: datetime = Field(default_factory=datetime.utcnow)
+    fecha_actividad: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
     @field_validator('horas_realizadas')
     @classmethod
     def validar_horas(cls, v):
         if v <= 0:
             raise ValueError("Las horas deben ser mayores a cero")
+        return v
+
+    @field_validator('fecha_actividad')
+    @classmethod
+    def validar_fecha(cls, v):
+        now = datetime.now(timezone.utc)
+        # Allow a tiny margin for execution time delay if comparing strict now
+        if v > now:
+            raise ValueError("La fecha de la actividad no puede ser futura")
+        if v.year != now.year:
+            raise ValueError("El año de la actividad debe ser el año actual")
         return v
 
 class SeguimientoCreate(SeguimientoBase):

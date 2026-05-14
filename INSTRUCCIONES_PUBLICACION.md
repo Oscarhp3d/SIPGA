@@ -1,4 +1,4 @@
-# 🚀 Guía de Publicación para SIPRA
+# 🚀 Guía de Publicación para SIPGA
 
 He configurado todo para que puedas publicar el backend y tus compañeros solo tengan que preocuparse por el diseño del frontend.
 
@@ -24,13 +24,13 @@ Ve a tu proyecto de Supabase y busca:
 2. Conecta tu repositorio de GitHub.
 3. Elige **"Blueprint"** (esto leerá el archivo `render.yaml` que te creé).
 4. En la configuración de Render, te pedirá la `DATABASE_URL`. Pega la URI de Supabase.
-5. Render generará una URL pública (ej: `https://sipra-backend.onrender.com`).
+5. Render generará una URL pública (ej: `https://sipga-backend.onrender.com`).
 
 ### 3. Actualizar la URL en el Frontend
 En `frontend/index.html`, busca la línea 46 y cambia la URL por la que te dio Render:
 
 ```javascript
-: "https://sipra-backend.onrender.com"; 
+: "https://sipga-backend.onrender.com"; 
 ```
 
 ### 4. ¿Cómo trabajarán tus compañeros?

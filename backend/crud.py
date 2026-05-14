@@ -5,6 +5,7 @@ import models, schemas
 import auth
 from datetime import datetime
 import uuid
+from datetime import datetime, timezone
 
 
 def create_audit_log(db: Session, usuario_id: str, accion: str, ip: str) -> models.AuditLog:
@@ -46,7 +47,7 @@ def crear_usuario(db: Session, usuario: schemas.UsuarioCreate) -> models.Usuario
         rol=usuario.rol,
         programa_academico=usuario.programa_academico,
         acepto_politica=True,
-        fecha_consentimiento=datetime.utcnow(),
+        fecha_consentimiento=datetime.now(timezone.utc),
         version_politica="v1.0",
     )
     db.add(db_usuario)
@@ -72,7 +73,7 @@ def registrar_usuario_publico(
         rol=models.UserRole.estudiante,       # rol por defecto al auto-registrarse
         programa_academico=datos.programa_academico,
         acepto_politica=True,                 # validado en el schema (ValueError si False)
-        fecha_consentimiento=datetime.utcnow(),
+        fecha_consentimiento=datetime.now(timezone.utc),
         version_politica=datos.version_politica,
     )
     db.add(db_usuario)

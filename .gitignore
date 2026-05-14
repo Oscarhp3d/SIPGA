@@ -12,3 +12,6 @@ __pycache__/
 *.sqlite3
 evidencias/
 .vscode/
+
+*.log
+*.db

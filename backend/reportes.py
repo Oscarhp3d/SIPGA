@@ -12,7 +12,7 @@ def generar_pdf_practica(estudiante_nombre: str, empresa: str, seguimientos: lis
     p.setFont("Helvetica-Bold", 14)
     p.drawCentredString(width/2, height - 50, "CORPORACION UNIVERSITARIA RAFAEL NUÑEZ")
     p.setFont("Helvetica", 12)
-    p.drawCentredString(width/2, height - 70, "SIPRA: Sistema de Información para el Seguimiento de Prácticas")
+    p.drawCentredString(width/2, height - 70, "SIPGA: Sistema de Información para el Seguimiento de Prácticas")
     
     p.setFont("Helvetica-Bold", 10)
     p.drawString(50, height - 100, f"ESTUDIANTE: {estudiante_nombre}")

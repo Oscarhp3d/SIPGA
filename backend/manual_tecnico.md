@@ -1,4 +1,4 @@
-# Manual de Integración API - SIPRA v1.0
+# Manual de Integración API - SIPGA v1.0
 
 Este documento contiene los endpoints principales para que el equipo de Frontend conecte las interfaces.
 
