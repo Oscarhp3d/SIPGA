@@ -2,7 +2,6 @@ from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Float, Tex
 from sqlalchemy.orm import relationship
 from database import Base
 import datetime
-import uuid
 import enum
 
 
@@ -22,11 +21,11 @@ userrole_type   = Enum(UserRole,  name="userrole",   create_type=False)
 statusenum_type = Enum(StatusEnum, name="statusenum", create_type=False)
 
 
-
 class Usuario(Base):
     __tablename__ = "usuarios"
 
-    id                 = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()), index=True)
+    # Usuario conserva UUID (no cambia — es la clave de auth/JWT)
+    id                 = Column(String, primary_key=True, index=True)
     nombre             = Column(String(100), nullable=False)
     correo             = Column(String(150), unique=True, nullable=False, index=True)
     password_hash      = Column(String(255), nullable=False)
@@ -34,12 +33,9 @@ class Usuario(Base):
     programa_academico = Column(String, nullable=True)
     fecha_creacion     = Column(DateTime, default=datetime.datetime.utcnow)
 
-    # ── Consentimiento informado — Ley 1581/2012 + Decreto 1377/2013 ────────
-    # El titular debe aceptar la política de tratamiento de datos antes
-    # de que el sistema pueda almacenar cualquier dato personal suyo.
-    acepto_politica        = Column(Boolean, nullable=False, default=False)
-    fecha_consentimiento   = Column(DateTime, nullable=True)
-    version_politica       = Column(String(20), nullable=True)   # ej: "v1.0"
+    acepto_politica      = Column(Boolean, nullable=False, default=False)
+    fecha_consentimiento = Column(DateTime, nullable=True)
+    version_politica     = Column(String(20), nullable=True)
 
     audit_logs = relationship(
         "AuditLog",
@@ -61,7 +57,6 @@ class Empresa(Base):
 
 
 class AsignacionTutor(Base):
-    """Asigna un tutor a un programa académico completo (usado por el coordinador)."""
     __tablename__ = "asignaciones_tutor"
 
     id                 = Column(Integer, primary_key=True, index=True)
@@ -76,9 +71,10 @@ class AsignacionTutor(Base):
 class Practica(Base):
     __tablename__ = "practicas"
 
-    id                       = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()), index=True)
+    # ← Cambiado: Integer autoincremental en lugar de UUID
+    id                       = Column(Integer, primary_key=True, index=True, autoincrement=True)
     estudiante_id            = Column(String, ForeignKey("usuarios.id"))
-    tutor_id                 = Column(String, ForeignKey("usuarios.id"))
+    tutor_id                 = Column(String, ForeignKey("usuarios.id"), nullable=True)
     supervisor_id            = Column(String, ForeignKey("usuarios.id"), nullable=True)
     empresa_id               = Column(Integer, ForeignKey("empresas.id"))
     estado                   = Column(String(20), default="activa")
@@ -97,8 +93,9 @@ class Practica(Base):
 class Seguimiento(Base):
     __tablename__ = "seguimientos"
 
-    id               = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()), index=True)
-    practica_id      = Column(String, ForeignKey("practicas.id"))
+    # ← Cambiado: Integer autoincremental en lugar de UUID
+    id               = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    practica_id      = Column(Integer, ForeignKey("practicas.id"))   # ← Integer también
     fecha_actividad  = Column(DateTime, default=datetime.datetime.utcnow)
     descripcion      = Column(Text, nullable=False)
     horas_realizadas = Column(Float, nullable=False)
@@ -117,7 +114,7 @@ class AuditLog(Base):
     __tablename__ = "logs_auditoria"
 
     id         = Column(Integer, primary_key=True, index=True)
-    usuario_id = Column(String, nullable=True)   
+    usuario_id = Column(String, nullable=True)
     accion     = Column(String)
     fecha      = Column(DateTime, default=datetime.datetime.utcnow)
     ip_origen  = Column(String)

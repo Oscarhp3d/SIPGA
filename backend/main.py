@@ -5,6 +5,7 @@ import logging
 import os
 import time
 import sys
+from routers import dashboard
 
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
@@ -66,7 +67,7 @@ app.include_router(usuarios.router,     prefix=settings.API_V1_STR)
 app.include_router(practicas.router,    prefix=settings.API_V1_STR)
 app.include_router(seguimientos.router, prefix=settings.API_V1_STR)
 app.include_router(empresas.router,     prefix=settings.API_V1_STR)
-
+app.include_router(dashboard.router, prefix=settings.API_V1_STR)
 # 7. INCLUSIÓN DE ROUTERS — por rol
 app.include_router(coordinador.router,  prefix=settings.API_V1_STR)
 app.include_router(tutor.router,        prefix=settings.API_V1_STR)

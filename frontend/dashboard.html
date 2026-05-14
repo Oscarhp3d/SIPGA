@@ -631,7 +631,7 @@
         </div>
 
    
-        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm">
+          <div class="bg-white rounded-2xl p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto">
           <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
             <h2 class="font-syne font-semibold text-slate-800 text-sm">Prácticas — Descarga de Reportes PDF</h2>
             <input type="text" id="filtroReportes" placeholder="Filtrar..." oninput="filtrarTablaReportes()"
@@ -660,21 +660,42 @@
   </main>
 
 
-  <div id="modalOverlay" class="fixed inset-0 z-50 items-center justify-center bg-black/40 backdrop-blur-sm">
-    <div id="modalBox" class="bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 p-6">
-      <div class="flex items-center justify-between mb-5">
-        <h3 class="font-syne font-bold text-slate-800 text-base" id="modalTitulo">Registrar Horas</h3>
-        <button onclick="cerrarModal()" class="text-slate-400 hover:text-slate-600 transition-colors">
-          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-          </svg>
-        </button>
-      </div>
-      <div id="modalContenido">
-  
-      </div>
+  <div id="modalOverlay"
+     class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 backdrop-blur-sm">
+
+  <div id="modalBox"
+       class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl mx-4 p-5 max-h-[90vh] overflow-y-auto">
+
+    <div class="flex items-center justify-between mb-5">
+
+      <h3 class="font-syne font-bold text-slate-800 text-base"
+          id="modalTitulo">
+        Registrar Horas
+      </h3>
+
+      <button onclick="cerrarModal()"
+              class="text-slate-400 hover:text-slate-600 transition-colors">
+
+        <svg class="w-5 h-5"
+             viewBox="0 0 24 24"
+             fill="none"
+             stroke="currentColor"
+             stroke-width="2">
+
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+
+        </svg>
+
+      </button>
+
     </div>
+
+    <div id="modalContenido"></div>
+
   </div>
+
+</div>
 
  <script>
 
@@ -685,11 +706,10 @@
       ? 'http://127.0.0.1:8000/api/v1'
       : `${window.location.origin}/api/v1`;
 
-  const token =
-    localStorage.getItem('token') ||
-    sessionStorage.getItem('token');
-
-
+ function getToken() {
+  return localStorage.getItem('token') || sessionStorage.getItem('token');
+}
+const token = getToken();
 
   const secciones = {
     dashboard: document.getElementById('seccionDashboard'),
@@ -778,7 +798,7 @@
     try {
       const res = await fetch(`${API_URL}/usuarios/me`, {
         headers: {
-          Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${getToken()}`
         }
       });
 
@@ -793,7 +813,7 @@
 
       document.getElementById('topbarNombre').textContent = user.nombre;
       document.getElementById('topbarRol').textContent = user.rol;
-      document.getElementById('nombreUsuario').textContent = user.nombre;
+      document.getElementById('nombreUsuario').textContent = user.nombre.split(' ')[0];
 
       document.getElementById('topbarAvatar').textContent =
         user.nombre.charAt(0).toUpperCase();
@@ -879,7 +899,7 @@
     try {
       const res = await fetch(`${API_URL}/usuarios/`, {
         headers: {
-          Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${getToken()}`
         }
       });
 
@@ -1101,6 +1121,23 @@
           y las políticas de privacidad institucionales.
         </p>
       </div>
+      <div class="flex items-start gap-2 mt-3">
+  <input
+    type="checkbox"
+    id="nuAceptaDatos"
+    class="mt-1"
+  />
+
+  <label
+    for="nuAceptaDatos"
+    class="text-xs text-slate-600 leading-relaxed">
+
+    La institución certifica que el titular fue informado
+    sobre el tratamiento de sus datos personales conforme
+    a la Ley 1581 de 2012.
+
+  </label>
+</div>
 
       <div class="flex gap-3 pt-2 justify-end">
 
@@ -1127,52 +1164,57 @@
 
  
 
+async function crearUsuario() {
 
-  async function crearUsuario() {
+  const err = document.getElementById('nuError');
 
-    const err = document.getElementById('nuError');
+  const aceptaDatos =
+    document.getElementById('nuAceptaDatos').checked;
 
-    const body = {
-      nombre: document.getElementById('nuNombre').value,
-      correo: document.getElementById('nuCorreo').value,
-      password: document.getElementById('nuPassword').value,
-      rol: document.getElementById('nuRol').value,
-      programa_academico: document.getElementById('nuPrograma').value
-    };
-
-    try {
-
-      const res = await fetch(`${API_URL}/usuarios/`, {
-        method: 'POST',
-
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        },
-
-        body: JSON.stringify(body)
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        err.textContent = data.detail || 'Error';
-        err.classList.remove('hidden');
-        return;
-      }
-
-      cerrarModal();
-
-      cargarTablaUsuarios();
-
-    } catch (error) {
-
-      err.textContent = 'Error de conexión';
-      err.classList.remove('hidden');
-    }
+  if (!aceptaDatos) {
+    alert('Debe confirmar el tratamiento de datos.');
+    return;
   }
 
+  const body = {
+    nombre: document.getElementById('nuNombre').value,
+    correo: document.getElementById('nuCorreo').value,
+    password: document.getElementById('nuPassword').value,
+    rol: document.getElementById('nuRol').value,
+    programa_academico: document.getElementById('nuPrograma').value
+  };
 
+  try {
+
+    const res = await fetch(`${API_URL}/usuarios/`, {
+      method: 'POST',
+
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${getToken()}`
+      },
+
+      body: JSON.stringify(body)
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      err.textContent = data.detail || 'Error';
+      err.classList.remove('hidden');
+      return;
+    }
+
+    cerrarModal();
+
+    cargarTablaUsuarios();
+
+  } catch (error) {
+
+    err.textContent = 'Error de conexión';
+    err.classList.remove('hidden');
+  }
+}
   async function editarUsuario(id) {
 
     const usuario = _usuarios.find(u => u.id === id);
@@ -1283,7 +1325,7 @@
 
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${getToken()}`
         },
 
         body: JSON.stringify(body)
@@ -1317,7 +1359,7 @@
         method: 'DELETE',
 
         headers: {
-          Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${getToken()}`
         }
       });
 
@@ -1343,7 +1385,7 @@
       const res = await fetch(`${API_URL}/usuarios/me`, {
 
         headers: {
-          Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${getToken()}`
         }
       });
 
@@ -1382,7 +1424,7 @@
           : `${API_URL}/practicas/mis`;
 
         const resP = await fetch(endpoint, {
-          headers: { Authorization: `Bearer ${token}` }
+          headers: { Authorization: `Bearer ${getToken()}` }
         });
         if (resP.ok) {
           const practicas = await resP.json();
@@ -1397,7 +1439,7 @@
       }
 
       const res = await fetch(`${API_URL}/seguimientos/practica/${_miPracticaId}`, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${getToken()}` }
       });
 
       if (!res.ok) throw new Error('Sin acceso');
@@ -1455,7 +1497,7 @@
     try {
       const res = await fetch(`${API_URL}/seguimientos/${id}/validar`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getToken()}` },
         body: JSON.stringify({ estado: 'enviado' })
       });
       if (res.ok) cargarLog();
@@ -1540,7 +1582,7 @@
     try {
       const res = await fetch(`${API_URL}/seguimientos/`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getToken()}` },
         body: JSON.stringify(body)
       });
       const data = await res.json();
@@ -1574,7 +1616,7 @@
         : `${API_URL}/practicas/mis`;
 
       const resP = await fetch(endpointPrac, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${getToken()}` }
       });
       if (!resP.ok) throw new Error('Sin acceso a prácticas');
       const practicas = await resP.json();
@@ -1586,7 +1628,7 @@
 
 
       if (Object.keys(_usuariosMapa).length === 0) {
-        const resU = await fetch(`${API_URL}/usuarios/`, { headers: { Authorization: `Bearer ${token}` } });
+        const resU = await fetch(`${API_URL}/usuarios/`, { headers: { Authorization: `Bearer ${getToken()}` } });
         if (resU.ok) {
           // FIX: era "await resU.ok ? ..." — resU.ok es boolean, no la respuesta
           const us = await resU.json();
@@ -1597,7 +1639,7 @@
 
       const promesas = practicas.map(p =>
         fetch(`${API_URL}/seguimientos/practica/${p.id}`, {
-          headers: { Authorization: `Bearer ${token}` }
+          headers: { Authorization: `Bearer ${getToken()}` }
         }).then(r => {
           if (r.status === 403) return []; 
           return r.ok ? r.json() : [];
@@ -1667,7 +1709,7 @@
 
       const res = await fetch(`${API_URL}/seguimientos/${id}/validar`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getToken()}` },
         body: JSON.stringify(body)
       });
       if (res.ok) cargarValidacion();
@@ -1716,7 +1758,7 @@
     const tbody = document.getElementById('tablaEmpresas');
     try {
       const res = await fetch(`${API_URL}/empresas/`, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${getToken()}` }
       });
       if (!res.ok) throw new Error('Sin acceso');
       _empresas = await res.json();
@@ -1783,7 +1825,7 @@
     try {
       const res = await fetch(`${API_URL}/empresas/`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getToken()}` },
         body: JSON.stringify(body)
       });
       const data = await res.json();
@@ -1816,7 +1858,7 @@
 
       // Cargar usuarios para mapear IDs a nombres (solo coordinador y tutor tienen acceso)
       if (window.currentUserRol === 'coordinador' || window.currentUserRol === 'tutor') {
-        const resU = await fetch(`${API_URL}/usuarios/`, { headers: { Authorization: `Bearer ${token}` } });
+        const resU = await fetch(`${API_URL}/usuarios/`, { headers: { Authorization: `Bearer ${getToken()}` } });
         if (resU.ok) {
           const usuarios = await resU.json();
           _usuariosMapa = {};
@@ -1824,7 +1866,7 @@
         }
       }
 
-      const res = await fetch(endpointPrac, { headers: { Authorization: `Bearer ${token}` } });
+      const res = await fetch(endpointPrac, { headers: { Authorization: `Bearer ${getToken()}` } });
 
       if (!res.ok) {
         tbody.innerHTML = `<tr><td colspan="6" class="px-5 py-8 text-center text-sm text-slate-400">
@@ -1992,7 +2034,7 @@
     try {
       const res = await fetch(`${API_URL}/practicas/${id}`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getToken()}` },
         body: JSON.stringify({ estado: 'activa' })
       });
       if (!res.ok) {
@@ -2011,7 +2053,7 @@
     if (Object.keys(_usuariosMapa).length === 0) {
       try {
         const resU = await fetch(`${API_URL}/usuarios/`, {
-          headers: { Authorization: `Bearer ${token}` }
+          headers: { Authorization: `Bearer ${getToken()}` }
         });
         if (resU.ok) {
           const us = await resU.json();
@@ -2027,7 +2069,7 @@
     if (_empresas.length === 0) {
       try {
         const resE = await fetch(`${API_URL}/empresas/`, {
-          headers: { Authorization: `Bearer ${token}` }
+          headers: { Authorization: `Bearer ${getToken()}` }
         });
         if (resE.ok) _empresas = await resE.json();
       } catch (e) {
@@ -2113,7 +2155,7 @@
     try {
       const res = await fetch(`${API_URL}/practicas/`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getToken()}` },
         body: JSON.stringify(body)
       });
       const data = await res.json();
@@ -2142,13 +2184,13 @@
       // Reusar datos de prácticas si ya están cargados
       if (_practicas.length === 0) {
         // Intentar cargar
-        const resU = await fetch(`${API_URL}/usuarios/`, { headers: { Authorization: `Bearer ${token}` } });
+        const resU = await fetch(`${API_URL}/usuarios/`, { headers: { Authorization: `Bearer ${getToken()}` } });
         if (resU.ok) {
           const us = await resU.json();
           _usuariosMapa = {};
           us.forEach(u => { _usuariosMapa[u.id] = u; });
         }
-        const resP = await fetch(`${API_URL}/practicas/`, { headers: { Authorization: `Bearer ${token}` } });
+        const resP = await fetch(`${API_URL}/practicas/`, { headers: { Authorization: `Bearer ${getToken()}` } });
         if (resP.ok) _practicas = await resP.json();
       }
 
@@ -2277,6 +2319,35 @@
     });
   }
 
+  async function cargarKPIs() {
+
+  try {
+
+    const res = await fetch(
+      `${API_URL}/dashboard/resumen`,
+      {
+        headers: {
+          Authorization: `Bearer ${getToken()}`
+        }
+      }
+    );
+
+    const data = await res.json();
+
+    const kpiPas = document.getElementById('kpiPasantias');
+if (kpiPas) kpiPas.textContent = (data.pasantias_activas ?? 0).toLocaleString('es-CO');
+const kpiHoras = document.getElementById('kpiHoras');
+if (kpiHoras) kpiHoras.textContent = (data.horas_hoy ?? 0) + 'h';
+const kpiVal = document.getElementById('kpiValidaciones');
+if (kpiVal) kpiVal.textContent = (data.validaciones_pendientes ?? 0).toLocaleString('es-CO');
+
+  } catch (error) {
+
+    console.error('Error cargando KPIs:', error);
+
+  }
+}
+
   function exportarResumenCSV() {
     if (!_practicasReporte.length) { alert('No hay datos para exportar'); return; }
     const filas = [
@@ -2294,6 +2365,7 @@
     a.click();
   }
   cargarPerfil();
+  cargarKPIs();
 </script>
 </body>
 </html>
