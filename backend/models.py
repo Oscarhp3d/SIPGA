@@ -32,7 +32,7 @@ class Usuario(Base):
     password_hash      = Column(String(255), nullable=False)
     rol                = Column(userrole_type, default=UserRole.estudiante)
     programa_academico = Column(String, nullable=True)
-    fecha_creacion     = Column(DateTime, default=datetime.datetime.utcnow)
+    fecha_creacion     = Column(DateTime, default=lambda: datetime.datetime.now(datetime.timezone.utc))
 
     # ── Consentimiento informado — Ley 1581/2012 + Decreto 1377/2013 ────────
     # El titular debe aceptar la política de tratamiento de datos antes
@@ -67,7 +67,7 @@ class AsignacionTutor(Base):
     id                 = Column(Integer, primary_key=True, index=True)
     tutor_id           = Column(String, ForeignKey("usuarios.id"), nullable=False)
     programa_academico = Column(String(200), nullable=False)
-    fecha_asignacion   = Column(DateTime, default=datetime.datetime.utcnow)
+    fecha_asignacion   = Column(DateTime, default=lambda: datetime.datetime.now(datetime.timezone.utc))
     activa             = Column(Boolean, default=True)
 
     tutor = relationship("Usuario", foreign_keys=[tutor_id])
@@ -99,7 +99,7 @@ class Seguimiento(Base):
 
     id               = Column(String, primary_key=True, default=lambda: str(uuid.uuid4()), index=True)
     practica_id      = Column(String, ForeignKey("practicas.id"))
-    fecha_actividad  = Column(DateTime, default=datetime.datetime.utcnow)
+    fecha_actividad  = Column(DateTime, default=lambda: datetime.datetime.now(datetime.timezone.utc))
     descripcion      = Column(Text, nullable=False)
     horas_realizadas = Column(Float, nullable=False)
     estado           = Column(statusenum_type, default=StatusEnum.borrador)
@@ -119,7 +119,7 @@ class AuditLog(Base):
     id         = Column(Integer, primary_key=True, index=True)
     usuario_id = Column(String, nullable=True)   
     accion     = Column(String)
-    fecha      = Column(DateTime, default=datetime.datetime.utcnow)
+    fecha      = Column(DateTime, default=lambda: datetime.datetime.now(datetime.timezone.utc))
     ip_origen  = Column(String)
 
     usuario = relationship(

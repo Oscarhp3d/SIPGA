@@ -16,7 +16,7 @@ from config import settings
 from routers import auth_router, usuarios, practicas, seguimientos, empresas, coordinador, tutor, estudiante, supervisor
 
 logging.basicConfig(
-    filename='auditoria_sipra.log',
+    filename='auditoria_sipga.log',
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
@@ -61,6 +61,9 @@ async def global_exception_handler(request: Request, exc: Exception):
     )
 
 
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+
 app.include_router(auth_router.router,  prefix=settings.API_V1_STR)
 app.include_router(usuarios.router,     prefix=settings.API_V1_STR)
 app.include_router(practicas.router,    prefix=settings.API_V1_STR)
@@ -74,13 +77,24 @@ app.include_router(estudiante.router,   prefix=settings.API_V1_STR)
 app.include_router(supervisor.router,   prefix=settings.API_V1_STR)
 
 
-@app.get("/", tags=["Health Check"])
-def root():
-    return {
-        "message": "SIPGA API is running",
-        "version": settings.VERSION,
-        "docs": "/docs"
-    }
+# 8. SERVIR FRONTEND — Unificación del sistema
+frontend_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "frontend")
+if os.path.exists(frontend_path):
+    app.mount("/static", StaticFiles(directory=frontend_path), name="static")
+
+@app.get("/")
+def read_index():
+    index_path = os.path.join(frontend_path, "login.html")
+    if os.path.exists(index_path):
+        return FileResponse(index_path)
+    return {"message": "SIPGA API is running. Frontend not found at " + frontend_path}
+
+@app.get("/{page}.html")
+def read_page(page: str):
+    page_path = os.path.join(frontend_path, f"{page}.html")
+    if os.path.exists(page_path):
+        return FileResponse(page_path)
+    return JSONResponse(status_code=404, content={"detail": "Page not found"})
 
 
 os.makedirs(settings.UPLOAD_DIR, exist_ok=True)

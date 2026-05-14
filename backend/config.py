@@ -4,7 +4,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 from typing import List, Any
 
 class Settings(BaseSettings):
-    PROJECT_NAME: str = "SIPRA API"
+    PROJECT_NAME: str = "SIPGA API"
     VERSION: str = "1.2.0"
     API_V1_STR: str = "/api/v1"
     

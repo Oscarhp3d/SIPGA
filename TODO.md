@@ -1,4 +1,4 @@
-# SIPRA Frontend Auth Refactor TODO
+# SIPGA Frontend Auth Refactor TODO
 Status: [ ] In Progress
 
 ## Steps:

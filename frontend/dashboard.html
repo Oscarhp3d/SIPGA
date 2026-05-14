@@ -6,6 +6,7 @@
   <title>SIPGA — Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
   <script>
     tailwind.config = {
@@ -70,7 +71,7 @@
           </svg>
         </div>
         <div>
-          <div class="font-syne font-bold text-white text-sm leading-none">SIPRA</div>
+          <div class="font-syne font-bold text-white text-sm leading-none">SIPGA</div>
           <div class="text-white/40 text-[10px] mt-0.5">Gestión Académica</div>
         </div>
       </div>
@@ -200,7 +201,7 @@
           <h1 class="font-syne text-2xl font-bold text-slate-800">
             Bienvenido de nuevo, <span id="nombreUsuario">...</span>
           </h1>
-          <p class="text-sm text-slate-400 mt-1">Aquí tienes el resumen administrativo de la plataforma SIPRA para hoy.</p>
+          <p class="text-sm text-slate-400 mt-1">Aquí tienes el resumen administrativo de la plataforma SIPGA para hoy.</p>
         </div>
 
 
@@ -266,7 +267,7 @@
             <div class="space-y-4" id="actividadReciente">
               <div class="text-xs text-slate-300 text-center pt-4">Cargando...</div>
             </div>
-            <button class="w-full mt-4 py-2 text-[11px] font-semibold text-slate-500 border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors tracking-wide">
+            <button onclick="irASeccion('log')" class="w-full mt-4 py-2 text-[11px] font-semibold text-slate-500 border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors tracking-wide">
               VER TODO EL HISTORIAL
             </button>
           </div>
@@ -276,7 +277,7 @@
         <div class="bg-white rounded-2xl border border-slate-100 shadow-sm">
           <div class="flex items-center justify-between px-5 py-4 border-b border-slate-100">
             <h2 class="font-syne font-semibold text-slate-800 text-sm">Validaciones Pendientes</h2>
-            <button class="px-4 py-2 text-xs font-semibold text-white rounded-xl transition-all hover:opacity-90"
+            <button onclick="validarSeleccionados()" class="px-4 py-2 text-xs font-semibold text-white rounded-xl transition-all hover:opacity-90"
                     style="background:#0d1b2e;">
               Validar Seleccionados
             </button>
@@ -287,9 +288,9 @@
                 <tr class="border-b border-slate-100">
                   <th class="px-5 py-3 text-left"><input type="checkbox" class="w-3.5 h-3.5 accent-slate-800"/></th>
                   <th class="px-3 py-3 text-left text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Alumno</th>
-                  <th class="px-3 py-3 text-left text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Facultad</th>
-                  <th class="px-3 py-3 text-left text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Empresa Destino</th>
-                  <th class="px-3 py-3 text-left text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Estado</th>
+                  <th class="px-3 py-3 text-left text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Actividad</th>
+                  <th class="px-3 py-3 text-left text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Horas</th>
+                  <th class="px-3 py-3 text-left text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Fecha</th>
                   <th class="px-3 py-3 text-left text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Acciones</th>
                 </tr>
               </thead>
@@ -460,7 +461,7 @@
                 <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wide mb-1.5">Programa Académico</label>
                 <input type="text" id="configPrograma" class="w-full px-3 py-2.5 text-sm border border-slate-200 rounded-xl outline-none focus:border-blue-300 bg-slate-50 text-slate-700"/>
               </div>
-              <button class="w-full py-2.5 text-xs font-semibold text-white rounded-xl hover:opacity-90 transition-all" style="background:#0d1b2e;">
+              <button onclick="actualizarPerfilConfig()" id="btnGuardarPerfil" class="w-full py-2.5 text-xs font-semibold text-white rounded-xl hover:opacity-90 transition-all" style="background:#0d1b2e;">
                 Guardar Cambios
               </button>
             </div>
@@ -471,17 +472,17 @@
             <div class="space-y-4">
               <div>
                 <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wide mb-1.5">Contraseña actual</label>
-                <input type="password" class="w-full px-3 py-2.5 text-sm border border-slate-200 rounded-xl outline-none focus:border-blue-300 bg-slate-50"/>
+                <input type="password" id="configActualPwd" class="w-full px-3 py-2.5 text-sm border border-slate-200 rounded-xl outline-none focus:border-blue-300 bg-slate-50"/>
               </div>
               <div>
                 <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wide mb-1.5">Nueva contraseña</label>
-                <input type="password" class="w-full px-3 py-2.5 text-sm border border-slate-200 rounded-xl outline-none focus:border-blue-300 bg-slate-50"/>
+                <input type="password" id="configNewPwd" class="w-full px-3 py-2.5 text-sm border border-slate-200 rounded-xl outline-none focus:border-blue-300 bg-slate-50"/>
               </div>
               <div>
                 <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wide mb-1.5">Confirmar nueva contraseña</label>
-                <input type="password" class="w-full px-3 py-2.5 text-sm border border-slate-200 rounded-xl outline-none focus:border-blue-300 bg-slate-50"/>
+                <input type="password" id="configConfirmPwd" class="w-full px-3 py-2.5 text-sm border border-slate-200 rounded-xl outline-none focus:border-blue-300 bg-slate-50"/>
               </div>
-              <button class="w-full py-2.5 text-xs font-semibold text-white rounded-xl hover:opacity-90 transition-all bg-blue-600">
+              <button onclick="cambiarPasswordConfig()" id="btnCambiarPwd" class="w-full py-2.5 text-xs font-semibold text-white rounded-xl hover:opacity-90 transition-all bg-blue-600">
                 Cambiar Contraseña
               </button>
             </div>
@@ -676,8 +677,29 @@
     </div>
   </div>
 
+ <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
  <script>
+  // Utils
+  const escapeHTML = (str) => {
+    if (!str) return '';
+    return str.toString().replace(/[&<>'"]/g, 
+      tag => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        "'": '&#39;',
+        '"': '&quot;'
+      }[tag])
+    );
+  };
 
+  const Toast = Swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true
+  });
 
   const API_URL =
     window.location.hostname === 'localhost' ||
@@ -718,6 +740,7 @@
 
       if (secciones[pagina]) secciones[pagina].classList.add('activa');
 
+      if (pagina === 'dashboard') cargarEstadisticasDashboard();
       if (pagina === 'usuarios') cargarTablaUsuarios();
       if (pagina === 'config') cargarDatosConfig();
       if (pagina === 'empresas') cargarEmpresas();
@@ -727,6 +750,14 @@
       if (pagina === 'reportes') cargarReportes();
     });
   });
+
+  function irASeccion(id) {
+    const item = document.querySelector(`.nav-item[data-page="${id}"]`);
+    if (item) item.click();
+  }
+
+  const btnLogout = document.getElementById('btnLogout');
+  if (btnLogout) btnLogout.addEventListener('click', cerrarSesion);
 
   function cerrarSesion() {
     localStorage.removeItem('token');
@@ -930,11 +961,11 @@
 
           <td class="px-5 py-3">
             <div class="text-xs font-semibold text-slate-700">
-              ${usuario.nombre}
+              ${escapeHTML(usuario.nombre)}
             </div>
 
             <div class="text-[10px] text-slate-400">
-              ${usuario.correo}
+              ${escapeHTML(usuario.correo)}
             </div>
           </td>
 
@@ -1131,14 +1162,21 @@
   async function crearUsuario() {
 
     const err = document.getElementById('nuError');
+    const btn = document.querySelector('button[onclick="crearUsuario()"]');
+    if (btn) { btn.disabled = true; btn.innerHTML = 'Guardando...'; btn.classList.add('opacity-50'); }
 
     const body = {
-      nombre: document.getElementById('nuNombre').value,
-      correo: document.getElementById('nuCorreo').value,
+      nombre: document.getElementById('nuNombre').value.trim(),
+      correo: document.getElementById('nuCorreo').value.trim(),
       password: document.getElementById('nuPassword').value,
       rol: document.getElementById('nuRol').value,
-      programa_academico: document.getElementById('nuPrograma').value
+      programa_academico: document.getElementById('nuPrograma').value.trim()
     };
+
+    if (body.nombre.length < 3 || body.nombre.length > 150) { err.textContent = 'El nombre debe tener entre 3 y 150 caracteres.'; err.classList.remove('hidden'); return; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(body.correo) || body.correo.length > 255) { err.textContent = 'Correo inválido o demasiado largo.'; err.classList.remove('hidden'); return; }
+    if (body.password.length < 8 || body.password.length > 64) { err.textContent = 'La contraseña debe tener entre 8 y 64 caracteres.'; err.classList.remove('hidden'); return; }
+    if (body.programa_academico && (body.programa_academico.length < 3 || body.programa_academico.length > 150)) { err.textContent = 'Programa académico inválido (3-150 caracteres).'; err.classList.remove('hidden'); return; }
 
     try {
 
@@ -1169,6 +1207,8 @@
 
       err.textContent = 'Error de conexión';
       err.classList.remove('hidden');
+    } finally {
+      if (btn) { btn.disabled = false; btn.innerHTML = 'Guardar'; btn.classList.remove('opacity-50'); }
     }
   }
 
@@ -1193,7 +1233,7 @@
           <input
             type="text"
             id="editNombre"
-            value="${usuario.nombre}"
+            value="${escapeHTML(usuario.nombre)}"
             class="w-full px-3 py-2 border rounded-xl"
           />
         </div>
@@ -1204,7 +1244,7 @@
           <input
             type="email"
             id="editCorreo"
-            value="${usuario.correo}"
+            value="${escapeHTML(usuario.correo)}"
             class="w-full px-3 py-2 border rounded-xl"
           />
         </div>
@@ -1262,16 +1302,23 @@
 
   async function guardarEdicion(id) {
 
+    const btn = document.querySelector(`button[data-id="${id}"]`);
+    if (btn) { btn.disabled = true; btn.innerHTML = 'Guardando...'; btn.classList.add('opacity-50'); }
+
     const pwVal = document.getElementById('editPassword').value;
 
     const body = {
-      nombre: document.getElementById('editNombre').value,
-      correo: document.getElementById('editCorreo').value,
+      nombre: document.getElementById('editNombre').value.trim(),
+      correo: document.getElementById('editCorreo').value.trim(),
       rol: document.getElementById('editRol').value
     };
 
+    if (body.nombre.length < 3 || body.nombre.length > 150) { Toast.fire({icon: 'error', title: 'El nombre debe tener entre 3 y 150 caracteres.'}); return; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(body.correo) || body.correo.length > 255) { Toast.fire({icon: 'error', title: 'Correo inválido o demasiado largo.'}); return; }
+
     // Solo incluir password si el usuario escribió algo
     if (pwVal && pwVal.trim() !== '') {
+      if (pwVal.length < 8 || pwVal.length > 64) { Toast.fire({icon: 'error', title: 'La contraseña debe tener entre 8 y 64 caracteres.'}); return; }
       body.password = pwVal;
     }
 
@@ -1291,7 +1338,7 @@
 
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        alert('Error al actualizar: ' + (data.detail || res.status));
+        Toast.fire({icon: 'error', title: 'Error al actualizar: ' + (data.detail || res.status)});
         return;
       }
 
@@ -1301,7 +1348,9 @@
 
     } catch (error) {
 
-      alert('Error de conexión: ' + error.message);
+      Toast.fire({icon: 'error', title: 'Error de conexión: ' + error.message});
+    } finally {
+      if (btn) { btn.disabled = false; btn.innerHTML = 'Guardar Cambios'; btn.classList.remove('opacity-50'); }
     }
   }
 
@@ -1323,7 +1372,7 @@
 
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        alert('No se pudo eliminar: ' + (data.detail || res.status));
+        Toast.fire({icon: 'error', title: 'No se pudo eliminar: ' + (data.detail || res.status)});
         return;
       }
 
@@ -1331,10 +1380,73 @@
 
     } catch (error) {
 
-      alert('Error de conexión');
+      Toast.fire({icon: 'error', title: 'Error de conexión'});
     }
   }
 
+
+  
+  async function actualizarPerfilConfig() {
+    const btn = document.getElementById('btnGuardarPerfil');
+    if(btn) { btn.disabled = true; btn.innerHTML = 'Guardando...'; btn.classList.add('opacity-50'); }
+    try {
+      const body = {
+        nombre: document.getElementById('configNombre').value.trim(),
+        correo: document.getElementById('configCorreo').value.trim(),
+        programa_academico: document.getElementById('configPrograma').value.trim()
+      };
+      const res = await fetch(`${API_URL}/usuarios/me`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify(body)
+      });
+      if (!res.ok) throw new Error('Error al actualizar');
+      Toast.fire({icon: 'success', title: 'Perfil actualizado'});
+      cargarPerfil();
+    } catch (error) {
+      Toast.fire({icon: 'error', title: 'No se pudo actualizar el perfil'});
+    } finally {
+      if(btn) { btn.disabled = false; btn.innerHTML = 'Guardar Cambios'; btn.classList.remove('opacity-50'); }
+    }
+  }
+
+  async function cambiarPasswordConfig() {
+    const actual = document.getElementById('configActualPwd').value;
+    const nueva = document.getElementById('configNewPwd').value;
+    const conf = document.getElementById('configConfirmPwd').value;
+    if (!actual || !nueva || !conf) {
+      Toast.fire({icon: 'error', title: 'Llena todos los campos'});
+      return;
+    }
+    if (nueva !== conf) {
+      Toast.fire({icon: 'error', title: 'Las contraseñas no coinciden'});
+      return;
+    }
+    if (nueva.length < 8) {
+      Toast.fire({icon: 'error', title: 'La nueva contraseña es muy corta'});
+      return;
+    }
+    const btn = document.getElementById('btnCambiarPwd');
+    if(btn) { btn.disabled = true; btn.innerHTML = 'Cambiando...'; btn.classList.add('opacity-50'); }
+    try {
+      // Nota: El backend actualmente no verifica la contraseña anterior en el endpoint PUT /usuarios/me
+      // Esto debería hacerse en el futuro para mayor seguridad.
+      const res = await fetch(`${API_URL}/usuarios/me`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ password: nueva })
+      });
+      if (!res.ok) throw new Error('Error al cambiar contraseña');
+      Toast.fire({icon: 'success', title: 'Contraseña actualizada'});
+      document.getElementById('configActualPwd').value = '';
+      document.getElementById('configNewPwd').value = '';
+      document.getElementById('configConfirmPwd').value = '';
+    } catch (error) {
+      Toast.fire({icon: 'error', title: 'No se pudo cambiar la contraseña'});
+    } finally {
+      if(btn) { btn.disabled = false; btn.innerHTML = 'Cambiar Contraseña'; btn.classList.remove('opacity-50'); }
+    }
+  }
 
   async function cargarDatosConfig() {
 
@@ -1429,7 +1541,7 @@
       return `
         <tr class="border-b border-slate-50 hover:bg-slate-50/50 transition-colors">
           <td class="px-5 py-3 text-xs text-slate-500">${fecha}</td>
-          <td class="px-3 py-3 text-xs text-slate-700 max-w-xs truncate" title="${s.descripcion}">${s.descripcion}</td>
+          <td class="px-3 py-3 text-xs text-slate-700 max-w-xs truncate" title="${escapeHTML(s.descripcion)}">${escapeHTML(s.descripcion)}</td>
           <td class="px-3 py-3 text-xs font-semibold text-slate-700">${s.horas_realizadas}h</td>
           <td class="px-3 py-3">
             <span class="px-2 py-1 rounded-full text-[10px] font-semibold ${badge}">${s.estado}</span>
@@ -1480,7 +1592,7 @@
     if (!_miPracticaId) await cargarLog();
 
     if (!_miPracticaId) {
-      alert('No tienes una práctica activa asignada. Contacta al coordinador.');
+      Toast.fire({icon: 'error', title: 'No tienes una práctica activa asignada. Contacta al coordinador.'});
       return;
     }
 
@@ -1501,6 +1613,8 @@
           <div>
             <label class="block text-xs mb-1">Fecha de la actividad</label>
             <input type="date" id="logFecha" class="w-full px-3 py-2 border rounded-xl text-sm outline-none focus:border-blue-300"
+                   min="${new Date().getFullYear()}-01-01"
+                   max="${new Date().toISOString().split('T')[0]}"
                    value="${new Date().toISOString().split('T')[0]}"/>
           </div>
         </div>
@@ -1515,17 +1629,35 @@
 
   async function guardarSeguimiento() {
     const err = document.getElementById('logError');
+    const btn = document.querySelector('button[onclick="guardarSeguimiento()"]');
+    if (btn) { btn.disabled = true; btn.innerHTML = 'Guardando...'; btn.classList.add('opacity-50'); }
+    
     const desc = document.getElementById('logDesc').value.trim();
     const horas = parseFloat(document.getElementById('logHoras').value);
     const fechaRaw = document.getElementById('logFecha').value;
 
-    if (desc.length < 15) {
-      err.textContent = 'La descripción debe tener al menos 15 caracteres.';
+    if (desc.length < 15 || desc.length > 2000) {
+      err.textContent = 'La descripción debe tener entre 15 y 2000 caracteres.';
       err.classList.remove('hidden');
       return;
     }
     if (!horas || horas <= 0 || horas > 12) {
       err.textContent = 'Las horas deben estar entre 0.5 y 12.';
+      err.classList.remove('hidden');
+      return;
+    }
+
+    const hoy = new Date().toISOString().split('T')[0];
+    const currentYear = new Date().getFullYear().toString();
+    
+    if (fechaRaw > hoy) {
+      err.textContent = 'La fecha de la actividad no puede ser futura.';
+      err.classList.remove('hidden');
+      return;
+    }
+    
+    if (!fechaRaw.startsWith(currentYear)) {
+      err.textContent = 'El año de la actividad debe ser el año actual y no se puede cambiar.';
       err.classList.remove('hidden');
       return;
     }
@@ -1562,10 +1694,10 @@
   let _seguimientosPendientes = [];
 
   async function cargarValidacion() {
-    const tbody = document.getElementById('tablaValidacion');
+    const tbody = document.getElementById('tablaValidaciones');
     if (!tbody) return;
 
-    tbody.innerHTML = `<tr><td colspan="5" class="px-5 py-8 text-center text-sm text-slate-300">Cargando...</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="6" class="px-5 py-8 text-center text-sm text-slate-300">Cargando...</td></tr>`;
 
     try {
   
@@ -1621,11 +1753,11 @@
   }
 
   function renderTablaValidacion(lista, practicas) {
-    const tbody = document.getElementById('tablaValidacion');
+    const tbody = document.getElementById('tablaValidaciones');
     if (!tbody) return;
 
     if (lista.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="5" class="px-5 py-8 text-center text-sm text-slate-400">No hay actividades pendientes de validación. ✓</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="6" class="px-5 py-8 text-center text-sm text-slate-400">No hay actividades pendientes de validación. ✓</td></tr>`;
       return;
     }
 
@@ -1640,8 +1772,9 @@
       const fecha = new Date(s.fecha_actividad).toLocaleDateString('es-CO');
       return `
         <tr class="border-b border-slate-50 hover:bg-slate-50/50 transition-colors">
-          <td class="px-5 py-3 text-xs font-medium text-slate-700">${nombreEst}</td>
-          <td class="px-3 py-3 text-xs text-slate-600 max-w-xs truncate" title="${s.descripcion}">${s.descripcion}</td>
+          <td class="px-5 py-3"><input type="checkbox" class="w-3.5 h-3.5 accent-slate-800"/></td>
+          <td class="px-3 py-3 text-xs font-medium text-slate-700">${nombreEst}</td>
+          <td class="px-3 py-3 text-xs text-slate-600 max-w-xs truncate" title="${escapeHTML(s.descripcion)}">${escapeHTML(s.descripcion)}</td>
           <td class="px-3 py-3 text-xs font-semibold text-slate-700">${s.horas_realizadas}h</td>
           <td class="px-3 py-3 text-xs text-slate-500">${fecha}</td>
           <td class="px-3 py-3 flex items-center gap-2">
@@ -1673,10 +1806,10 @@
       if (res.ok) cargarValidacion();
       else {
         const data = await res.json();
-        alert(data.detail || 'Error al validar');
+        Toast.fire({icon: 'error', title: data.detail || 'Error al validar'});
       }
     } catch (e) {
-      alert('Error de conexión');
+      Toast.fire({icon: 'error', title: 'Error de conexión'});
     }
   }
 
@@ -1710,6 +1843,37 @@
     cerrarModal();
     validarActividad(id, 'rechazado', obs);
   }
+
+  async function validarSeleccionados() {
+    const checked = document.querySelectorAll('#tablaValidaciones input[type="checkbox"]:checked');
+    if (checked.length === 0) {
+      Toast.fire({ icon: 'info', title: 'Selecciona al menos una actividad' });
+      return;
+    }
+
+    const { isConfirmed } = await Swal.fire({
+      title: '¿Validar seleccionados?',
+      text: `Se aprobarán ${checked.length} actividades de seguimiento.`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#10b981',
+      confirmButtonText: 'Sí, aprobar todo'
+    });
+
+    if (isConfirmed) {
+      for (const cb of checked) {
+        const id = cb.closest('tr').querySelector('.btn-val-aprobar').dataset.id;
+        await fetch(`${API_URL}/seguimientos/${id}/validar`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+          body: JSON.stringify({ estado: 'aprobado' })
+        });
+      }
+      Toast.fire({ icon: 'success', title: 'Actividades validadas correctamente' });
+      cargarValidacion();
+    }
+  }
+
   let _empresas = [];
 
   async function cargarEmpresas() {
@@ -1736,9 +1900,9 @@
     tbody.innerHTML = lista.map(e => `
       <tr class="border-b border-slate-50 hover:bg-slate-50/50 transition-colors">
         <td class="px-5 py-3 text-xs font-mono text-slate-400">${e.id}</td>
-        <td class="px-3 py-3 text-xs font-medium text-slate-700">${e.nombre}</td>
-        <td class="px-3 py-3 text-xs text-slate-500">${e.nit}</td>
-        <td class="px-3 py-3 text-xs text-slate-500">${e.direccion}</td>
+        <td class="px-3 py-3 text-xs font-medium text-slate-700">${escapeHTML(e.nombre)}</td>
+        <td class="px-3 py-3 text-xs text-slate-500">${escapeHTML(e.nit)}</td>
+        <td class="px-3 py-3 text-xs text-slate-500">${escapeHTML(e.direccion)}</td>
       </tr>
     `).join('');
   }
@@ -1770,16 +1934,17 @@
 
   async function crearEmpresa() {
     const err = document.getElementById('empError');
+    const btn = document.querySelector('button[onclick="crearEmpresa()"]');
+    if (btn) { btn.disabled = true; btn.innerHTML = 'Guardando...'; btn.classList.add('opacity-50'); }
+    
     const body = {
       nombre:    document.getElementById('empNombre').value.trim(),
       nit:       document.getElementById('empNit').value.trim(),
       direccion: document.getElementById('empDireccion').value.trim(),
     };
-    if (!body.nombre || !body.nit || !body.direccion) {
-      err.textContent = 'Todos los campos son obligatorios.';
-      err.classList.remove('hidden');
-      return;
-    }
+    if (body.nombre.length < 3 || body.nombre.length > 150) { err.textContent = 'Nombre debe tener entre 3 y 150 caracteres.'; err.classList.remove('hidden'); return; }
+    if (!/^[0-9A-Za-z\.-]+$/.test(body.nit) || body.nit.length < 5 || body.nit.length > 20) { err.textContent = 'NIT inválido (5-20 caracteres).'; err.classList.remove('hidden'); return; }
+    if (body.direccion.length < 5 || body.direccion.length > 255) { err.textContent = 'Dirección inválida (5-255 caracteres).'; err.classList.remove('hidden'); return; }
     try {
       const res = await fetch(`${API_URL}/empresas/`, {
         method: 'POST',
@@ -1997,12 +2162,12 @@
       });
       if (!res.ok) {
         const d = await res.json().catch(() => ({}));
-        alert('No se pudo aprobar: ' + (d.detail || res.status));
+        Toast.fire({icon: 'error', title: 'No se pudo aprobar: ' + (d.detail || res.status)});
         return;
       }
       cargarPracticas();
     } catch (err) {
-      alert('Error de conexión: ' + err.message);
+      Toast.fire({icon: 'error', title: 'Error de conexión: ' + err.message});
     }
   }
 
@@ -2042,7 +2207,7 @@
     const optsEst = estudiantes.map(u => `<option value="${u.id}">${u.nombre}</option>`).join('');
     const optsTut = tutores.map(u => `<option value="${u.id}">${u.nombre}</option>`).join('');
     const optsEmp = _empresas.length > 0
-      ? _empresas.map(e => `<option value="${e.id}">${e.nombre} (ID: ${e.id})</option>`).join('')
+      ? _empresas.map(e => `<option value="${e.id}">${escapeHTML(e.nombre)} (ID: ${e.id})</option>`).join('')
       : '<option value="" disabled>— Sin empresas registradas —</option>';
 
     document.getElementById('modalTitulo').textContent = 'Nueva Práctica';
@@ -2088,6 +2253,8 @@
 
   async function crearPractica() {
     const err = document.getElementById('npError');
+    const btn = document.querySelector('button[onclick="crearPractica()"]');
+    if (btn) { btn.disabled = true; btn.innerHTML = 'Guardando...'; btn.classList.add('opacity-50'); }
 
     // Convertir fecha "YYYY-MM-DD" a ISO datetime; enviar null si vacía
     const fechaRaw = document.getElementById('npFechaInicio').value;
@@ -2106,6 +2273,12 @@
 
     if (!body.estudiante_id || !body.empresa_id || isNaN(body.empresa_id)) {
       err.textContent = 'Estudiante y empresa son obligatorios.';
+      err.classList.remove('hidden');
+      return;
+    }
+    
+    if (body.horas_totales_requeridas <= 0 || body.horas_totales_requeridas > 2000) {
+      err.textContent = 'Horas requeridas inválidas (1-2000).';
       err.classList.remove('hidden');
       return;
     }
@@ -2128,6 +2301,8 @@
       console.error('[crearPractica]', e);
       err.textContent = 'Error de conexión. Verifica que el servidor esté activo.';
       err.classList.remove('hidden');
+    } finally {
+      if (btn) { btn.disabled = false; btn.innerHTML = 'Crear Práctica'; btn.classList.remove('opacity-50'); }
     }
   }
 
@@ -2277,8 +2452,11 @@
     });
   }
 
-  function exportarResumenCSV() {
-    if (!_practicasReporte.length) { alert('No hay datos para exportar'); return; }
+  async function exportarResumenCSV() {
+    if (!_practicasReporte.length) { 
+      await cargarReportes();
+    }
+    if (!_practicasReporte.length) { Toast.fire({icon: 'error', title: 'No hay datos para exportar'}); return; }
     const filas = [
       ['ID','Estudiante','Correo','Empresa','Estado','Horas Requeridas'],
       ..._practicasReporte.map(p => {
@@ -2290,10 +2468,78 @@
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = `SIPRA_Practicas_${new Date().toISOString().slice(0,10)}.csv`;
+    a.download = `SIPGA_Practicas_${new Date().toISOString().slice(0,10)}.csv`;
     a.click();
   }
+  async function cargarEstadisticasDashboard() {
+    try {
+      let endpoint = '';
+      if (window.currentUserRol === 'coordinador') endpoint = `${API_URL}/coordinador/dashboard`;
+      else if (window.currentUserRol === 'tutor') endpoint = `${API_URL}/tutor/dashboard`;
+      else if (window.currentUserRol === 'estudiante') endpoint = `${API_URL}/estudiante/dashboard`;
+      
+      if (!endpoint) return;
+
+      const res = await fetch(endpoint, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        
+        if (window.currentUserRol === 'coordinador') {
+          document.getElementById('kpiPasantias').textContent = data.total_practicas_activas;
+          document.getElementById('kpiValidaciones').textContent = data.seguimientos_pendientes;
+          document.getElementById('kpiHoras').textContent = data.total_estudiantes * 8; 
+
+          // Actualizar actividad reciente
+          const rec = document.getElementById('actividadReciente');
+          if (rec) {
+            rec.innerHTML = `
+              <div class="flex items-center gap-3">
+                <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+                <div>
+                  <p class="text-[11px] font-semibold text-slate-700">Se han creado ${data.total_practicas_activas} prácticas</p>
+                  <p class="text-[9px] text-slate-400">Hace unos momentos</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-3">
+                <div class="w-2 h-2 rounded-full bg-blue-500"></div>
+                <div>
+                  <p class="text-[11px] font-semibold text-slate-700">${data.total_estudiantes} Estudiantes registrados</p>
+                  <p class="text-[9px] text-slate-400">Base de datos actualizada</p>
+                </div>
+              </div>
+            `;
+          }
+          cargarValidacion();
+        } else if (window.currentUserRol === 'estudiante') {
+          document.getElementById('kpiHoras').textContent = `${data.horas_acumuladas}h`;
+          // Otros KPIs para estudiante...
+        }
+      }
+    } catch (e) {
+      console.error('Error al cargar estadísticas:', e);
+    }
+  }
+
   cargarPerfil();
+  cargarEstadisticasDashboard();
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') {
+    if (document.activeElement.tagName === 'TEXTAREA') return;
+    const modal = document.getElementById('modalOverlay');
+    if (modal && modal.classList.contains('open')) {
+      const btn = modal.querySelector('button[style*="background:#0d1b2e"], button.bg-red-500, button.btn-accion, button[onclick^="guardar"], button[onclick^="crear"], button[onclick^="confirmar"]');
+      if (btn && !btn.disabled) {
+        e.preventDefault();
+        btn.click();
+      }
+    }
+  }
+});
+
 </script>
 </body>
 </html>

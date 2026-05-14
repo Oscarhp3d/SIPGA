@@ -33,6 +33,23 @@ def leer_perfil(current_user: models.Usuario = Depends(auth.get_current_user)):
     """Obtiene el perfil del usuario autenticado."""
     return current_user
 
+@router.put("/me", response_model=schemas.UsuarioResponse)
+def actualizar_mi_perfil(
+    usuario: schemas.UsuarioUpdate,
+    db: Session = Depends(get_db),
+    current_user: models.Usuario = Depends(auth.get_current_user)
+):
+    """Actualiza el perfil del usuario autenticado."""
+    if usuario.nombre:
+        current_user.nombre = usuario.nombre
+    if usuario.correo:
+        current_user.correo = usuario.correo
+    if usuario.password:
+        current_user.password_hash = auth.hash_password(usuario.password)
+    db.commit()
+    db.refresh(current_user)
+    return current_user
+
 @router.put("/{usuario_id}", response_model=schemas.UsuarioResponse)
 def actualizar_usuario(
     usuario_id: str,
