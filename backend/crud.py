@@ -271,6 +271,10 @@ def validar_seguimiento(
     if revisor:
         if revisor.rol == models.UserRole.tutor:
             db_seg.validado_tutor = (estado == models.StatusEnum.aprobado)
+            if estado == models.StatusEnum.aprobado:
+                practica = obtener_practica(db, db_seg.practica_id)
+                if practica:
+                    practica.horas_acumuladas = (practica.horas_acumuladas or 0) + db_seg.horas_realizadas
         elif revisor.rol == models.UserRole.supervisor:
             db_seg.validado_supervisor = (estado == models.StatusEnum.aprobado)
             # Al aprobar el supervisor, actualizar horas acumuladas en la práctica

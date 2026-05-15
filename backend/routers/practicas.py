@@ -86,12 +86,20 @@ def actualizar_practica(
     practica_id: int,
     data: schemas.PracticaUpdate,
     db: Session = Depends(get_db),
-    admin=Depends(auth.verificar_rol(["coordinador"]))
+    current_user=Depends(auth.verificar_rol(["coordinador", "tutor"]))
 ):
-    """Actualiza el estado u otros campos de una práctica (Solo Coordinadores)."""
+    """Actualiza el estado u otros campos de una práctica."""
     practica = crud.obtener_practica(db, practica_id)
     if not practica:
         raise HTTPException(status_code=404, detail="Práctica no encontrada")
+
+    if current_user.rol == models.UserRole.tutor:
+        if practica.tutor_id != current_user.id:
+            raise HTTPException(status_code=403, detail="No puedes modificar una práctica que no te pertenece")
+        if data.tutor_id is not None or data.supervisor_id is not None or data.fecha_fin is not None:
+            raise HTTPException(status_code=403, detail="No tienes permiso para modificar estos campos")
+        if data.estado is not None and data.estado != "finalizada":
+            raise HTTPException(status_code=403, detail="Solo puedes marcar la práctica como finalizada")
 
     if data.estado is not None:
         estados_validos = {"activa", "pendiente", "finalizada", "suspendida"}
@@ -142,6 +150,7 @@ def descargar_reporte(
     pdf_buffer = generar_pdf_practica(
         practica.estudiante.nombre,
         practica.empresa.nombre if practica.empresa else "Sin asignar",
+        practica.tutor.nombre if practica.tutor else "Sin asignar",
         seguimientos
     )
 
