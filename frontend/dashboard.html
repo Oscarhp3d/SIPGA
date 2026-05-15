@@ -360,12 +360,12 @@
             <div class="font-syne text-3xl font-bold text-amber-700" id="valPendientes">—</div>
           </div>
           <div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-5">
-            <div class="text-[11px] font-semibold text-emerald-600 uppercase tracking-wide mb-1">Aprobados hoy</div>
-            <div class="font-syne text-3xl font-bold text-emerald-700">0</div>
+            <div class="text-[11px] font-semibold text-emerald-600 uppercase tracking-wide mb-1">Aprobados</div>
+            <div class="font-syne text-3xl font-bold text-emerald-700" id="valAprobados">0</div>
           </div>
           <div class="bg-red-50 border border-red-200 rounded-2xl p-5">
-            <div class="text-[11px] font-semibold text-red-600 uppercase tracking-wide mb-1">Rechazados hoy</div>
-            <div class="font-syne text-3xl font-bold text-red-700">0</div>
+            <div class="text-[11px] font-semibold text-red-600 uppercase tracking-wide mb-1">Rechazados</div>
+            <div class="font-syne text-3xl font-bold text-red-700" id="valRechazados">0</div>
           </div>
         </div>
 
@@ -632,7 +632,7 @@
         </div>
 
    
-        <div class="bg-white rounded-2xl border border-slate-100 shadow-sm">
+          <div class="bg-white rounded-2xl p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto">
           <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
             <h2 class="font-syne font-semibold text-slate-800 text-sm">Prácticas — Descarga de Reportes PDF</h2>
             <input type="text" id="filtroReportes" placeholder="Filtrar..." oninput="filtrarTablaReportes()"
@@ -661,21 +661,42 @@
   </main>
 
 
-  <div id="modalOverlay" class="fixed inset-0 z-50 items-center justify-center bg-black/40 backdrop-blur-sm">
-    <div id="modalBox" class="bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 p-6">
-      <div class="flex items-center justify-between mb-5">
-        <h3 class="font-syne font-bold text-slate-800 text-base" id="modalTitulo">Registrar Horas</h3>
-        <button onclick="cerrarModal()" class="text-slate-400 hover:text-slate-600 transition-colors">
-          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-          </svg>
-        </button>
-      </div>
-      <div id="modalContenido">
-  
-      </div>
+  <div id="modalOverlay"
+     class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 backdrop-blur-sm">
+
+  <div id="modalBox"
+       class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl mx-4 p-5 max-h-[90vh] overflow-y-auto">
+
+    <div class="flex items-center justify-between mb-5">
+
+      <h3 class="font-syne font-bold text-slate-800 text-base"
+          id="modalTitulo">
+        Registrar Horas
+      </h3>
+
+      <button onclick="cerrarModal()"
+              class="text-slate-400 hover:text-slate-600 transition-colors">
+
+        <svg class="w-5 h-5"
+             viewBox="0 0 24 24"
+             fill="none"
+             stroke="currentColor"
+             stroke-width="2">
+
+          <line x1="18" y1="6" x2="6" y2="18"/>
+          <line x1="6" y1="6" x2="18" y2="18"/>
+
+        </svg>
+
+      </button>
+
     </div>
+
+    <div id="modalContenido"></div>
+
   </div>
+
+</div>
 
  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
  <script>
@@ -707,11 +728,10 @@
       ? 'http://127.0.0.1:8000/api/v1'
       : `${window.location.origin}/api/v1`;
 
-  const token =
-    localStorage.getItem('token') ||
-    sessionStorage.getItem('token');
-
-
+ function getToken() {
+  return localStorage.getItem('token') || sessionStorage.getItem('token');
+}
+const token = getToken();
 
   const secciones = {
     dashboard: document.getElementById('seccionDashboard'),
@@ -809,7 +829,7 @@
     try {
       const res = await fetch(`${API_URL}/usuarios/me`, {
         headers: {
-          Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${getToken()}`
         }
       });
 
@@ -824,7 +844,7 @@
 
       document.getElementById('topbarNombre').textContent = user.nombre;
       document.getElementById('topbarRol').textContent = user.rol;
-      document.getElementById('nombreUsuario').textContent = user.nombre;
+      document.getElementById('nombreUsuario').textContent = user.nombre.split(' ')[0];
 
       document.getElementById('topbarAvatar').textContent =
         user.nombre.charAt(0).toUpperCase();
@@ -845,6 +865,10 @@
         if (kv?.parentElement) kv.parentElement.style.display = 'none';
       };
 
+      if (user.rol !== 'estudiante') {
+        ocultar('log');
+      }
+
       if (user.rol === 'coordinador') {
         // Acceso total — no se oculta nada
 
@@ -856,7 +880,6 @@
 
       } else if (user.rol === 'supervisor') {
 
-        ocultar('log');
         ocultar('usuarios');
         ocultar('empresas');
         ocultar('reportes');
@@ -910,7 +933,7 @@
     try {
       const res = await fetch(`${API_URL}/usuarios/`, {
         headers: {
-          Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${getToken()}`
         }
       });
 
@@ -1132,6 +1155,23 @@
           y las políticas de privacidad institucionales.
         </p>
       </div>
+      <div class="flex items-start gap-2 mt-3">
+  <input
+    type="checkbox"
+    id="nuAceptaDatos"
+    class="mt-1"
+  />
+
+  <label
+    for="nuAceptaDatos"
+    class="text-xs text-slate-600 leading-relaxed">
+
+    La institución certifica que el titular fue informado
+    sobre el tratamiento de sus datos personales conforme
+    a la Ley 1581 de 2012.
+
+  </label>
+</div>
 
       <div class="flex gap-3 pt-2 justify-end">
 
@@ -1158,9 +1198,16 @@
 
  
 
+async function crearUsuario() {
 
-  async function crearUsuario() {
+  const err = document.getElementById('nuError');
 
+  const aceptaDatos =
+    document.getElementById('nuAceptaDatos').checked;
+
+  if (!aceptaDatos) {
+    alert('Debe confirmar el tratamiento de datos.');
+    return;
     const err = document.getElementById('nuError');
     const btn = document.querySelector('button[onclick="crearUsuario()"]');
     if (btn) { btn.disabled = true; btn.innerHTML = 'Guardando...'; btn.classList.add('opacity-50'); }
@@ -1212,7 +1259,45 @@
     }
   }
 
+  const body = {
+    nombre: document.getElementById('nuNombre').value,
+    correo: document.getElementById('nuCorreo').value,
+    password: document.getElementById('nuPassword').value,
+    rol: document.getElementById('nuRol').value,
+    programa_academico: document.getElementById('nuPrograma').value
+  };
 
+  try {
+
+    const res = await fetch(`${API_URL}/usuarios/`, {
+      method: 'POST',
+
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${getToken()}`
+      },
+
+      body: JSON.stringify(body)
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      err.textContent = data.detail || 'Error';
+      err.classList.remove('hidden');
+      return;
+    }
+
+    cerrarModal();
+
+    cargarTablaUsuarios();
+
+  } catch (error) {
+
+    err.textContent = 'Error de conexión';
+    err.classList.remove('hidden');
+  }
+}
   async function editarUsuario(id) {
 
     const usuario = _usuarios.find(u => u.id === id);
@@ -1330,7 +1415,7 @@
 
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${getToken()}`
         },
 
         body: JSON.stringify(body)
@@ -1366,7 +1451,7 @@
         method: 'DELETE',
 
         headers: {
-          Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${getToken()}`
         }
       });
 
@@ -1455,7 +1540,7 @@
       const res = await fetch(`${API_URL}/usuarios/me`, {
 
         headers: {
-          Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${getToken()}`
         }
       });
 
@@ -1494,7 +1579,7 @@
           : `${API_URL}/practicas/mis`;
 
         const resP = await fetch(endpoint, {
-          headers: { Authorization: `Bearer ${token}` }
+          headers: { Authorization: `Bearer ${getToken()}` }
         });
         if (resP.ok) {
           const practicas = await resP.json();
@@ -1509,7 +1594,7 @@
       }
 
       const res = await fetch(`${API_URL}/seguimientos/practica/${_miPracticaId}`, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${getToken()}` }
       });
 
       if (!res.ok) throw new Error('Sin acceso');
@@ -1567,7 +1652,7 @@
     try {
       const res = await fetch(`${API_URL}/seguimientos/${id}/validar`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getToken()}` },
         body: JSON.stringify({ estado: 'enviado' })
       });
       if (res.ok) cargarLog();
@@ -1672,7 +1757,7 @@
     try {
       const res = await fetch(`${API_URL}/seguimientos/`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getToken()}` },
         body: JSON.stringify(body)
       });
       const data = await res.json();
@@ -1694,19 +1779,20 @@
   let _seguimientosPendientes = [];
 
   async function cargarValidacion() {
-    const tbody = document.getElementById('tablaValidaciones');
+    const tbody = document.getElementById('tablaValidacion');
     if (!tbody) return;
 
     tbody.innerHTML = `<tr><td colspan="6" class="px-5 py-8 text-center text-sm text-slate-300">Cargando...</td></tr>`;
 
     try {
   
-      const endpointPrac = window.currentUserRol === 'coordinador'
-        ? `${API_URL}/practicas/`
-        : `${API_URL}/practicas/mis`;
+      let endpointPrac = '';
+      if (window.currentUserRol === 'coordinador') endpointPrac = `${API_URL}/practicas/`;
+      else if (window.currentUserRol === 'tutor') endpointPrac = `${API_URL}/tutor/mis-estudiantes`;
+      else endpointPrac = `${API_URL}/practicas/mis`;
 
       const resP = await fetch(endpointPrac, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${getToken()}` }
       });
       if (!resP.ok) throw new Error('Sin acceso a prácticas');
       const practicas = await resP.json();
@@ -1718,7 +1804,7 @@
 
 
       if (Object.keys(_usuariosMapa).length === 0) {
-        const resU = await fetch(`${API_URL}/usuarios/`, { headers: { Authorization: `Bearer ${token}` } });
+        const resU = await fetch(`${API_URL}/usuarios/`, { headers: { Authorization: `Bearer ${getToken()}` } });
         if (resU.ok) {
           // FIX: era "await resU.ok ? ..." — resU.ok es boolean, no la respuesta
           const us = await resU.json();
@@ -1729,7 +1815,7 @@
 
       const promesas = practicas.map(p =>
         fetch(`${API_URL}/seguimientos/practica/${p.id}`, {
-          headers: { Authorization: `Bearer ${token}` }
+          headers: { Authorization: `Bearer ${getToken()}` }
         }).then(r => {
           if (r.status === 403) return []; 
           return r.ok ? r.json() : [];
@@ -1746,6 +1832,12 @@
       const kpiPend = document.getElementById('valPendientes');
       if (kpiPend) kpiPend.textContent = _seguimientosPendientes.length;
 
+      const kpiAprobados = document.getElementById('valAprobados');
+      if (kpiAprobados) kpiAprobados.textContent = todos.filter(s => s.estado === 'aprobado').length;
+
+      const kpiRechazados = document.getElementById('valRechazados');
+      if (kpiRechazados) kpiRechazados.textContent = todos.filter(s => s.estado === 'rechazado').length;
+
     } catch (e) {
       console.error('[cargarValidacion] Error:', e);
       tbody.innerHTML = `<tr><td colspan="5" class="px-5 py-8 text-center text-sm text-red-400">Error al cargar validaciones.</td></tr>`;
@@ -1753,7 +1845,7 @@
   }
 
   function renderTablaValidacion(lista, practicas) {
-    const tbody = document.getElementById('tablaValidaciones');
+    const tbody = document.getElementById('tablaValidacion');
     if (!tbody) return;
 
     if (lista.length === 0) {
@@ -1800,7 +1892,7 @@
 
       const res = await fetch(`${API_URL}/seguimientos/${id}/validar`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getToken()}` },
         body: JSON.stringify(body)
       });
       if (res.ok) cargarValidacion();
@@ -1880,7 +1972,7 @@
     const tbody = document.getElementById('tablaEmpresas');
     try {
       const res = await fetch(`${API_URL}/empresas/`, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${getToken()}` }
       });
       if (!res.ok) throw new Error('Sin acceso');
       _empresas = await res.json();
@@ -1948,7 +2040,7 @@
     try {
       const res = await fetch(`${API_URL}/empresas/`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getToken()}` },
         body: JSON.stringify(body)
       });
       const data = await res.json();
@@ -1981,7 +2073,7 @@
 
       // Cargar usuarios para mapear IDs a nombres (solo coordinador y tutor tienen acceso)
       if (window.currentUserRol === 'coordinador' || window.currentUserRol === 'tutor') {
-        const resU = await fetch(`${API_URL}/usuarios/`, { headers: { Authorization: `Bearer ${token}` } });
+        const resU = await fetch(`${API_URL}/usuarios/`, { headers: { Authorization: `Bearer ${getToken()}` } });
         if (resU.ok) {
           const usuarios = await resU.json();
           _usuariosMapa = {};
@@ -1989,7 +2081,7 @@
         }
       }
 
-      const res = await fetch(endpointPrac, { headers: { Authorization: `Bearer ${token}` } });
+      const res = await fetch(endpointPrac, { headers: { Authorization: `Bearer ${getToken()}` } });
 
       if (!res.ok) {
         tbody.innerHTML = `<tr><td colspan="6" class="px-5 py-8 text-center text-sm text-slate-400">
@@ -2040,19 +2132,25 @@
     };
 
     tbody.innerHTML = lista.map(p => {
-      const estudiante = _usuariosMapa[p.estudiante_id];
-      const tutor      = _usuariosMapa[p.tutor_id];
+      const estudianteObj = p.estudiante || _usuariosMapa[p.estudiante_id];
+      const tutorObj      = p.tutor || _usuariosMapa[p.tutor_id];
+      const empresaNombre = p.empresa ? p.empresa.nombre : (p.empresa_id || '—');
+      
+      const estudianteNombre = estudianteObj ? estudianteObj.nombre : p.estudiante_id;
+      const estudianteCorreo = estudianteObj ? estudianteObj.correo : '';
+      const tutorNombre      = tutorObj ? tutorObj.nombre : '—';
+      
       const badge      = estadoBadge[p.estado] || 'bg-slate-100 text-slate-600';
-      const progreso   = p.horas_totales_requeridas ? Math.min(100, Math.round((p.horas_completadas || 0) / p.horas_totales_requeridas * 100)) : 0;
+      const progreso   = p.horas_totales_requeridas ? Math.min(100, Math.round((p.horas_acumuladas || 0) / p.horas_totales_requeridas * 100)) : 0;
 
       return `
         <tr class="table-row border-b border-slate-50">
           <td class="px-5 py-3">
-            <div class="text-xs font-semibold text-slate-700">${estudiante ? estudiante.nombre : p.estudiante_id}</div>
-            <div class="text-[10px] text-slate-400">${estudiante ? estudiante.correo : ''}</div>
+            <div class="text-xs font-semibold text-slate-700">${estudianteNombre}</div>
+            <div class="text-[10px] text-slate-400">${estudianteCorreo}</div>
           </td>
-          <td class="px-3 py-3 text-xs text-slate-600">${p.empresa_id || '—'}</td>
-          <td class="px-3 py-3 text-xs text-slate-600">${tutor ? tutor.nombre : '—'}</td>
+          <td class="px-3 py-3 text-xs text-slate-600">${empresaNombre}</td>
+          <td class="px-3 py-3 text-xs text-slate-600">${tutorNombre}</td>
           <td class="px-3 py-3">
             <div class="flex items-center gap-2">
               <div class="flex-1 bg-slate-100 rounded-full h-1.5">
@@ -2065,12 +2163,18 @@
             <span class="text-[10px] font-medium px-2 py-0.5 rounded-full ${badge}">${p.estado}</span>
           </td>
           <td class="px-3 py-3 flex gap-2">
-            <button data-id="${p.id}" data-action="ver-practica"
-                    class="btn-practica text-[10px] font-semibold text-blue-600 hover:text-blue-800">Ver</button>
-            ${p.estado !== 'finalizada' ? `
-            <button data-id="${p.id}" data-action="aprobar-practica"
-                    class="btn-practica text-[10px] font-semibold text-emerald-600 hover:text-emerald-800">Aprobar</button>
-            ` : ''}
+            ${['coordinador', 'tutor'].includes(window.currentUserRol) ? `
+              <button data-id="${p.id}" data-action="ver-practica"
+                      class="btn-practica text-[10px] font-semibold text-blue-600 hover:text-blue-800">Ver</button>
+              ${p.estado === 'pendiente' && window.currentUserRol === 'coordinador' ? `
+              <button data-id="${p.id}" data-action="aprobar-practica"
+                      class="btn-practica text-[10px] font-semibold text-emerald-600 hover:text-emerald-800">Activar</button>
+              ` : ''}
+              ${p.estado === 'activa' && progreso >= 100 ? `
+              <button data-id="${p.id}" data-action="finalizar-practica"
+                      class="btn-practica text-[10px] font-semibold text-purple-600 hover:text-purple-800">Finalizar</button>
+              ` : (p.estado === 'activa' ? '<span class="text-[10px] text-slate-400 italic">En progreso</span>' : '')}
+            ` : '<span class="text-[10px] text-slate-400 italic">Sin acciones</span>'}
           </td>
         </tr>`;
     }).join('');
@@ -2087,6 +2191,7 @@
       const action = btn.dataset.action;
       if (action === 'ver-practica') verDetallePractica(id);
       if (action === 'aprobar-practica') aprobarPractica(id);
+      if (action === 'finalizar-practica') finalizarPractica(id);
     });
   }
 
@@ -2140,32 +2245,50 @@
         </div>
         <div class="pt-3 flex gap-3">
           <button onclick="cerrarModal()" class="flex-1 py-2 border rounded-xl text-xs">Cerrar</button>
-          <a href="${API_URL}/practicas/${p.id}/reporte-pdf"
-             target="_blank"
-             class="flex-1 py-2 rounded-xl text-white text-xs text-center font-semibold"
+          <button onclick="descargarReportePDF('${p.id}')"
+             class="flex-1 py-2 rounded-xl text-white text-xs text-center font-semibold flex items-center justify-center"
              style="background:#0d1b2e;">
             Descargar PDF
-          </a>
+          </button>
         </div>
       </div>`;
     abrirModal();
   }
 
   async function aprobarPractica(id) {
-
-    if (!confirm('¿Marcar esta práctica como activa/aprobada?')) return;
+    if (!confirm('¿Activar esta práctica?')) return;
     try {
       const res = await fetch(`${API_URL}/practicas/${id}`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getToken()}` },
         body: JSON.stringify({ estado: 'activa' })
       });
       if (!res.ok) {
         const d = await res.json().catch(() => ({}));
-        Toast.fire({icon: 'error', title: 'No se pudo aprobar: ' + (d.detail || res.status)});
+        Toast.fire({icon: 'error', title: 'No se pudo activar: ' + (d.detail || res.status)});
         return;
       }
       cargarPracticas();
+    } catch (err) {
+      Toast.fire({icon: 'error', title: 'Error de conexión: ' + err.message});
+    }
+  }
+
+  async function finalizarPractica(id) {
+    if (!confirm('¿Marcar esta práctica como finalizada? Esta acción no se puede deshacer.')) return;
+    try {
+      const res = await fetch(`${API_URL}/practicas/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getToken()}` },
+        body: JSON.stringify({ estado: 'finalizada' })
+      });
+      if (!res.ok) {
+        const d = await res.json().catch(() => ({}));
+        Toast.fire({icon: 'error', title: 'No se pudo finalizar: ' + (d.detail || res.status)});
+        return;
+      }
+      cargarPracticas();
+      Toast.fire({icon: 'success', title: 'Práctica finalizada con éxito'});
     } catch (err) {
       Toast.fire({icon: 'error', title: 'Error de conexión: ' + err.message});
     }
@@ -2176,7 +2299,7 @@
     if (Object.keys(_usuariosMapa).length === 0) {
       try {
         const resU = await fetch(`${API_URL}/usuarios/`, {
-          headers: { Authorization: `Bearer ${token}` }
+          headers: { Authorization: `Bearer ${getToken()}` }
         });
         if (resU.ok) {
           const us = await resU.json();
@@ -2192,7 +2315,7 @@
     if (_empresas.length === 0) {
       try {
         const resE = await fetch(`${API_URL}/empresas/`, {
-          headers: { Authorization: `Bearer ${token}` }
+          headers: { Authorization: `Bearer ${getToken()}` }
         });
         if (resE.ok) _empresas = await resE.json();
       } catch (e) {
@@ -2286,7 +2409,7 @@
     try {
       const res = await fetch(`${API_URL}/practicas/`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getToken()}` },
         body: JSON.stringify(body)
       });
       const data = await res.json();
@@ -2317,13 +2440,13 @@
       // Reusar datos de prácticas si ya están cargados
       if (_practicas.length === 0) {
         // Intentar cargar
-        const resU = await fetch(`${API_URL}/usuarios/`, { headers: { Authorization: `Bearer ${token}` } });
+        const resU = await fetch(`${API_URL}/usuarios/`, { headers: { Authorization: `Bearer ${getToken()}` } });
         if (resU.ok) {
           const us = await resU.json();
           _usuariosMapa = {};
           us.forEach(u => { _usuariosMapa[u.id] = u; });
         }
-        const resP = await fetch(`${API_URL}/practicas/`, { headers: { Authorization: `Bearer ${token}` } });
+        const resP = await fetch(`${API_URL}/practicas/`, { headers: { Authorization: `Bearer ${getToken()}` } });
         if (resP.ok) _practicas = await resP.json();
       }
 
@@ -2367,15 +2490,14 @@
           </td>
           <td class="px-3 py-3 text-xs text-slate-600">${p.horas_totales_requeridas}h</td>
           <td class="px-3 py-3">
-            <a href="${API_URL}/practicas/${p.id}/reporte-pdf"
-               target="_blank"
+            <button onclick="descargarReportePDF('${p.id}')"
                class="inline-flex items-center gap-1 text-[10px] font-semibold text-white px-3 py-1.5 rounded-lg hover:opacity-80 transition-opacity"
                style="background:#0d1b2e;">
               <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
               </svg>
               PDF
-            </a>
+            </button>
           </td>
         </tr>`;
     }).join('');
@@ -2452,6 +2574,34 @@
     });
   }
 
+  async function cargarKPIs() {
+
+  try {
+
+    const res = await fetch(
+      `${API_URL}/dashboard/resumen`,
+      {
+        headers: {
+          Authorization: `Bearer ${getToken()}`
+        }
+      }
+    );
+
+    const data = await res.json();
+
+    const kpiPas = document.getElementById('kpiPasantias');
+if (kpiPas) kpiPas.textContent = (data.pasantias_activas ?? 0).toLocaleString('es-CO');
+const kpiHoras = document.getElementById('kpiHoras');
+if (kpiHoras) kpiHoras.textContent = (data.horas_hoy ?? 0) + 'h';
+const kpiVal = document.getElementById('kpiValidaciones');
+if (kpiVal) kpiVal.textContent = (data.validaciones_pendientes ?? 0).toLocaleString('es-CO');
+
+  } catch (error) {
+
+    console.error('Error cargando KPIs:', error);
+
+  }
+}
   async function exportarResumenCSV() {
     if (!_practicasReporte.length) { 
       await cargarReportes();
@@ -2524,6 +2674,7 @@
   }
 
   cargarPerfil();
+  cargarKPIs();
   cargarEstadisticasDashboard();
 
 document.addEventListener('keydown', function(e) {
@@ -2539,6 +2690,32 @@ document.addEventListener('keydown', function(e) {
     }
   }
 });
+
+  async function descargarReportePDF(id) {
+    try {
+      const Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, timer: 3000 });
+      Toast.fire({ icon: 'info', title: 'Generando PDF...' });
+      
+      const res = await fetch(`${API_URL}/practicas/${id}/reporte-pdf`, {
+        headers: { Authorization: `Bearer ${getToken()}` }
+      });
+      
+      if (!res.ok) throw new Error('Error al generar PDF');
+      
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Reporte_SIPGA_${id}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (e) {
+      console.error(e);
+      Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo descargar el reporte. Verifica tu conexión.' });
+    }
+  }
 
 </script>
 </body>

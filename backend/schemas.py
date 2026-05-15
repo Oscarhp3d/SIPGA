@@ -11,14 +11,20 @@ class UsuarioBase(BaseModel):
     programa_academico: Optional[str] = Field(None, min_length=3, max_length=150, json_schema_extra={"examples": ["Tecnología en Desarrollo de Sistemas"]})
 
 class UsuarioCreate(UsuarioBase):
+    password: str = Field(..., min_length=8)
     """
     Usado por el coordinador para crear usuarios internamente.
     El consentimiento queda registrado automáticamente en nombre de la institución.
     """
     password: str = Field(..., min_length=8, max_length=64)
 
-
 class RegistroPublicoCreate(BaseModel):
+    nombre:             str      = Field(..., example="Juan Pérez")
+    correo:             EmailStr = Field(..., example="juan@universidad.edu.co")
+    password:           str      = Field(..., min_length=8)
+    programa_academico: Optional[str] = None
+    acepto_politica:    bool     = Field(..., description="Ley 1581/2012")
+    version_politica:   str      = Field(default="v1.0")
     """
     Endpoint público POST /auth/registro.
     El usuario se registra por cuenta propia y DEBE aceptar explícitamente
@@ -41,12 +47,8 @@ class RegistroPublicoCreate(BaseModel):
     @classmethod
     def debe_aceptar(cls, v: bool) -> bool:
         if not v:
-            raise ValueError(
-                "Debe aceptar la política de tratamiento de datos para registrarse "
-                "(Ley 1581 de 2012 / Decreto 1377 de 2013)."
-            )
+            raise ValueError("Debe aceptar la política de tratamiento de datos")
         return v
-
 
 class UsuarioUpdate(BaseModel):
     nombre: Optional[str] = Field(None, min_length=3, max_length=150)
@@ -61,6 +63,8 @@ class UsuarioResponse(UsuarioBase):
     acepto_politica:      bool
     fecha_consentimiento: Optional[datetime] = None
     version_politica:     Optional[str]      = None
+    # Sobreescribe sin min_length para tolerar datos existentes en BD con valor vacío
+    programa_academico:   Optional[str]      = Field(None, max_length=150)
     model_config = {"from_attributes": True}
 
 
@@ -91,7 +95,6 @@ class AsignacionTutorResponse(BaseModel):
     model_config = {"from_attributes": True}
 
 
-
 class PracticaBase(BaseModel):
     estudiante_id: str
     tutor_id: Optional[str] = None
@@ -118,7 +121,7 @@ class PracticaUpdate(BaseModel):
     fecha_fin: Optional[datetime] = None
 
 class PracticaResponse(PracticaBase):
-    id: str
+    id: int                          # ← cambiado: str → int
     estado: str
     horas_acumuladas: float = 0.0
     estudiante: Optional[UsuarioResponse] = None
@@ -127,10 +130,8 @@ class PracticaResponse(PracticaBase):
     model_config = {"from_attributes": True}
 
 
-
-
 class SeguimientoBase(BaseModel):
-    practica_id: str
+    practica_id: int
     descripcion: str = Field(..., min_length=15, max_length=2000)
     horas_realizadas: float = Field(..., gt=0, le=12)
     fecha_actividad: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
@@ -146,7 +147,9 @@ class SeguimientoBase(BaseModel):
     @classmethod
     def validar_fecha(cls, v):
         now = datetime.now(timezone.utc)
-        # Allow a tiny margin for execution time delay if comparing strict now
+        # Normalizar v a timezone-aware si viene sin timezone
+        if v.tzinfo is None:
+            v = v.replace(tzinfo=timezone.utc)
         if v > now:
             raise ValueError("La fecha de la actividad no puede ser futura")
         if v.year != now.year:
@@ -164,7 +167,7 @@ class SeguimientoUpdate(BaseModel):
     validado_supervisor: Optional[bool] = None
 
 class SeguimientoResponse(SeguimientoBase):
-    id: str
+    id: int                          # ← cambiado: str → int
     estado: StatusEnum
     validado_tutor: bool
     validado_supervisor: bool
@@ -172,8 +175,6 @@ class SeguimientoResponse(SeguimientoBase):
     evidencia_url: Optional[str] = None
     archivo_evidencia: Optional[str] = None
     model_config = {"from_attributes": True}
-
-
 
 
 class Token(BaseModel):
@@ -186,9 +187,6 @@ class TokenData(BaseModel):
     username: Optional[str] = None
     rol: Optional[str] = None
 
-
-
-
 class AuditLogResponse(BaseModel):
     id: int
     usuario_id: Optional[str]
@@ -196,8 +194,6 @@ class AuditLogResponse(BaseModel):
     fecha: datetime
     ip_origen: str
     model_config = {"from_attributes": True}
-
-
 
 
 class DashboardCoordinador(BaseModel):

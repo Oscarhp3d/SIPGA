@@ -3,6 +3,8 @@ from sqlalchemy import func
 from typing import List, Optional, Dict
 import models, schemas
 import auth
+from datetime import datetime
+import uuid
 from datetime import datetime, timezone
 
 
@@ -38,6 +40,7 @@ def crear_usuario(db: Session, usuario: schemas.UsuarioCreate) -> models.Usuario
     actúa como responsable del tratamiento al vincular al actor.
     """
     db_usuario = models.Usuario(
+        id=str(uuid.uuid4()),
         nombre=usuario.nombre,
         correo=usuario.correo,
         password_hash=auth.hash_password(usuario.password),
@@ -63,6 +66,7 @@ def registrar_usuario_publico(
     tiempo, cumpliendo Art. 9 Ley 1581/2012 y Art. 4 Decreto 1377/2013.
     """
     db_usuario = models.Usuario(
+        id=str(uuid.uuid4()),
         nombre=datos.nombre,
         correo=datos.correo,
         password_hash=auth.hash_password(datos.password),
@@ -150,7 +154,7 @@ def crear_practica(db: Session, data: schemas.PracticaCreate) -> models.Practica
     db.refresh(db_practica)
     return db_practica
 
-def obtener_practica(db: Session, practica_id: str) -> Optional[models.Practica]:
+def obtener_practica(db: Session, practica_id: int) -> Optional[models.Practica]:
     return db.query(models.Practica).filter(models.Practica.id == practica_id).first()
 
 def obtener_todas_practicas(db: Session) -> List[models.Practica]:
@@ -174,7 +178,7 @@ def obtener_practicas_por_usuario(
     return []
 
 def reasignar_tutor_practica(
-    db: Session, practica_id: str, nuevo_tutor_id: str
+    db: Session, practica_id: int, nuevo_tutor_id: str
 ) -> Optional[models.Practica]:
     """El coordinador reasigna el tutor de una práctica específica."""
     practica = obtener_practica(db, practica_id)
@@ -202,7 +206,7 @@ def registrar_seguimiento(
     return db_seg
 
 def obtener_seguimientos_practica(
-    db: Session, practica_id: str
+    db: Session, practica_id: int
 ) -> List[models.Seguimiento]:
     return db.query(models.Seguimiento).filter(
         models.Seguimiento.practica_id == practica_id,
@@ -210,7 +214,7 @@ def obtener_seguimientos_practica(
     ).all()
 
 def obtener_seguimiento(
-    db: Session, seguimiento_id: str
+    db: Session, seguimiento_id: int
 ) -> Optional[models.Seguimiento]:
     return db.query(models.Seguimiento).filter(
         models.Seguimiento.id == seguimiento_id
@@ -248,7 +252,7 @@ def obtener_seguimientos_pendientes_supervisor(
 
 def validar_seguimiento(
     db: Session,
-    seguimiento_id: str,
+    seguimiento_id: int,
     estado: models.StatusEnum,
     revisor_id: str,
     observaciones: str,
@@ -267,6 +271,10 @@ def validar_seguimiento(
     if revisor:
         if revisor.rol == models.UserRole.tutor:
             db_seg.validado_tutor = (estado == models.StatusEnum.aprobado)
+            if estado == models.StatusEnum.aprobado:
+                practica = obtener_practica(db, db_seg.practica_id)
+                if practica:
+                    practica.horas_acumuladas = (practica.horas_acumuladas or 0) + db_seg.horas_realizadas
         elif revisor.rol == models.UserRole.supervisor:
             db_seg.validado_supervisor = (estado == models.StatusEnum.aprobado)
             # Al aprobar el supervisor, actualizar horas acumuladas en la práctica
@@ -288,7 +296,7 @@ def validar_seguimiento(
     return db_seg
 
 def eliminar_seguimiento_logico(
-    db: Session, seguimiento_id: str
+    db: Session, seguimiento_id: int
 ) -> Optional[models.Seguimiento]:
     db_seg = obtener_seguimiento(db, seguimiento_id)
     if db_seg:
@@ -298,7 +306,7 @@ def eliminar_seguimiento_logico(
     return db_seg
 
 def actualizar_evidencia(
-    db: Session, seguimiento_id: str, ruta_archivo: str
+    db: Session, seguimiento_id: int, ruta_archivo: str
 ) -> Optional[models.Seguimiento]:
     db_seg = obtener_seguimiento(db, seguimiento_id)
     if db_seg:
