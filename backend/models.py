@@ -3,6 +3,7 @@ from sqlalchemy.orm import relationship
 from database import Base
 import datetime
 import enum
+import uuid
 
 
 class UserRole(str, enum.Enum):
@@ -12,10 +13,13 @@ class UserRole(str, enum.Enum):
     coordinador = "coordinador"
 
 class StatusEnum(str, enum.Enum):
-    borrador  = "borrador"
-    enviado   = "enviado"
-    aprobado  = "aprobado"
-    rechazado = "rechazado"
+    borrador             = "borrador"
+    enviado              = "enviado"
+    pendiente_tutor      = "pendiente_tutor"
+    pendiente_supervisor = "pendiente_supervisor"
+    aprobado             = "aprobado"
+    rechazado            = "rechazado"
+    validado_final       = "validado_final"
 
 userrole_type   = Enum(UserRole,  name="userrole",   create_type=False)
 statusenum_type = Enum(StatusEnum, name="statusenum", create_type=False)
@@ -25,7 +29,7 @@ class Usuario(Base):
     __tablename__ = "usuarios"
 
     # Usuario conserva UUID (no cambia — es la clave de auth/JWT)
-    id                 = Column(String, primary_key=True, index=True)
+    id                 = Column(String, primary_key=True, index=True, default=lambda: str(uuid.uuid4()))
     nombre             = Column(String(100), nullable=False)
     correo             = Column(String(150), unique=True, nullable=False, index=True)
     password_hash      = Column(String(255), nullable=False)

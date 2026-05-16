@@ -33,6 +33,29 @@
 
     .table-row:hover { background: #f8fafc; }
 
+    /* Tooltip simple */
+    [data-tooltip] { position: relative; cursor: pointer; }
+    [data-tooltip]:before {
+      content: attr(data-tooltip);
+      position: absolute; bottom: 125%; left: 50%; transform: translateX(-50%);
+      padding: 4px 8px; background: #0d1b2e; color: #fff; font-size: 10px;
+      border-radius: 4px; white-space: nowrap; opacity: 0; visibility: hidden;
+      transition: all 0.2s; z-index: 100;
+    }
+    [data-tooltip]:hover:before { opacity: 1; visibility: visible; }
+
+    /* Responsive Sidebar */
+    @media (max-width: 1024px) {
+      aside { transform: translateX(-100%); transition: transform 0.3s ease; }
+      aside.open { transform: translateX(0); }
+      main { margin-left: 0 !important; }
+      #btnMenuMobile { display: flex !important; }
+    }
+
+    #btnMenuMobile { display: none; }
+    .overlay-mobile { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:25; backdrop-filter:blur(2px); }
+    .overlay-mobile.open { display:block; }
+
     .badge-coordinador { background:#dbeafe; color:#1d4ed8; }
     .badge-tutor       { background:#d1fae5; color:#065f46; }
     .badge-estudiante  { background:#fef3c7; color:#92400e; }
@@ -41,25 +64,24 @@
     .seccion { display: none; }
     .seccion.activa { display: block; }
 
-   
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(6px); }
       to   { opacity: 1; transform: translateY(0); }
     }
     .seccion.activa { animation: fadeIn 0.2s ease; }
 
-
     #modalOverlay { display:none; }
     #modalOverlay.open { display:flex; }
 
-  
     #btnLogout:hover { background: rgba(255,255,255,0.08); }
   </style>
 </head>
 <body class="bg-slate-100 min-h-screen flex">
 
 
-  <aside class="w-52 min-h-screen flex flex-col fixed top-0 left-0 z-30"
+  <div id="overlayMobile" class="overlay-mobile" onclick="toggleSidebar()"></div>
+
+  <aside id="sidebar" class="w-52 min-h-screen flex flex-col fixed top-0 left-0 z-30"
          style="background: linear-gradient(180deg, #0d1b2e 0%, #112240 100%);">
 
     <!-- Logo -->
@@ -168,19 +190,24 @@
 
 
     <header class="bg-white border-b border-slate-100 px-6 py-3 flex items-center gap-4 sticky top-0 z-20">
+      <button id="btnMenuMobile" onclick="toggleSidebar()" class="p-2 text-slate-500 hover:bg-slate-100 rounded-lg lg:hidden">
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+      </button>
       <div class="flex-1 relative">
         <svg class="w-4 h-4 text-slate-300 absolute left-3 top-1/2 -translate-y-1/2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
           <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
         </svg>
-        <input type="text" placeholder="Buscar expedientes, alumnos o reportes..."
+        <input type="text" id="globalSearch" placeholder="Buscar en la sección activa..." oninput="ejecutarBusquedaGlobal()"
                class="w-full pl-9 pr-4 py-2 text-sm text-slate-600 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-blue-300 transition-colors"/>
       </div>
       <div class="flex items-center gap-3">
-        <button class="relative p-2 text-slate-400 hover:text-slate-600 transition-colors">
+        <button onclick="mostrarNotificaciones()" class="relative p-2 text-slate-400 hover:text-slate-600 transition-colors" title="Alertas de Auditoría">
           <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
             <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
           </svg>
-          <span class="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-red-500 rounded-full"></span>
+          <span id="notifDot" class="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-red-500 rounded-full"></span>
         </button>
         <div class="flex items-center gap-2.5 pl-3 border-l border-slate-100">
           <div class="text-right">
@@ -267,7 +294,7 @@
             <div class="space-y-4" id="actividadReciente">
               <div class="text-xs text-slate-300 text-center pt-4">Cargando...</div>
             </div>
-            <button onclick="irASeccion('log')" class="w-full mt-4 py-2 text-[11px] font-semibold text-slate-500 border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors tracking-wide">
+            <button id="btnVerHistorial" onclick="irASeccion('log')" class="w-full mt-4 py-2 text-[11px] font-semibold text-slate-500 border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors tracking-wide">
               VER TODO EL HISTORIAL
             </button>
           </div>
@@ -852,7 +879,7 @@ const token = getToken();
 
       const ocultar = (page) => {
         const el = document.querySelector(`[data-page="${page}"]`);
-        if (el) el.style.display = 'none';
+        if (el) el.remove(); 
       };
       const ocultarId = (id) => {
         const el = document.getElementById(id);
@@ -867,6 +894,11 @@ const token = getToken();
 
       if (user.rol !== 'estudiante') {
         ocultar('log');
+        const secLog = document.getElementById('seccionLog');
+        if (secLog) secLog.remove(); 
+        
+        const btnHist = document.getElementById('btnVerHistorial');
+        if (btnHist) btnHist.remove(); 
       }
 
       if (user.rol === 'coordinador') {
@@ -1299,8 +1331,7 @@ async function crearUsuario() {
   }
 }
   async function editarUsuario(id) {
-
-    const usuario = _usuarios.find(u => u.id === id);
+    const usuario = _usuarios.find(u => String(u.id) === String(id));
 
     if (!usuario) return;
 
@@ -1703,10 +1734,15 @@ async function crearUsuario() {
                    value="${new Date().toISOString().split('T')[0]}"/>
           </div>
         </div>
+        <div>
+          <label class="block text-xs mb-1">Evidencia / Soporte <span class="text-slate-400">(PDF, JPG, PNG - opcional)</span></label>
+          <input type="file" id="logArchivo" accept=".pdf,.jpg,.jpeg,.png"
+                 class="w-full px-3 py-1.5 border rounded-xl text-[11px] bg-slate-50 file:mr-4 file:py-1 file:px-3 file:rounded-full file:border-0 file:text-[10px] file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer"/>
+        </div>
         <div id="logError" class="text-xs text-red-500 hidden"></div>
         <div class="flex gap-3 pt-2">
           <button onclick="cerrarModal()" class="flex-1 py-2 border rounded-xl text-xs">Cancelar</button>
-          <button onclick="guardarSeguimiento()" class="flex-1 py-2 rounded-xl text-white text-xs font-semibold" style="background:#0d1b2e;">Guardar</button>
+          <button onclick="guardarSeguimiento()" class="flex-1 py-2 rounded-xl text-white text-xs font-semibold" style="background:#0d1b2e;">Guardar Actividad</button>
         </div>
       </div>`;
     abrirModal();
@@ -1764,13 +1800,38 @@ async function crearUsuario() {
       if (!res.ok) {
         err.textContent = data.detail || 'Error al guardar';
         err.classList.remove('hidden');
+        if (btn) { btn.disabled = false; btn.innerHTML = 'Guardar Actividad'; btn.classList.remove('opacity-50'); }
         return;
       }
+
+      // Si hay archivo, subirlo
+      const fileInput = document.getElementById('logArchivo');
+      if (fileInput && fileInput.files.length > 0) {
+        btn.innerHTML = 'Subiendo archivo...';
+        const formData = new FormData();
+        formData.append('archivo', fileInput.files[0]);
+        
+        const resSubida = await fetch(`${API_URL}/seguimientos/${data.id}/subir-evidencia`, {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${getToken()}` },
+          body: formData
+        });
+        
+        if (!resSubida.ok) {
+          const errData = await resSubida.json().catch(() => ({}));
+          Toast.fire({icon: 'warning', title: 'Actividad guardada, pero la evidencia falló: ' + (errData.detail || 'Error desconocido')});
+        }
+      }
+
+      Toast.fire({icon: 'success', title: 'Actividad registrada correctamente'});
       cerrarModal();
       cargarLog();
     } catch (e) {
+      console.error(e);
       err.textContent = 'Error de conexión';
       err.classList.remove('hidden');
+    } finally {
+      if (btn) { btn.disabled = false; btn.innerHTML = 'Guardar Actividad'; btn.classList.remove('opacity-50'); }
     }
   }
 
@@ -2120,7 +2181,7 @@ async function crearUsuario() {
     const tbody = document.getElementById('tablaPracticas');
 
     if (!lista.length) {
-      tbody.innerHTML = `<tr><td colspan="6" class="px-5 py-8 text-center text-sm text-slate-300">No hay prácticas registradas</td></tr>`;
+      tbody.innerHTML = getEmptyState('No hay prácticas registradas', 'Comienza creando una nueva práctica desde el botón superior.');
       return;
     }
 
@@ -2142,11 +2203,15 @@ async function crearUsuario() {
       
       const badge      = estadoBadge[p.estado] || 'bg-slate-100 text-slate-600';
       const progreso   = p.horas_totales_requeridas ? Math.min(100, Math.round((p.horas_acumuladas || 0) / p.horas_totales_requeridas * 100)) : 0;
+      const metaLograda = progreso >= 100;
 
       return `
-        <tr class="table-row border-b border-slate-50">
+        <tr class="table-row border-b border-slate-50 ${metaLograda ? 'bg-emerald-50/30' : ''}">
           <td class="px-5 py-3">
-            <div class="text-xs font-semibold text-slate-700">${estudianteNombre}</div>
+            <div class="text-xs font-semibold text-slate-700 flex items-center gap-2">
+              ${estudianteNombre}
+              ${metaLograda ? '<span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping" title="Meta Alcanzada"></span>' : ''}
+            </div>
             <div class="text-[10px] text-slate-400">${estudianteCorreo}</div>
           </td>
           <td class="px-3 py-3 text-xs text-slate-600">${empresaNombre}</td>
@@ -2154,24 +2219,24 @@ async function crearUsuario() {
           <td class="px-3 py-3">
             <div class="flex items-center gap-2">
               <div class="flex-1 bg-slate-100 rounded-full h-1.5">
-                <div class="bg-blue-500 h-1.5 rounded-full" style="width:${progreso}%"></div>
+                <div class="h-1.5 rounded-full ${metaLograda ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-blue-500'}" style="width:${progreso}%"></div>
               </div>
-              <span class="text-[10px] text-slate-400 w-8">${progreso}%</span>
+              <span class="text-[10px] ${metaLograda ? 'text-emerald-600 font-bold' : 'text-slate-400'} w-8">${progreso}%</span>
             </div>
           </td>
           <td class="px-3 py-3">
-            <span class="text-[10px] font-medium px-2 py-0.5 rounded-full ${badge}">${p.estado}</span>
+            <span class="text-[10px] font-medium px-2 py-0.5 rounded-full ${metaLograda ? 'bg-emerald-600 text-white' : badge}">${metaLograda ? 'Meta Lograda' : p.estado}</span>
           </td>
           <td class="px-3 py-3 flex gap-2">
             ${['coordinador', 'tutor'].includes(window.currentUserRol) ? `
-              <button data-id="${p.id}" data-action="ver-practica"
+              <button data-id="${p.id}" data-action="ver-practica" data-tooltip="Ver detalles completos"
                       class="btn-practica text-[10px] font-semibold text-blue-600 hover:text-blue-800">Ver</button>
               ${p.estado === 'pendiente' && window.currentUserRol === 'coordinador' ? `
-              <button data-id="${p.id}" data-action="aprobar-practica"
+              <button data-id="${p.id}" data-action="aprobar-practica" data-tooltip="Activar práctica"
                       class="btn-practica text-[10px] font-semibold text-emerald-600 hover:text-emerald-800">Activar</button>
               ` : ''}
               ${p.estado === 'activa' && progreso >= 100 ? `
-              <button data-id="${p.id}" data-action="finalizar-practica"
+              <button data-id="${p.id}" data-action="finalizar-practica" data-tooltip="Marcar como culminada"
                       class="btn-practica text-[10px] font-semibold text-purple-600 hover:text-purple-800">Finalizar</button>
               ` : (p.estado === 'activa' ? '<span class="text-[10px] text-slate-400 italic">En progreso</span>' : '')}
             ` : '<span class="text-[10px] text-slate-400 italic">Sin acciones</span>'}
@@ -2209,7 +2274,7 @@ async function crearUsuario() {
   }
 
   function verDetallePractica(id) {
-    const p = _practicas.find(x => x.id === id);
+    const p = _practicas.find(x => String(x.id) === String(id));
     if (!p) return;
     const estudiante = _usuariosMapa[p.estudiante_id];
     const tutor = _usuariosMapa[p.tutor_id];
@@ -2464,7 +2529,7 @@ async function crearUsuario() {
   function renderTablaReportes(lista) {
     const tbody = document.getElementById('tablaReportes');
     if (!lista.length) {
-      tbody.innerHTML = `<tr><td colspan="5" class="px-5 py-8 text-center text-sm text-slate-300">No hay prácticas para reportar</td></tr>`;
+      tbody.innerHTML = getEmptyState('Sin prácticas para reportar', 'Las prácticas aparecerán aquí una vez sean activadas.');
       return;
     }
 
@@ -2637,35 +2702,38 @@ if (kpiVal) kpiVal.textContent = (data.validaciones_pendientes ?? 0).toLocaleStr
       if (res.ok) {
         const data = await res.json();
         
-        if (window.currentUserRol === 'coordinador') {
-          document.getElementById('kpiPasantias').textContent = data.total_practicas_activas;
-          document.getElementById('kpiValidaciones').textContent = data.seguimientos_pendientes;
-          document.getElementById('kpiHoras').textContent = data.total_estudiantes * 8; 
+        if (window.currentUserRol === 'coordinador' || window.currentUserRol === 'tutor') {
+          // KPIs Principales
+          document.getElementById('kpiPasantias').textContent = data.total_practicas_activas || '0';
+          document.getElementById('kpiValidaciones').textContent = data.seguimientos_pendientes || '0';
+          document.getElementById('kpiHoras').textContent = (data.total_horas_hoy || 0) + 'h'; 
 
-          // Actualizar actividad reciente
+          // Cargar Gráfica de Progreso
+          cargarGraficaPasantias();
+
+          // Actualizar actividad reciente con datos reales si es posible
           const rec = document.getElementById('actividadReciente');
-          if (rec) {
+          if (rec && data.total_estudiantes) {
             rec.innerHTML = `
               <div class="flex items-center gap-3">
                 <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
                 <div>
-                  <p class="text-[11px] font-semibold text-slate-700">Se han creado ${data.total_practicas_activas} prácticas</p>
-                  <p class="text-[9px] text-slate-400">Hace unos momentos</p>
+                  <p class="text-[11px] font-semibold text-slate-700">Se han gestionado ${data.total_practicas_activas} prácticas</p>
+                  <p class="text-[9px] text-slate-400">Estado: Actualizado ahora</p>
                 </div>
               </div>
               <div class="flex items-center gap-3">
                 <div class="w-2 h-2 rounded-full bg-blue-500"></div>
                 <div>
-                  <p class="text-[11px] font-semibold text-slate-700">${data.total_estudiantes} Estudiantes registrados</p>
-                  <p class="text-[9px] text-slate-400">Base de datos actualizada</p>
+                  <p class="text-[11px] font-semibold text-slate-700">${data.total_estudiantes} Estudiantes en el sistema</p>
+                  <p class="text-[9px] text-slate-400">Registro histórico</p>
                 </div>
               </div>
             `;
           }
           cargarValidacion();
         } else if (window.currentUserRol === 'estudiante') {
-          document.getElementById('kpiHoras').textContent = `${data.horas_acumuladas}h`;
-          // Otros KPIs para estudiante...
+          document.getElementById('kpiHoras').textContent = `${data.horas_acumuladas || 0}h`;
         }
       }
     } catch (e) {
@@ -2714,6 +2782,118 @@ document.addEventListener('keydown', function(e) {
     } catch (e) {
       console.error(e);
       Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo descargar el reporte. Verifica tu conexión.' });
+    }
+  }
+
+  function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlayMobile');
+    sidebar.classList.toggle('open');
+    overlay.classList.toggle('open');
+  }
+
+  function getEmptyState(mensaje, submensaje) {
+    return `
+      <tr>
+        <td colspan="10" class="px-5 py-12 text-center">
+          <div class="flex flex-col items-center justify-center opacity-40">
+            <svg class="w-12 h-12 text-slate-300 mb-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+            </svg>
+            <p class="text-sm font-semibold text-slate-500">${mensaje}</p>
+            <p class="text-[11px] text-slate-400 mt-1">${submensaje}</p>
+          </div>
+        </td>
+      </tr>
+    `;
+  }
+
+  function ejecutarBusquedaGlobal() {
+    const query = document.getElementById('globalSearch').value.toLowerCase();
+    const activa = Object.keys(secciones).find(k => secciones[k] && secciones[k].classList.contains('activa'));
+    
+    if (!activa) return;
+
+    // Redirigir búsqueda a los inputs de filtro de cada sección
+    const mapeoFiltros = {
+      usuarios:  'filtroUsuarios',
+      practicas: 'filtroPracticas',
+      empresas:  'filtroEmpresas',
+      log:       'filtroLog',
+      validacion: 'filtroValidacion' // Asumiendo que existe o se añade
+    };
+
+    const inputLocalId = mapeoFiltros[activa];
+    if (inputLocalId) {
+      const inputLocal = document.getElementById(inputLocalId);
+      if (inputLocal) {
+        inputLocal.value = query;
+        inputLocal.dispatchEvent(new Event('input'));
+      }
+    }
+  }
+
+  function mostrarNotificaciones() {
+    const pendientes = document.getElementById('kpiValidaciones')?.textContent || '0';
+    const totalPrac = document.getElementById('kpiPasantias')?.textContent || '0';
+    
+    let html = `
+      <div class="text-left space-y-4">
+        <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
+          <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Estado de Auditoría</p>
+          <p class="text-sm text-slate-700">El sistema reporta <span class="font-bold text-blue-600">${pendientes}</span> seguimientos esperando validación.</p>
+        </div>
+        <div class="p-3 bg-blue-50 rounded-xl border border-blue-100">
+          <p class="text-[10px] font-bold text-blue-400 uppercase mb-1">Resumen de Prácticas</p>
+          <p class="text-sm text-slate-700">Hay un total de <span class="font-bold">${totalPrac}</span> expedientes activos en plataforma.</p>
+        </div>
+        <p class="text-[10px] text-center text-slate-300">Auditoría SIPGA v1.2 — IP: ${window.location.hostname}</p>
+      </div>
+    `;
+
+    Swal.fire({
+      title: 'Alertas del Sistema',
+      html: html,
+      icon: parseInt(pendientes) > 0 ? 'warning' : 'success',
+      confirmButtonText: 'Entendido',
+      confirmButtonColor: '#0d1b2e'
+    });
+    
+    // Ocultar el punto rojo tras leer
+    document.getElementById('notifDot').style.display = 'none';
+  }
+
+  let _chartPasantias = null;
+  async function cargarGraficaPasantias() {
+    const canvas = document.getElementById('chartPasantias');
+    if (!canvas) return;
+
+    try {
+      const res = await fetch(`${API_URL}/dashboard/progreso-pasantias`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (!res.ok) return;
+      const data = await res.json();
+
+      if (_chartPasantias) _chartPasantias.destroy();
+
+      _chartPasantias = new Chart(canvas.getContext('2d'), {
+        type: 'bar',
+        data: data,
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'bottom', labels: { font: { size: 10, family: 'DM Sans' }, boxWidth: 10 } }
+          },
+          scales: {
+            y: { beginAtZero: true, grid: { display: false }, ticks: { font: { size: 9 } } },
+            x: { grid: { display: false }, ticks: { font: { size: 9 } } }
+          }
+        }
+      });
+    } catch (e) {
+      console.error('Error al cargar gráfica:', e);
     }
   }
 

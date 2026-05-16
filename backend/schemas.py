@@ -11,25 +11,13 @@ class UsuarioBase(BaseModel):
     programa_academico: Optional[str] = Field(None, min_length=3, max_length=150, json_schema_extra={"examples": ["Tecnología en Desarrollo de Sistemas"]})
 
 class UsuarioCreate(UsuarioBase):
-    password: str = Field(..., min_length=8)
+    password: str = Field(..., min_length=8, max_length=64)
     """
     Usado por el coordinador para crear usuarios internamente.
     El consentimiento queda registrado automáticamente en nombre de la institución.
     """
-    password: str = Field(..., min_length=8, max_length=64)
 
 class RegistroPublicoCreate(BaseModel):
-    nombre:             str      = Field(..., example="Juan Pérez")
-    correo:             EmailStr = Field(..., example="juan@universidad.edu.co")
-    password:           str      = Field(..., min_length=8)
-    programa_academico: Optional[str] = None
-    acepto_politica:    bool     = Field(..., description="Ley 1581/2012")
-    version_politica:   str      = Field(default="v1.0")
-    """
-    Endpoint público POST /auth/registro.
-    El usuario se registra por cuenta propia y DEBE aceptar explícitamente
-    la política de tratamiento de datos (Ley 1581/2012 + Decreto 1377/2013).
-    """
     nombre:             str      = Field(..., min_length=3, max_length=150, json_schema_extra={"examples": ["Juan Pérez"]})
     correo:             EmailStr = Field(..., max_length=255, json_schema_extra={"examples": ["juan@universidad.edu.co"]})
     password:           str      = Field(..., min_length=8, max_length=64)
@@ -115,7 +103,7 @@ class PracticaCreate(PracticaBase):
     pass
 
 class PracticaUpdate(BaseModel):
-    estado: Optional[str] = None
+    estado: Optional[str] = Field(None, pattern="^(activa|pendiente|finalizada|suspendida)$")
     tutor_id: Optional[str] = None
     supervisor_id: Optional[str] = None
     fecha_fin: Optional[datetime] = None

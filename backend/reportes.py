@@ -35,17 +35,31 @@ def generar_pdf_practica(estudiante_nombre: str, empresa: str, tutor_nombre: str
         if y < 100: 
             p.showPage()
             y = height - 50
+            p.setFont("Helvetica", 9)
         
-        p.drawString(50, y, str(s.fecha_actividad.date()))
-        desc = (s.descripcion[:55] + '..') if len(s.descripcion) > 55 else s.descripcion
+        # Manejo seguro de fecha
+        fecha_str = "—"
+        if s.fecha_actividad:
+            fecha_str = str(s.fecha_actividad.date()) if hasattr(s.fecha_actividad, 'date') else str(s.fecha_actividad)[:10]
+        p.drawString(50, y, fecha_str)
+        
+        # Manejo seguro de descripción
+        desc_raw = s.descripcion if s.descripcion else "Sin descripción"
+        desc = (desc_raw[:55] + '..') if len(desc_raw) > 55 else desc_raw
         p.drawString(120, y, desc)
-        p.drawString(410, y, f"{s.horas_realizadas}h")
         
-        estado_str = str(s.estado).replace('StatusEnum.', '').upper()
-        p.drawString(460, y, estado_str)
+        # Manejo de horas
+        p.drawString(410, y, f"{s.horas_realizadas or 0}h")
         
-        if estado_str == "APROBADO":
-            total_horas += s.horas_realizadas
+        # Manejo estético de estado (Sin guiones y simplificado)
+        estado_raw = str(s.estado if s.estado else "borrador")
+        # Eliminar prefijos de Enum, quitar guiones, y tomar solo la primera palabra clave
+        estado_limpio = estado_raw.replace('StatusEnum.', '').split('_')[0].upper()
+        p.drawString(460, y, estado_limpio)
+        
+        # Lógica de suma basada en el estado real
+        if any(x in estado_raw.upper() for x in ["APROBADO", "VALIDADO"]):
+            total_horas += (s.horas_realizadas or 0)
             
         y -= 20
 

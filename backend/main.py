@@ -16,8 +16,13 @@ from database import engine
 from config import settings
 from routers import auth_router, usuarios, practicas, seguimientos, empresas, coordinador, tutor, estudiante, supervisor
 
+# Asegurar que el directorio de logs existe
+LOGS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "logs")
+os.makedirs(LOGS_DIR, exist_ok=True)
+LOG_FILE = os.path.join(LOGS_DIR, "auditoria_sipga.log")
+
 logging.basicConfig(
-    filename='auditoria_sipga.log',
+    filename=LOG_FILE,
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
@@ -53,13 +58,19 @@ async def add_process_time_header(request: Request, call_next):
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
     logging.error(f"ERROR CRÍTICO en {request.url.path}: {str(exc)}", exc_info=True)
-    return JSONResponse(
+    response = JSONResponse(
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
         content={
             "detail": "Ha ocurrido un error interno en el servidor.",
             "error_type": type(exc).__name__
         }
     )
+    # Asegurar headers CORS en caso de error 500
+    origin = request.headers.get("origin")
+    if origin in settings.ALLOWED_ORIGINS:
+        response.headers["Access-Control-Allow-Origin"] = origin
+        response.headers["Access-Control-Allow-Credentials"] = "true"
+    return response
 
 
 from fastapi.staticfiles import StaticFiles
@@ -81,6 +92,8 @@ app.include_router(supervisor.router,   prefix=settings.API_V1_STR)
 # 8. SERVIR FRONTEND — Unificación del sistema
 frontend_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "frontend")
 if os.path.exists(frontend_path):
+    # Montar carpetas individuales para compatibilidad con rutas relativas
+    app.mount("/js", StaticFiles(directory=os.path.join(frontend_path, "js")), name="js")
     app.mount("/static", StaticFiles(directory=frontend_path), name="static")
 
 @app.get("/")

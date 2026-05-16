@@ -97,7 +97,12 @@ async def subir_evidencia(
     if not os.path.exists(settings.UPLOAD_DIR):
         os.makedirs(settings.UPLOAD_DIR)
 
-    ruta_final = f"{settings.UPLOAD_DIR}/seg_{id}_{archivo.filename}"
+    import uuid
+    # Sanitizar y asegurar nombre único
+    ext = os.path.splitext(archivo.filename)[1]
+    nombre_seguro = f"seg_{id}_{uuid.uuid4().hex}{ext}"
+    ruta_final = os.path.join(settings.UPLOAD_DIR, nombre_seguro)
+    
     with open(ruta_final, "wb") as buffer:
         buffer.write(contents)
 

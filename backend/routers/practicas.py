@@ -148,7 +148,7 @@ def descargar_reporte(
     seguimientos = crud.obtener_seguimientos_practica(db, practica_id=practica_id)
 
     pdf_buffer = generar_pdf_practica(
-        practica.estudiante.nombre,
+        practica.estudiante.nombre if practica.estudiante else "Estudiante Desconocido",
         practica.empresa.nombre if practica.empresa else "Sin asignar",
         practica.tutor.nombre if practica.tutor else "Sin asignar",
         seguimientos

@@ -16,7 +16,7 @@ def test_flujo_completo_practica(client, db):
     token = res_login.json()["access_token"]
 
     # 2. Crear Empresa
-    res_emp = client.post("/api/v1/empresas/", json={"nombre": "Empresa Test", "nit": "123", "direccion": "Calle 1"}, headers={"Authorization": f"Bearer {token}"})
+    res_emp = client.post("/api/v1/empresas/", json={"nombre": "Empresa Test", "nit": "900.123.456-1", "direccion": "Calle 1"}, headers={"Authorization": f"Bearer {token}"})
     emp_id = res_emp.json()["id"]
 
     # 3. Crear Práctica
@@ -54,6 +54,8 @@ def test_flujo_completo_practica(client, db):
     
     # 6. Verificar horas acumuladas en la práctica
     res_check = client.get(f"/api/v1/practicas/{prac_id}", headers={"Authorization": f"Bearer {token}"})
-    # Nota: En la lógica actual, el supervisor es quien suele sumar horas si está configurado, 
-    # pero vamos a verificar según la implementación de crud.py
-    # En crud.py, validar_seguimiento suma horas si el revisor es supervisor o coordinador.
+    assert res_check.status_code == 200
+    # En este test, el tutor valida el seguimiento. 
+    # Según crud.py, la validación del tutor suma horas si es el revisor final o coordinador.
+    # En este flujo, el tutor aprueba. Verifiquemos si crud.py suma en este caso.
+    assert res_check.json()["horas_acumuladas"] == 8.0
