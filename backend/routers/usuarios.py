@@ -82,6 +82,29 @@ def eliminar_usuario(
     db_user = db.query(models.Usuario).filter(models.Usuario.id == usuario_id).first()
     if not db_user:
         raise HTTPException(status_code=404, detail="Usuario no encontrado")
-    db.delete(db_user)
-    db.commit()
+    
+    # Check for constraints
+    try:
+        # Check if user is in empresa_supervisores
+        db.query(models.EmpresaSupervisor).filter(models.EmpresaSupervisor.supervisor_id == usuario_id).delete()
+        
+        # Check if user has practicas (as student, tutor or supervisor)
+        practicas = db.query(models.Practica).filter(
+            (models.Practica.estudiante_id == usuario_id) |
+            (models.Practica.tutor_id == usuario_id) |
+            (models.Practica.supervisor_id == usuario_id)
+        ).first()
+        
+        if practicas:
+            raise ValueError("No se puede eliminar el usuario porque está asignado a prácticas activas. Debes eliminar las prácticas primero.")
+            
+        db.delete(db_user)
+        db.commit()
+    except ValueError as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail="Error de integridad: El usuario tiene datos asociados.")
+        
     return {"message": "Usuario eliminado correctamente"}

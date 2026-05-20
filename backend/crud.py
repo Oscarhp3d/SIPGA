@@ -3,7 +3,6 @@ from sqlalchemy import func
 from typing import List, Optional, Dict
 import models, schemas
 import auth
-from datetime import datetime
 import uuid
 from datetime import datetime, timezone
 
@@ -38,6 +37,8 @@ def crear_usuario(db: Session, usuario: schemas.UsuarioCreate) -> models.Usuario
     Crea un usuario desde el panel del coordinador.
     El consentimiento se registra automáticamente porque la institución
     actúa como responsable del tratamiento al vincular al actor.
+    Si el rol es supervisor y se envía empresa_id, el vínculo empresa↔supervisor
+    se crea automáticamente.
     """
     db_usuario = models.Usuario(
         id=str(uuid.uuid4()),
@@ -53,6 +54,22 @@ def crear_usuario(db: Session, usuario: schemas.UsuarioCreate) -> models.Usuario
     db.add(db_usuario)
     db.commit()
     db.refresh(db_usuario)
+
+    # Si es supervisor y viene empresa_id, crear el vínculo automáticamente
+    if usuario.rol == models.UserRole.supervisor and usuario.empresa_id:
+        # Desactivar vínculo anterior si existe
+        db.query(models.EmpresaSupervisor).filter(
+            models.EmpresaSupervisor.supervisor_id == db_usuario.id,
+            models.EmpresaSupervisor.activo == True
+        ).update({"activo": False})
+        vinculo = models.EmpresaSupervisor(
+            empresa_id=usuario.empresa_id,
+            supervisor_id=db_usuario.id,
+            activo=True
+        )
+        db.add(vinculo)
+        db.commit()
+
     return db_usuario
 
 
@@ -111,6 +128,19 @@ def obtener_asignaciones(db: Session) -> List[models.AsignacionTutor]:
         models.AsignacionTutor.activa == True
     ).all()
 
+def eliminar_empresa(db: Session, empresa_id: int) -> bool:
+    empresa = db.query(models.Empresa).filter(models.Empresa.id == empresa_id).first()
+    if not empresa:
+        return False
+    # Verificar si tiene prácticas asociadas
+    practicas = db.query(models.Practica).filter(models.Practica.empresa_id == empresa_id).first()
+    if practicas:
+        raise ValueError("No se puede eliminar la empresa porque tiene prácticas asociadas.")
+    
+    db.delete(empresa)
+    db.commit()
+    return True
+
 def obtener_tutor_por_programa(
     db: Session, programa: str
 ) -> Optional[models.Usuario]:
@@ -127,12 +157,13 @@ def obtener_tutor_por_programa(
 
 def crear_practica(db: Session, data: schemas.PracticaCreate) -> models.Practica:
     """
-    Crea una práctica. Si no se especifica tutor_id, intenta asignar 
-    automáticamente el tutor del programa del estudiante.
+    Crea una práctica.
+    - Si no se especifica tutor_id, intenta asignar automáticamente el tutor del programa.
+    - Si no se especifica supervisor_id, busca el supervisor vinculado a la empresa.
     """
     tutor_id = data.tutor_id
 
-    # Auto-asignación por programa si tutor no fue especificado
+    # Auto-asignación de tutor por programa si no se especificó
     if not tutor_id:
         estudiante = obtener_usuario_por_id(db, data.estudiante_id)
         if estudiante and estudiante.programa_academico:
@@ -140,10 +171,20 @@ def crear_practica(db: Session, data: schemas.PracticaCreate) -> models.Practica
             if tutor:
                 tutor_id = tutor.id
 
+    # Auto-asignación de supervisor por empresa si no se especificó
+    supervisor_id = data.supervisor_id
+    if not supervisor_id and data.empresa_id:
+        vinculo = db.query(models.EmpresaSupervisor).filter(
+            models.EmpresaSupervisor.empresa_id == data.empresa_id,
+            models.EmpresaSupervisor.activo == True
+        ).first()
+        if vinculo:
+            supervisor_id = vinculo.supervisor_id
+
     db_practica = models.Practica(
         estudiante_id=data.estudiante_id,
         tutor_id=tutor_id,
-        supervisor_id=data.supervisor_id,
+        supervisor_id=supervisor_id,
         empresa_id=data.empresa_id,
         horas_totales_requeridas=data.horas_totales_requeridas,
         fecha_inicio=data.fecha_inicio,
@@ -189,6 +230,38 @@ def reasignar_tutor_practica(
     db.refresh(practica)
     return practica
 
+def eliminar_practica(db: Session, practica_id: int) -> bool:
+    practica = db.query(models.Practica).filter(models.Practica.id == practica_id).first()
+    if not practica:
+        return False
+    
+    from sqlalchemy import text
+    from sqlalchemy.exc import SQLAlchemyError
+    
+    # Eliminar historiales asociados a los seguimientos de esta práctica (por si existen en la BD)
+    try:
+        db.execute(text("""
+            DELETE FROM seguimientos_historial 
+            WHERE seguimiento_id IN (SELECT id FROM seguimientos WHERE practica_id = :practica_id)
+        """), {"practica_id": practica_id})
+    except SQLAlchemyError:
+        db.rollback() # Ignorar si la tabla no existe
+        
+    try:
+        db.execute(text("""
+            DELETE FROM historial_seguimientos 
+            WHERE seguimiento_id IN (SELECT id FROM seguimientos WHERE practica_id = :practica_id)
+        """), {"practica_id": practica_id})
+    except SQLAlchemyError:
+        db.rollback() # Ignorar si la tabla no existe
+
+    # Eliminar seguimientos asociados
+    db.query(models.Seguimiento).filter(models.Seguimiento.practica_id == practica_id).delete(synchronize_session=False)
+    
+    db.delete(practica)
+    db.commit()
+    return True
+
 
 def registrar_seguimiento(
     db: Session, seguimiento: schemas.SeguimientoCreate
@@ -223,7 +296,8 @@ def obtener_seguimiento(
 def obtener_seguimientos_pendientes_tutor(
     db: Session, tutor_id: str
 ) -> List[models.Seguimiento]:
-    """Seguimientos en estado 'enviado' de las prácticas del tutor."""
+    """Seguimientos aprobados por el supervisor (pendiente_tutor) que el tutor debe revisar.
+    FLUJO: supervisor aprueba primero → tutor valida después."""
     practicas_ids = [
         p.id for p in db.query(models.Practica).filter(
             models.Practica.tutor_id == tutor_id
@@ -231,14 +305,15 @@ def obtener_seguimientos_pendientes_tutor(
     ]
     return db.query(models.Seguimiento).filter(
         models.Seguimiento.practica_id.in_(practicas_ids),
-        models.Seguimiento.estado == models.StatusEnum.enviado,
+        models.Seguimiento.estado == models.StatusEnum.pendiente_tutor,
         models.Seguimiento.is_deleted == False
     ).all()
 
 def obtener_seguimientos_pendientes_supervisor(
     db: Session, supervisor_id: str
 ) -> List[models.Seguimiento]:
-    """Seguimientos enviados de las prácticas donde el supervisor está asignado."""
+    """Seguimientos enviados por el estudiante que el supervisor debe revisar primero.
+    FLUJO: supervisor es la primera línea de validación."""
     practicas_ids = [
         p.id for p in db.query(models.Practica).filter(
             models.Practica.supervisor_id == supervisor_id
@@ -250,10 +325,65 @@ def obtener_seguimientos_pendientes_supervisor(
         models.Seguimiento.is_deleted == False
     ).all()
 
+def supervisor_aprobar_seguimiento(
+    db: Session,
+    seguimiento_id: int,
+    supervisor_id: str,
+    observaciones: str,
+    ip: str
+) -> Optional[models.Seguimiento]:
+    """El supervisor aprueba las horas → pasan a pendiente_tutor para revisión del tutor."""
+    db_seg = db.query(models.Seguimiento).filter(
+        models.Seguimiento.id == seguimiento_id
+    ).first()
+    if not db_seg:
+        return None
+
+    db_seg.estado = models.StatusEnum.pendiente_tutor
+    db_seg.validado_supervisor = True
+    if observaciones:
+        db_seg.observaciones_tutor = observaciones
+
+    db.commit()
+    db.refresh(db_seg)
+    create_audit_log(
+        db, supervisor_id,
+        f"SUPERVISOR APROBÓ seguimiento={seguimiento_id} → pendiente tutor",
+        ip
+    )
+    return db_seg
+
+def supervisor_rechazar_seguimiento(
+    db: Session,
+    seguimiento_id: int,
+    supervisor_id: str,
+    observaciones: str,
+    ip: str
+) -> Optional[models.Seguimiento]:
+    """El supervisor rechaza las horas → vuelven al estudiante con observaciones."""
+    db_seg = db.query(models.Seguimiento).filter(
+        models.Seguimiento.id == seguimiento_id
+    ).first()
+    if not db_seg:
+        return None
+
+    db_seg.estado = models.StatusEnum.rechazado
+    db_seg.validado_supervisor = False
+    db_seg.observaciones_tutor = observaciones
+
+    db.commit()
+    db.refresh(db_seg)
+    create_audit_log(
+        db, supervisor_id,
+        f"SUPERVISOR RECHAZÓ seguimiento={seguimiento_id}: {observaciones[:80]}",
+        ip
+    )
+    return db_seg
+
 def validar_seguimiento(
     db: Session,
     seguimiento_id: int,
-    estado: models.StatusEnum,
+    estado_solicitado: models.StatusEnum,
     revisor_id: str,
     observaciones: str,
     ip: str
@@ -264,36 +394,103 @@ def validar_seguimiento(
     if not db_seg:
         return None
 
-    db_seg.estado = estado
+    estado_anterior = db_seg.estado
+    revisor = obtener_usuario_por_id(db, revisor_id)
+    if not revisor:
+        return None
+
+    nuevo_estado = estado_solicitado
+
+    if revisor.rol == models.UserRole.supervisor:
+        if estado_solicitado == models.StatusEnum.aprobado:
+            nuevo_estado = models.StatusEnum.pendiente_tutor
+            db_seg.validado_supervisor = True
+        elif estado_solicitado == models.StatusEnum.rechazado:
+            nuevo_estado = models.StatusEnum.rechazado
+            db_seg.validado_supervisor = False
+            
+    elif revisor.rol == models.UserRole.tutor:
+        if estado_solicitado == models.StatusEnum.aprobado:
+            nuevo_estado = models.StatusEnum.aprobado
+            db_seg.validado_tutor = True
+        elif estado_solicitado == models.StatusEnum.rechazado:
+            nuevo_estado = models.StatusEnum.rechazado
+            db_seg.validado_tutor = False
+            
+    elif revisor.rol == models.UserRole.coordinador:
+        if estado_solicitado == models.StatusEnum.aprobado:
+            db_seg.validado_supervisor = True
+            db_seg.validado_tutor = True
+        nuevo_estado = estado_solicitado
+
+    db_seg.estado = nuevo_estado
     db_seg.observaciones_tutor = observaciones
 
-    revisor = obtener_usuario_por_id(db, revisor_id)
-    if revisor:
-        if revisor.rol == models.UserRole.tutor:
-            db_seg.validado_tutor = (estado == models.StatusEnum.aprobado)
-            if estado == models.StatusEnum.aprobado:
-                practica = obtener_practica(db, db_seg.practica_id)
-                if practica:
-                    practica.horas_acumuladas = (practica.horas_acumuladas or 0) + db_seg.horas_realizadas
-        elif revisor.rol == models.UserRole.supervisor:
-            db_seg.validado_supervisor = (estado == models.StatusEnum.aprobado)
-            # Al aprobar el supervisor, actualizar horas acumuladas en la práctica
-            if estado == models.StatusEnum.aprobado:
-                practica = obtener_practica(db, db_seg.practica_id)
-                if practica:
-                    practica.horas_acumuladas = (practica.horas_acumuladas or 0) + db_seg.horas_realizadas
-        elif revisor.rol == models.UserRole.coordinador:
-            db_seg.validado_tutor = (estado == models.StatusEnum.aprobado)
-            db_seg.validado_supervisor = (estado == models.StatusEnum.aprobado)
+    # Sumar horas solo si acaba de pasar a estado aprobado de forma definitiva
+    if nuevo_estado == models.StatusEnum.aprobado and estado_anterior != models.StatusEnum.aprobado:
+        practica = obtener_practica(db, db_seg.practica_id)
+        if practica:
+            practica.horas_acumuladas = (practica.horas_acumuladas or 0) + db_seg.horas_realizadas
+            if practica.horas_acumuladas >= practica.horas_totales_requeridas:
+                practica.estado = "finalizada"
 
     db.commit()
     db.refresh(db_seg)
     create_audit_log(
         db, revisor_id,
-        f"VALIDACIÓN [{estado.value.upper()}] seguimiento={seguimiento_id}",
+        f"VALIDACIÓN [{nuevo_estado.value.upper()}] seguimiento={seguimiento_id}",
         ip
     )
     return db_seg
+
+# ── EMPRESA–SUPERVISOR (vínculo empresa ↔ supervisor) ─────────────────────────
+
+def asignar_supervisor_empresa(
+    db: Session, data: "schemas.EmpresaSupervisorCreate"
+) -> models.EmpresaSupervisor:
+    """Vincula un supervisor con una empresa. Desactiva el vínculo anterior si existía."""
+    db.query(models.EmpresaSupervisor).filter(
+        models.EmpresaSupervisor.supervisor_id == data.supervisor_id,
+        models.EmpresaSupervisor.activo == True
+    ).update({"activo": False})
+
+    nueva = models.EmpresaSupervisor(
+        empresa_id=data.empresa_id,
+        supervisor_id=data.supervisor_id,
+        activo=True
+    )
+    db.add(nueva)
+    db.commit()
+    db.refresh(nueva)
+    return nueva
+
+def obtener_supervisores_empresa(
+    db: Session, empresa_id: int
+) -> List[models.EmpresaSupervisor]:
+    return db.query(models.EmpresaSupervisor).filter(
+        models.EmpresaSupervisor.empresa_id == empresa_id,
+        models.EmpresaSupervisor.activo == True
+    ).all()
+
+def obtener_empresa_del_supervisor(
+    db: Session, supervisor_id: str
+) -> Optional[models.EmpresaSupervisor]:
+    return db.query(models.EmpresaSupervisor).filter(
+        models.EmpresaSupervisor.supervisor_id == supervisor_id,
+        models.EmpresaSupervisor.activo == True
+    ).first()
+
+def asignar_supervisor_a_practica(
+    db: Session, practica_id: int, supervisor_id: str
+) -> Optional[models.Practica]:
+    """Asigna directamente un supervisor a una práctica específica."""
+    practica = obtener_practica(db, practica_id)
+    if not practica:
+        return None
+    practica.supervisor_id = supervisor_id
+    db.commit()
+    db.refresh(practica)
+    return practica
 
 def eliminar_seguimiento_logico(
     db: Session, seguimiento_id: int

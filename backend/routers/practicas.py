@@ -159,3 +159,15 @@ def descargar_reporte(
         media_type="application/pdf",
         headers={"Content-Disposition": f"attachment; filename=Reporte_SIPGA_{practica_id}.pdf"}
     )
+
+@router.delete("/{practica_id}", status_code=status.HTTP_204_NO_CONTENT)
+def eliminar_practica(
+    practica_id: int,
+    db: Session = Depends(get_db),
+    admin=Depends(auth.verificar_rol(["coordinador"]))
+):
+    """Elimina una práctica y sus seguimientos asociados (Solo Coordinadores)."""
+    exito = crud.eliminar_practica(db, practica_id)
+    if not exito:
+        raise HTTPException(status_code=404, detail="Práctica no encontrada")
+    return None
