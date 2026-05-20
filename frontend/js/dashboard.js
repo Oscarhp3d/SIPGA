@@ -61,6 +61,10 @@ async function cargarUsuario() {
 function ajustarVistaPorRol(rol) {
   const ocultar = (sel) => { const el = document.querySelector(sel); if (el) el.style.display = 'none'; };
 
+  if (rol !== 'estudiante') {
+    ocultar('[data-page="log"]');
+  }
+
   if (rol === 'tutor') {
     ocultar('[data-page="usuarios"]');
     ocultar('[data-page="empresas"]');
@@ -69,7 +73,6 @@ function ajustarVistaPorRol(rol) {
     ocultar('[data-page="usuarios"]');
     ocultar('[data-page="empresas"]');
     ocultar('[data-page="reportes"]');
-    ocultar('[data-page="log"]');
     ocultarKPIsAdmin();
   } else if (rol === 'estudiante') {
     ocultar('[data-page="validacion"]');

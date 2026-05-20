@@ -360,12 +360,12 @@
             <div class="font-syne text-3xl font-bold text-amber-700" id="valPendientes">—</div>
           </div>
           <div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-5">
-            <div class="text-[11px] font-semibold text-emerald-600 uppercase tracking-wide mb-1">Aprobados hoy</div>
-            <div class="font-syne text-3xl font-bold text-emerald-700">0</div>
+            <div class="text-[11px] font-semibold text-emerald-600 uppercase tracking-wide mb-1">Aprobados</div>
+            <div class="font-syne text-3xl font-bold text-emerald-700" id="valAprobados">0</div>
           </div>
           <div class="bg-red-50 border border-red-200 rounded-2xl p-5">
-            <div class="text-[11px] font-semibold text-red-600 uppercase tracking-wide mb-1">Rechazados hoy</div>
-            <div class="font-syne text-3xl font-bold text-red-700">0</div>
+            <div class="text-[11px] font-semibold text-red-600 uppercase tracking-wide mb-1">Rechazados</div>
+            <div class="font-syne text-3xl font-bold text-red-700" id="valRechazados">0</div>
           </div>
         </div>
 
@@ -524,10 +524,11 @@
                 <th class="px-3 py-3 text-left text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Nombre</th>
                 <th class="px-3 py-3 text-left text-[10px] font-semibold text-slate-400 uppercase tracking-wider">NIT</th>
                 <th class="px-3 py-3 text-left text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Dirección</th>
+                <th class="px-3 py-3 text-left text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Acciones</th>
               </tr>
             </thead>
             <tbody id="tablaEmpresas">
-              <tr><td colspan="4" class="px-5 py-8 text-center text-sm text-slate-400">Cargando...</td></tr>
+              <tr><td colspan="5" class="px-5 py-8 text-center text-sm text-slate-400">Cargando...</td></tr>
             </tbody>
           </table>
         </div>
@@ -865,6 +866,10 @@ const token = getToken();
         if (kv?.parentElement) kv.parentElement.style.display = 'none';
       };
 
+      if (user.rol !== 'estudiante') {
+        ocultar('log');
+      }
+
       if (user.rol === 'coordinador') {
         // Acceso total — no se oculta nada
 
@@ -876,7 +881,6 @@ const token = getToken();
 
       } else if (user.rol === 'supervisor') {
 
-        ocultar('log');
         ocultar('usuarios');
         ocultar('empresas');
         ocultar('reportes');
@@ -1071,228 +1075,159 @@ const token = getToken();
   }
 
 
- function abrirModalUsuario() {
-
-  document.getElementById('modalTitulo')
-    .textContent = 'Nuevo Usuario';
-
-  document.getElementById('modalContenido')
-    .innerHTML = `
-
+function abrirModalUsuario() {
+  document.getElementById('modalTitulo').textContent = 'Nuevo Usuario';
+  document.getElementById('modalContenido').innerHTML = `
     <div class="space-y-4">
-
       <input type="hidden" id="usuarioId"/>
-
       <div>
-        <label class="block text-xs mb-1">Nombre</label>
-
-        <input
-          type="text"
-          id="nuNombre"
-          class="w-full px-3 py-2 border rounded-xl"
-        />
+        <label class="block text-xs font-semibold text-slate-500 mb-1">Nombre completo</label>
+        <input type="text" id="nuNombre" placeholder="Ej: María García" class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm outline-none focus:border-blue-300"/>
       </div>
-
       <div>
-        <label class="block text-xs mb-1">Correo</label>
-
-        <input
-          type="email"
-          id="nuCorreo"
-          class="w-full px-3 py-2 border rounded-xl"
-        />
+        <label class="block text-xs font-semibold text-slate-500 mb-1">Correo electrónico</label>
+        <input type="email" id="nuCorreo" placeholder="correo@institución.edu.co" class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm outline-none focus:border-blue-300"/>
       </div>
-
       <div>
-        <label class="block text-xs mb-1">Contraseña</label>
-
-        <input
-          type="password"
-          id="nuPassword"
-          class="w-full px-3 py-2 border rounded-xl"
-        />
+        <label class="block text-xs font-semibold text-slate-500 mb-1">Contraseña</label>
+        <input type="password" id="nuPassword" placeholder="Mínimo 8 caracteres" class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm outline-none focus:border-blue-300"/>
       </div>
-
       <div>
-        <label class="block text-xs mb-1">Rol</label>
-
-        <select
-          id="nuRol"
-          class="w-full px-3 py-2 border rounded-xl">
-
+        <label class="block text-xs font-semibold text-slate-500 mb-1">Rol</label>
+        <select id="nuRol" onchange="toggleEmpresaSelector()" class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm outline-none focus:border-blue-300">
           <option value="estudiante">Estudiante</option>
           <option value="tutor">Tutor</option>
           <option value="supervisor">Supervisor</option>
           <option value="coordinador">Coordinador</option>
-
         </select>
       </div>
-
+      <!-- Campo empresa: solo visible cuando rol = supervisor -->
+      <div id="campoEmpresaSupervisor" style="display:none;">
+        <label class="block text-xs font-semibold text-slate-500 mb-1">Empresa que supervisará <span class="text-red-500">*</span></label>
+        <select id="nuEmpresaId" class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm outline-none focus:border-blue-300">
+          <option value="">Cargando empresas...</option>
+        </select>
+        <p class="text-[10px] text-slate-400 mt-1">El supervisor quedará vinculado únicamente a esta empresa.</p>
+      </div>
       <div>
-        <label class="block text-xs mb-1">
-          Programa Académico
-        </label>
-
-        <input
-          type="text"
-          id="nuPrograma"
-          class="w-full px-3 py-2 border rounded-xl"
-        />
+        <label class="block text-xs font-semibold text-slate-500 mb-1">Programa Académico</label>
+        <input type="text" id="nuPrograma" placeholder="Ej: Ingeniería de Sistemas" class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm outline-none focus:border-blue-300"/>
       </div>
-
-      <div id="nuError"
-           class="text-xs text-red-500 hidden">
-      </div>
-
+      <div id="nuError" class="text-xs text-red-500 hidden"></div>
       <div class="bg-blue-50 border border-blue-200 text-blue-800 rounded-xl p-3">
         <p class="text-xs leading-relaxed">
           <strong>Aviso de tratamiento de datos personales:</strong><br>
-          Al crear este usuario, la institución certifica que el titular ha sido informado
-          sobre el tratamiento de sus datos personales conforme a la Ley 1581 de 2012
-          y las políticas de privacidad institucionales.
+          Al crear este usuario, la institución certifica que el titular ha sido informado sobre el tratamiento de sus datos personales conforme a la Ley 1581 de 2012.
         </p>
       </div>
-      <div class="flex items-start gap-2 mt-3">
-  <input
-    type="checkbox"
-    id="nuAceptaDatos"
-    class="mt-1"
-  />
-
-  <label
-    for="nuAceptaDatos"
-    class="text-xs text-slate-600 leading-relaxed">
-
-    La institución certifica que el titular fue informado
-    sobre el tratamiento de sus datos personales conforme
-    a la Ley 1581 de 2012.
-
-  </label>
-</div>
-
-      <div class="flex gap-3 pt-2 justify-end">
-
-        <button
-          onclick="cerrarModal()"
-          class="px-4 py-1.5 text-sm border rounded-lg">
-          Cancelar
-        </button>
-
-        <button
-          onclick="crearUsuario()"
-          class="px-4 py-1.5 text-sm rounded-lg text-white"
-          style="background:#0d1b2e;">
-          Guardar
-        </button>
-
+      <div class="flex items-start gap-2">
+        <input type="checkbox" id="nuAceptaDatos" class="mt-1"/>
+        <label for="nuAceptaDatos" class="text-xs text-slate-600 leading-relaxed">
+          La institución certifica que el titular fue informado sobre el tratamiento de sus datos personales conforme a la Ley 1581 de 2012.
+        </label>
       </div>
-
+      <div class="flex gap-3 pt-2 justify-end">
+        <button onclick="cerrarModal()" class="px-4 py-1.5 text-sm border border-slate-200 rounded-xl hover:bg-slate-50">Cancelar</button>
+        <button onclick="crearUsuario()" id="btnGuardarUsuario" class="px-4 py-1.5 text-sm rounded-xl text-white" style="background:#0d1b2e;">Guardar</button>
+      </div>
     </div>
   `;
-
   abrirModal();
+}
+
+async function toggleEmpresaSelector() {
+  const rol = document.getElementById('nuRol').value;
+  const campo = document.getElementById('campoEmpresaSupervisor');
+  if (rol === 'supervisor') {
+    campo.style.display = 'block';
+    const sel = document.getElementById('nuEmpresaId');
+    sel.innerHTML = '<option value="">Cargando...</option>';
+    try {
+      const res = await fetch(`${API_URL}/empresas/`, { headers: { Authorization: `Bearer ${getToken()}` } });
+      if (res.ok) {
+        const empresas = await res.json();
+        if (empresas.length === 0) {
+          sel.innerHTML = '<option value="">No hay empresas registradas</option>';
+        } else {
+          sel.innerHTML = '<option value="">— Seleccione empresa —</option>' +
+            empresas.map(e => `<option value="${e.id}">${escapeHTML(e.nombre)} (NIT: ${escapeHTML(e.nit)})</option>`).join('');
+        }
+      }
+    } catch { sel.innerHTML = '<option value="">Error al cargar empresas</option>'; }
+  } else {
+    campo.style.display = 'none';
+  }
 }
 
  
 
 async function crearUsuario() {
-
   const err = document.getElementById('nuError');
+  const btn = document.getElementById('btnGuardarUsuario');
+  err.classList.add('hidden');
 
-  const aceptaDatos =
-    document.getElementById('nuAceptaDatos').checked;
-
-  if (!aceptaDatos) {
-    alert('Debe confirmar el tratamiento de datos.');
+  // Validar checkbox de datos
+  if (!document.getElementById('nuAceptaDatos').checked) {
+    err.textContent = 'Debe confirmar el tratamiento de datos personales.';
+    err.classList.remove('hidden');
     return;
-    const err = document.getElementById('nuError');
-    const btn = document.querySelector('button[onclick="crearUsuario()"]');
-    if (btn) { btn.disabled = true; btn.innerHTML = 'Guardando...'; btn.classList.add('opacity-50'); }
-
-    const body = {
-      nombre: document.getElementById('nuNombre').value.trim(),
-      correo: document.getElementById('nuCorreo').value.trim(),
-      password: document.getElementById('nuPassword').value,
-      rol: document.getElementById('nuRol').value,
-      programa_academico: document.getElementById('nuPrograma').value.trim()
-    };
-
-    if (body.nombre.length < 3 || body.nombre.length > 150) { err.textContent = 'El nombre debe tener entre 3 y 150 caracteres.'; err.classList.remove('hidden'); return; }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(body.correo) || body.correo.length > 255) { err.textContent = 'Correo inválido o demasiado largo.'; err.classList.remove('hidden'); return; }
-    if (body.password.length < 8 || body.password.length > 64) { err.textContent = 'La contraseña debe tener entre 8 y 64 caracteres.'; err.classList.remove('hidden'); return; }
-    if (body.programa_academico && (body.programa_academico.length < 3 || body.programa_academico.length > 150)) { err.textContent = 'Programa académico inválido (3-150 caracteres).'; err.classList.remove('hidden'); return; }
-
-    try {
-
-      const res = await fetch(`${API_URL}/usuarios/`, {
-        method: 'POST',
-
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        },
-
-        body: JSON.stringify(body)
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        err.textContent = data.detail || 'Error';
-        err.classList.remove('hidden');
-        return;
-      }
-
-      cerrarModal();
-
-      cargarTablaUsuarios();
-
-    } catch (error) {
-
-      err.textContent = 'Error de conexión';
-      err.classList.remove('hidden');
-    } finally {
-      if (btn) { btn.disabled = false; btn.innerHTML = 'Guardar'; btn.classList.remove('opacity-50'); }
-    }
   }
 
-  const body = {
-    nombre: document.getElementById('nuNombre').value,
-    correo: document.getElementById('nuCorreo').value,
-    password: document.getElementById('nuPassword').value,
-    rol: document.getElementById('nuRol').value,
-    programa_academico: document.getElementById('nuPrograma').value
-  };
+  const rol = document.getElementById('nuRol').value;
+  const nombre = document.getElementById('nuNombre').value.trim();
+  const correo = document.getElementById('nuCorreo').value.trim();
+  const password = document.getElementById('nuPassword').value;
+  const programa = document.getElementById('nuPrograma').value.trim();
 
+  // Validaciones frontend
+  if (nombre.length < 3 || nombre.length > 150) {
+    err.textContent = 'El nombre debe tener entre 3 y 150 caracteres.'; err.classList.remove('hidden'); return;
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo) || correo.length > 255) {
+    err.textContent = 'Correo inválido o demasiado largo.'; err.classList.remove('hidden'); return;
+  }
+  if (password.length < 8 || password.length > 64) {
+    err.textContent = 'La contraseña debe tener entre 8 y 64 caracteres.'; err.classList.remove('hidden'); return;
+  }
+  if (programa && (programa.length < 3 || programa.length > 150)) {
+    err.textContent = 'Programa académico inválido (3-150 caracteres).'; err.classList.remove('hidden'); return;
+  }
+
+  // Si el rol es supervisor, empresa_id es obligatorio
+  let empresa_id = null;
+  if (rol === 'supervisor') {
+    const empVal = document.getElementById('nuEmpresaId')?.value;
+    if (!empVal) {
+      err.textContent = 'Debe seleccionar una empresa para el supervisor.'; err.classList.remove('hidden'); return;
+    }
+    empresa_id = parseInt(empVal);
+  }
+
+  const body = { nombre, correo, password, rol };
+  if (programa) body.programa_academico = programa;
+  if (empresa_id) body.empresa_id = empresa_id;
+
+  if (btn) { btn.disabled = true; btn.textContent = 'Guardando...'; btn.classList.add('opacity-60'); }
   try {
-
     const res = await fetch(`${API_URL}/usuarios/`, {
       method: 'POST',
-
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${getToken()}`
-      },
-
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getToken()}` },
       body: JSON.stringify(body)
     });
-
     const data = await res.json();
-
     if (!res.ok) {
-      err.textContent = data.detail || 'Error';
+      err.textContent = data.detail || 'Error al crear usuario.';
       err.classList.remove('hidden');
       return;
     }
-
     cerrarModal();
-
     cargarTablaUsuarios();
-
+    Toast.fire({ icon: 'success', title: `Usuario ${data.nombre} creado correctamente` });
   } catch (error) {
-
-    err.textContent = 'Error de conexión';
+    err.textContent = 'Error de conexión con el servidor.';
     err.classList.remove('hidden');
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = 'Guardar'; btn.classList.remove('opacity-60'); }
   }
 }
   async function editarUsuario(id) {
@@ -1438,18 +1373,22 @@ async function crearUsuario() {
 
 
   async function eliminarUsuario(id) {
+    const confirm = await Swal.fire({
+      title: '¿Eliminar usuario?',
+      text: "Esta acción no se puede deshacer.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#ef4444'
+    });
 
-    if (!confirm('¿Eliminar usuario?')) return;
+    if (!confirm.isConfirmed) return;
 
     try {
-
       const res = await fetch(`${API_URL}/usuarios/${id}`, {
-
         method: 'DELETE',
-
-        headers: {
-          Authorization: `Bearer ${getToken()}`
-        }
+        headers: { Authorization: `Bearer ${getToken()}` }
       });
 
       if (!res.ok) {
@@ -1458,10 +1397,10 @@ async function crearUsuario() {
         return;
       }
 
+      Toast.fire({icon: 'success', title: 'Usuario eliminado'});
       cargarTablaUsuarios();
 
     } catch (error) {
-
       Toast.fire({icon: 'error', title: 'Error de conexión'});
     }
   }
@@ -1580,6 +1519,8 @@ async function crearUsuario() {
         });
         if (resP.ok) {
           const practicas = await resP.json();
+          // Ordenar por id descendente para tomar siempre la práctica más reciente
+          practicas.sort((a, b) => b.id - a.id);
           const miPractica = practicas.find(p => p.estudiante_id === window.currentUserId) || practicas[0];
           if (miPractica) _miPracticaId = miPractica.id;
         }
@@ -1776,16 +1717,17 @@ async function crearUsuario() {
   let _seguimientosPendientes = [];
 
   async function cargarValidacion() {
-    const tbody = document.getElementById('tablaValidaciones');
+    const tbody = document.getElementById('tablaValidacion');
     if (!tbody) return;
 
     tbody.innerHTML = `<tr><td colspan="6" class="px-5 py-8 text-center text-sm text-slate-300">Cargando...</td></tr>`;
 
     try {
   
-      const endpointPrac = window.currentUserRol === 'coordinador'
-        ? `${API_URL}/practicas/`
-        : `${API_URL}/practicas/mis`;
+      let endpointPrac = '';
+      if (window.currentUserRol === 'coordinador') endpointPrac = `${API_URL}/practicas/`;
+      else if (window.currentUserRol === 'tutor') endpointPrac = `${API_URL}/tutor/mis-estudiantes`;
+      else endpointPrac = `${API_URL}/practicas/mis`;
 
       const resP = await fetch(endpointPrac, {
         headers: { Authorization: `Bearer ${getToken()}` }
@@ -1821,12 +1763,22 @@ async function crearUsuario() {
       const todos = resultados.flat();
 
 
-      _seguimientosPendientes = todos.filter(s => s.estado === 'enviado');
+      _seguimientosPendientes = todos.filter(s => {
+        if (window.currentUserRol === 'supervisor') return s.estado === 'enviado';
+        if (window.currentUserRol === 'tutor') return s.estado === 'pendiente_tutor';
+        return s.estado === 'enviado' || s.estado === 'pendiente_tutor';
+      });
 
       renderTablaValidacion(_seguimientosPendientes, practicas);
 
       const kpiPend = document.getElementById('valPendientes');
       if (kpiPend) kpiPend.textContent = _seguimientosPendientes.length;
+
+      const kpiAprobados = document.getElementById('valAprobados');
+      if (kpiAprobados) kpiAprobados.textContent = todos.filter(s => s.estado === 'aprobado').length;
+
+      const kpiRechazados = document.getElementById('valRechazados');
+      if (kpiRechazados) kpiRechazados.textContent = todos.filter(s => s.estado === 'rechazado').length;
 
     } catch (e) {
       console.error('[cargarValidacion] Error:', e);
@@ -1835,7 +1787,7 @@ async function crearUsuario() {
   }
 
   function renderTablaValidacion(lista, practicas) {
-    const tbody = document.getElementById('tablaValidaciones');
+    const tbody = document.getElementById('tablaValidacion');
     if (!tbody) return;
 
     if (lista.length === 0) {
@@ -1849,8 +1801,8 @@ async function crearUsuario() {
 
     tbody.innerHTML = lista.map(s => {
       const practica = practicaMapa[s.practica_id];
-      const estudiante = practica ? _usuariosMapa[practica.estudiante_id] : null;
-      const nombreEst = estudiante ? estudiante.nombre : 'Desconocido';
+      const estudiante = (practica && practica.estudiante) ? practica.estudiante : (practica ? _usuariosMapa[practica.estudiante_id] : null);
+      const nombreEst = estudiante ? estudiante.nombre : (practica ? practica.estudiante_id : 'Desconocido');
       const fecha = new Date(s.fecha_actividad).toLocaleDateString('es-CO');
       return `
         <tr class="border-b border-slate-50 hover:bg-slate-50/50 transition-colors">
@@ -1985,8 +1937,42 @@ async function crearUsuario() {
         <td class="px-3 py-3 text-xs font-medium text-slate-700">${escapeHTML(e.nombre)}</td>
         <td class="px-3 py-3 text-xs text-slate-500">${escapeHTML(e.nit)}</td>
         <td class="px-3 py-3 text-xs text-slate-500">${escapeHTML(e.direccion)}</td>
+        <td class="px-3 py-3">
+          ${window.currentUserRol === 'coordinador' 
+            ? `<button onclick="eliminarEmpresa(${e.id})" class="text-[10px] font-semibold text-red-600 hover:text-red-800">Eliminar</button>` 
+            : ''}
+        </td>
       </tr>
     `).join('');
+  }
+
+  async function eliminarEmpresa(id) {
+    const confirm = await Swal.fire({
+      title: '¿Eliminar empresa?',
+      text: "No se podrá eliminar si tiene prácticas asociadas.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#ef4444'
+    });
+    if (confirm.isConfirmed) {
+      try {
+        const res = await fetch(`${API_URL}/empresas/${id}`, {
+          method: 'DELETE',
+          headers: { Authorization: `Bearer ${getToken()}` }
+        });
+        if (res.ok) {
+          Toast.fire({icon: 'success', title: 'Empresa eliminada'});
+          cargarEmpresas();
+        } else {
+          const data = await res.json();
+          Toast.fire({icon: 'error', title: data.detail || 'Error al eliminar'});
+        }
+      } catch (e) {
+        Toast.fire({icon: 'error', title: 'Error de conexión'});
+      }
+    }
   }
 
   function abrirModalEmpresa() {
@@ -2106,7 +2092,7 @@ async function crearUsuario() {
     set('pracFinalizadasKpi', finalizadas);
   }
 
- function renderTablaPracticas(lista) {
+  function renderTablaPracticas(lista) {
     const tbody = document.getElementById('tablaPracticas');
 
     if (!lista.length) {
@@ -2122,19 +2108,25 @@ async function crearUsuario() {
     };
 
     tbody.innerHTML = lista.map(p => {
-      const estudiante = _usuariosMapa[p.estudiante_id];
-      const tutor      = _usuariosMapa[p.tutor_id];
+      const estudianteObj = p.estudiante || _usuariosMapa[p.estudiante_id];
+      const tutorObj      = p.tutor || _usuariosMapa[p.tutor_id];
+      const empresaNombre = p.empresa ? p.empresa.nombre : (p.empresa_id || '—');
+      
+      const estudianteNombre = estudianteObj ? estudianteObj.nombre : p.estudiante_id;
+      const estudianteCorreo = estudianteObj ? estudianteObj.correo : '';
+      const tutorNombre      = tutorObj ? tutorObj.nombre : '—';
+      
       const badge      = estadoBadge[p.estado] || 'bg-slate-100 text-slate-600';
-      const progreso   = p.horas_totales_requeridas ? Math.min(100, Math.round((p.horas_completadas || 0) / p.horas_totales_requeridas * 100)) : 0;
+      const progreso   = p.horas_totales_requeridas ? Math.min(100, Math.round((p.horas_acumuladas || 0) / p.horas_totales_requeridas * 100)) : 0;
 
       return `
         <tr class="table-row border-b border-slate-50">
           <td class="px-5 py-3">
-            <div class="text-xs font-semibold text-slate-700">${estudiante ? estudiante.nombre : p.estudiante_id}</div>
-            <div class="text-[10px] text-slate-400">${estudiante ? estudiante.correo : ''}</div>
+            <div class="text-xs font-semibold text-slate-700">${estudianteNombre}</div>
+            <div class="text-[10px] text-slate-400">${estudianteCorreo}</div>
           </td>
-          <td class="px-3 py-3 text-xs text-slate-600">${p.empresa_id || '—'}</td>
-          <td class="px-3 py-3 text-xs text-slate-600">${tutor ? tutor.nombre : '—'}</td>
+          <td class="px-3 py-3 text-xs text-slate-600">${empresaNombre}</td>
+          <td class="px-3 py-3 text-xs text-slate-600">${tutorNombre}</td>
           <td class="px-3 py-3">
             <div class="flex items-center gap-2">
               <div class="flex-1 bg-slate-100 rounded-full h-1.5">
@@ -2147,16 +2139,24 @@ async function crearUsuario() {
             <span class="text-[10px] font-medium px-2 py-0.5 rounded-full ${badge}">${p.estado}</span>
           </td>
           <td class="px-3 py-3 flex gap-2">
-            <button data-id="${p.id}" data-action="ver-practica"
-                    class="btn-practica text-[10px] font-semibold text-blue-600 hover:text-blue-800">Ver</button>
-            ${p.estado === 'pendiente' ? `
-            <button data-id="${p.id}" data-action="aprobar-practica"
-                    class="btn-practica text-[10px] font-semibold text-emerald-600 hover:text-emerald-800">Aprobar</button>
-            ` : ''}
+            ${['coordinador', 'tutor'].includes(window.currentUserRol) ? `
+              <button data-id="${p.id}" data-action="ver-practica"
+                      class="btn-practica text-[10px] font-semibold text-blue-600 hover:text-blue-800">Ver</button>
+              ${p.estado === 'pendiente' && window.currentUserRol === 'coordinador' ? `
+              <button data-id="${p.id}" data-action="aprobar-practica"
+                      class="btn-practica text-[10px] font-semibold text-emerald-600 hover:text-emerald-800">Activar</button>
+              ` : ''}
+              ${p.estado === 'activa' && progreso >= 100 ? `
+              <button data-id="${p.id}" data-action="finalizar-practica"
+                      class="btn-practica text-[10px] font-semibold text-purple-600 hover:text-purple-800">Finalizar</button>
+              ` : (p.estado === 'activa' ? '<span class="text-[10px] text-slate-400 italic">En progreso</span>' : '')}
+            ` : '<span class="text-[10px] text-slate-400 italic">Sin acciones</span>'}
+            ${window.currentUserRol === 'coordinador' ? `<button onclick="eliminarPractica(${p.id})" class="text-[10px] font-semibold text-red-600 hover:text-red-800">Eliminar</button>` : ''}
           </td>
         </tr>`;
     }).join('');
   }
+
   let _practicaListenerOk = false;
   function registrarListenerPracticas() {
     if (_practicaListenerOk) return;
@@ -2168,6 +2168,7 @@ async function crearUsuario() {
       const action = btn.dataset.action;
       if (action === 'ver-practica') verDetallePractica(id);
       if (action === 'aprobar-practica') aprobarPractica(id);
+      if (action === 'finalizar-practica') finalizarPractica(id);
     });
   }
 
@@ -2221,19 +2222,18 @@ async function crearUsuario() {
         </div>
         <div class="pt-3 flex gap-3">
           <button onclick="cerrarModal()" class="flex-1 py-2 border rounded-xl text-xs">Cerrar</button>
-          <a href="${API_URL}/practicas/${p.id}/reporte-pdf"
-             target="_blank"
-             class="flex-1 py-2 rounded-xl text-white text-xs text-center font-semibold"
+          <button onclick="descargarReportePDF('${p.id}')"
+             class="flex-1 py-2 rounded-xl text-white text-xs text-center font-semibold flex items-center justify-center"
              style="background:#0d1b2e;">
             Descargar PDF
-          </a>
+          </button>
         </div>
       </div>`;
     abrirModal();
   }
 
- async function aprobarPractica(id) {
-    if (!confirm('¿Marcar esta práctica como activa/aprobada?')) return;
+  async function aprobarPractica(id) {
+    if (!confirm('¿Activar esta práctica?')) return;
     try {
       const res = await fetch(`${API_URL}/practicas/${id}`, {
         method: 'PATCH',
@@ -2242,15 +2242,35 @@ async function crearUsuario() {
       });
       if (!res.ok) {
         const d = await res.json().catch(() => ({}));
-        Toast.fire({icon: 'error', title: 'No se pudo aprobar: ' + (d.detail || res.status)});
+        Toast.fire({icon: 'error', title: 'No se pudo activar: ' + (d.detail || res.status)});
         return;
       }
-      Toast.fire({icon: 'success', title: 'Práctica aprobada correctamente'});
       cargarPracticas();
     } catch (err) {
       Toast.fire({icon: 'error', title: 'Error de conexión: ' + err.message});
     }
   }
+
+  async function finalizarPractica(id) {
+    if (!confirm('¿Marcar esta práctica como finalizada? Esta acción no se puede deshacer.')) return;
+    try {
+      const res = await fetch(`${API_URL}/practicas/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getToken()}` },
+        body: JSON.stringify({ estado: 'finalizada' })
+      });
+      if (!res.ok) {
+        const d = await res.json().catch(() => ({}));
+        Toast.fire({icon: 'error', title: 'No se pudo finalizar: ' + (d.detail || res.status)});
+        return;
+      }
+      cargarPracticas();
+      Toast.fire({icon: 'success', title: 'Práctica finalizada con éxito'});
+    } catch (err) {
+      Toast.fire({icon: 'error', title: 'Error de conexión: ' + err.message});
+    }
+  }
+
   async function abrirModalPractica() {
 
     if (Object.keys(_usuariosMapa).length === 0) {
@@ -2447,15 +2467,14 @@ async function crearUsuario() {
           </td>
           <td class="px-3 py-3 text-xs text-slate-600">${p.horas_totales_requeridas}h</td>
           <td class="px-3 py-3">
-            <a href="${API_URL}/practicas/${p.id}/reporte-pdf"
-               target="_blank"
+            <button onclick="descargarReportePDF('${p.id}')"
                class="inline-flex items-center gap-1 text-[10px] font-semibold text-white px-3 py-1.5 rounded-lg hover:opacity-80 transition-opacity"
                style="background:#0d1b2e;">
               <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
               </svg>
               PDF
-            </a>
+            </button>
           </td>
         </tr>`;
     }).join('');
@@ -2530,6 +2549,35 @@ async function crearUsuario() {
         plugins: { legend: { position: 'right', labels: { font: { size: 11 }, padding: 12 } } }
       }
     });
+  }
+
+  async function eliminarPractica(id) {
+    const confirm = await Swal.fire({
+      title: '¿Eliminar práctica?',
+      text: "Se eliminarán también todos los seguimientos asociados.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#ef4444'
+    });
+    if (confirm.isConfirmed) {
+      try {
+        const res = await fetch(`${API_URL}/practicas/${id}`, {
+          method: 'DELETE',
+          headers: { Authorization: `Bearer ${getToken()}` }
+        });
+        if (res.ok) {
+          Toast.fire({icon: 'success', title: 'Práctica eliminada'});
+          cargarPracticas();
+        } else {
+          const data = await res.json();
+          Toast.fire({icon: 'error', title: data.detail || 'Error al eliminar'});
+        }
+      } catch (e) {
+        Toast.fire({icon: 'error', title: 'Error de red'});
+      }
+    }
   }
 
   async function cargarKPIs() {
@@ -2648,6 +2696,32 @@ document.addEventListener('keydown', function(e) {
     }
   }
 });
+
+  async function descargarReportePDF(id) {
+    try {
+      const Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, timer: 3000 });
+      Toast.fire({ icon: 'info', title: 'Generando PDF...' });
+      
+      const res = await fetch(`${API_URL}/practicas/${id}/reporte-pdf`, {
+        headers: { Authorization: `Bearer ${getToken()}` }
+      });
+      
+      if (!res.ok) throw new Error('Error al generar PDF');
+      
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Reporte_SIPGA_${id}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (e) {
+      console.error(e);
+      Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo descargar el reporte. Verifica tu conexión.' });
+    }
+  }
 
 </script>
 </body>

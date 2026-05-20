@@ -11,25 +11,16 @@ class UsuarioBase(BaseModel):
     programa_academico: Optional[str] = Field(None, min_length=3, max_length=150, json_schema_extra={"examples": ["Tecnología en Desarrollo de Sistemas"]})
 
 class UsuarioCreate(UsuarioBase):
-    password: str = Field(..., min_length=8)
+    password: str = Field(..., min_length=8, max_length=64)
+    empresa_id: Optional[int] = Field(None, description="Solo para rol supervisor: empresa que va a supervisar.")
     """
     Usado por el coordinador para crear usuarios internamente.
     El consentimiento queda registrado automáticamente en nombre de la institución.
+    Si el rol es supervisor y se envía empresa_id, el vínculo empresa↔supervisor
+    se crea automáticamente.
     """
-    password: str = Field(..., min_length=8, max_length=64)
 
 class RegistroPublicoCreate(BaseModel):
-    nombre:             str      = Field(..., example="Juan Pérez")
-    correo:             EmailStr = Field(..., example="juan@universidad.edu.co")
-    password:           str      = Field(..., min_length=8)
-    programa_academico: Optional[str] = None
-    acepto_politica:    bool     = Field(..., description="Ley 1581/2012")
-    version_politica:   str      = Field(default="v1.0")
-    """
-    Endpoint público POST /auth/registro.
-    El usuario se registra por cuenta propia y DEBE aceptar explícitamente
-    la política de tratamiento de datos (Ley 1581/2012 + Decreto 1377/2013).
-    """
     nombre:             str      = Field(..., min_length=3, max_length=150, json_schema_extra={"examples": ["Juan Pérez"]})
     correo:             EmailStr = Field(..., max_length=255, json_schema_extra={"examples": ["juan@universidad.edu.co"]})
     password:           str      = Field(..., min_length=8, max_length=64)
@@ -42,6 +33,11 @@ class RegistroPublicoCreate(BaseModel):
         default="v1.0",
         description="Versión del documento de política aceptado."
     )
+    """
+    Endpoint público POST /auth/registro.
+    El usuario se registra por cuenta propia y DEBE aceptar explícitamente
+    la política de tratamiento de datos (Ley 1581/2012 + Decreto 1377/2013).
+    """
 
     @field_validator("acepto_politica")
     @classmethod

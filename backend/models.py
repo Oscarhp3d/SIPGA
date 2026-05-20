@@ -3,6 +3,7 @@ from sqlalchemy.orm import relationship
 from database import Base
 import datetime
 import enum
+import uuid
 
 
 class UserRole(str, enum.Enum):
@@ -12,10 +13,13 @@ class UserRole(str, enum.Enum):
     coordinador = "coordinador"
 
 class StatusEnum(str, enum.Enum):
-    borrador  = "borrador"
-    enviado   = "enviado"
-    aprobado  = "aprobado"
-    rechazado = "rechazado"
+    borrador             = "borrador"
+    enviado              = "enviado"
+    pendiente_tutor      = "pendiente_tutor"
+    pendiente_supervisor = "pendiente_supervisor"
+    aprobado             = "aprobado"
+    rechazado            = "rechazado"
+    validado_final       = "validado_final"
 
 userrole_type   = Enum(UserRole,  name="userrole",   create_type=False)
 statusenum_type = Enum(StatusEnum, name="statusenum", create_type=False)
@@ -24,8 +28,7 @@ statusenum_type = Enum(StatusEnum, name="statusenum", create_type=False)
 class Usuario(Base):
     __tablename__ = "usuarios"
 
-    # Usuario conserva UUID (no cambia — es la clave de auth/JWT)
-    id                 = Column(String, primary_key=True, index=True)
+    id                 = Column(String, primary_key=True, index=True, default=lambda: str(uuid.uuid4()))
     nombre             = Column(String(100), nullable=False)
     correo             = Column(String(150), unique=True, nullable=False, index=True)
     password_hash      = Column(String(255), nullable=False)
@@ -39,8 +42,6 @@ class Usuario(Base):
 
     audit_logs = relationship(
         "AuditLog",
-        primaryjoin="Usuario.id == AuditLog.usuario_id",
-        foreign_keys="[AuditLog.usuario_id]",
         back_populates="usuario"
     )
 
@@ -71,7 +72,6 @@ class AsignacionTutor(Base):
 class Practica(Base):
     __tablename__ = "practicas"
 
-    # ← Cambiado: Integer autoincremental en lugar de UUID
     id                       = Column(Integer, primary_key=True, index=True, autoincrement=True)
     estudiante_id            = Column(String, ForeignKey("usuarios.id"))
     tutor_id                 = Column(String, ForeignKey("usuarios.id"), nullable=True)
@@ -93,52 +93,43 @@ class Practica(Base):
 class Seguimiento(Base):
     __tablename__ = "seguimientos"
 
-    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-
-    practica_id = Column(Integer, ForeignKey("practicas.id"))
-
-    fecha_actividad = Column(
-        DateTime,
-        default=lambda: datetime.datetime.now(datetime.timezone.utc)
-    )
-
-    descripcion = Column(Text, nullable=False)
-
+    id              = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    practica_id     = Column(Integer, ForeignKey("practicas.id"))
+    fecha_actividad = Column(DateTime, default=lambda: datetime.datetime.now(datetime.timezone.utc))
+    descripcion     = Column(Text, nullable=False)
     horas_realizadas = Column(Float, nullable=False)
+    estado          = Column(statusenum_type, default=StatusEnum.borrador)
+    validado_tutor       = Column(Boolean, default=False)
+    validado_supervisor  = Column(Boolean, default=False)
+    observaciones_tutor  = Column(Text, nullable=True)
+    evidencia_url        = Column(String, nullable=True)
+    archivo_evidencia    = Column(String, nullable=True)
+    is_deleted           = Column(Boolean, default=False)
 
-    estado = Column(
-        statusenum_type,
-        default=StatusEnum.borrador
-    )
+    practica = relationship("Practica", back_populates="seguimientos")
 
-    validado_tutor = Column(Boolean, default=False)
 
-    validado_supervisor = Column(Boolean, default=False)
+class EmpresaSupervisor(Base):
+    """Vincula un supervisor (usuario de la empresa) con una empresa específica."""
+    __tablename__ = "empresa_supervisores"
 
-    observaciones_tutor = Column(Text, nullable=True)
+    id               = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    empresa_id       = Column(Integer, ForeignKey("empresas.id"), nullable=False)
+    supervisor_id    = Column(String, ForeignKey("usuarios.id"), nullable=False)
+    activo           = Column(Boolean, default=True)
+    fecha_asignacion = Column(DateTime, default=lambda: datetime.datetime.now(datetime.timezone.utc))
 
-    evidencia_url = Column(String, nullable=True)
+    empresa    = relationship("Empresa")
+    supervisor = relationship("Usuario", foreign_keys=[supervisor_id])
 
-    archivo_evidencia = Column(String, nullable=True)
 
-    is_deleted = Column(Boolean, default=False)
-
-    practica = relationship(
-        "Practica",
-        back_populates="seguimientos"
-    )
 class AuditLog(Base):
     __tablename__ = "logs_auditoria"
 
     id         = Column(Integer, primary_key=True, index=True)
-    usuario_id = Column(String, nullable=True)
+    usuario_id = Column(String, ForeignKey("usuarios.id"), nullable=True)
     accion     = Column(String)
     fecha      = Column(DateTime, default=lambda: datetime.datetime.now(datetime.timezone.utc))
     ip_origen  = Column(String)
 
-    usuario = relationship(
-        "Usuario",
-        primaryjoin="AuditLog.usuario_id == Usuario.id",
-        foreign_keys="[AuditLog.usuario_id]",
-        back_populates="audit_logs"
-    )
+    usuario = relationship("Usuario", back_populates="audit_logs")
