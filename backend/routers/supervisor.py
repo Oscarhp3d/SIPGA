@@ -13,6 +13,15 @@ router = APIRouter(prefix="/supervisor", tags=["Supervisor"])
 solo_supervisor = auth.verificar_rol(["supervisor", "coordinador"])
 
 
+@router.get("/dashboard", response_model=schemas.DashboardSupervisor)
+def dashboard(
+    db: Session = Depends(get_db),
+    current_user=Depends(solo_supervisor)
+):
+    """Dashboard del supervisor: practicantes, pendientes y horas en prácticas."""
+    return crud.dashboard_supervisor(db, current_user.id)
+
+
 @router.get("/mis-practicantes", response_model=List[schemas.PracticaResponse])
 def mis_practicantes(
     db: Session = Depends(get_db),
@@ -33,7 +42,7 @@ def pendientes_validacion(
 
 @router.patch("/seguimientos/{id}/validar-horas", response_model=schemas.SeguimientoResponse)
 def validar_horas(
-    id: str,
+    id: int,
     update_data: schemas.SeguimientoUpdate,
     request: Request,
     db: Session = Depends(get_db),
@@ -48,7 +57,7 @@ def validar_horas(
         raise HTTPException(status_code=404, detail="Seguimiento no encontrado")
 
     practica = crud.obtener_practica(db, seg.practica_id)
-    if practica.supervisor_id != current_user.id:
+    if not crud.usuario_puede_ver_practica(db, current_user, practica):
         raise HTTPException(status_code=403, detail="Este practicante no está bajo tu supervisión")
 
     return crud.validar_seguimiento(

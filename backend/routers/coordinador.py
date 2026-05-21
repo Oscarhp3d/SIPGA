@@ -84,7 +84,7 @@ def listar_asignaciones(
 # ── REASIGNAR TUTOR EN UNA PRÁCTICA ESPECÍFICA ───────────────
 @router.patch("/practicas/{practica_id}/reasignar-tutor", response_model=schemas.PracticaResponse)
 def reasignar_tutor(
-    practica_id: str,
+    practica_id: int,
     data: schemas.PracticaUpdate,
     request: Request,
     db: Session = Depends(get_db),
@@ -115,7 +115,7 @@ def reasignar_tutor(
 # ── VER SEGUIMIENTOS DE CUALQUIER PRÁCTICA ───────────────────
 @router.get("/practicas/{practica_id}/seguimientos", response_model=List[schemas.SeguimientoResponse])
 def ver_seguimientos_practica(
-    practica_id: str,
+    practica_id: int,
     db: Session = Depends(get_db),
     _=Depends(solo_coordinador)
 ):

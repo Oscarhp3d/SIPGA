@@ -59,3 +59,42 @@ def test_flujo_completo_practica(client, db):
     # Según crud.py, la validación del tutor suma horas si es el revisor final o coordinador.
     # En este flujo, el tutor aprueba. Verifiquemos si crud.py suma en este caso.
     assert res_check.json()["horas_acumuladas"] == 8.0
+
+    # 7. Generar reporte PDF (coordinador y estudiante)
+    res_pdf_admin = client.get(
+        f"/api/v1/practicas/{prac_id}/reporte-pdf",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert res_pdf_admin.status_code == 200
+    assert res_pdf_admin.headers["content-type"] == "application/pdf"
+    assert res_pdf_admin.content[:4] == b"%PDF"
+
+    res_pdf_est = client.get(
+        f"/api/v1/practicas/{prac_id}/reporte-pdf",
+        headers={"Authorization": f"Bearer {token_est}"},
+    )
+    assert res_pdf_est.status_code == 200
+    assert res_pdf_est.content[:4] == b"%PDF"
+
+    # 8. Evidencia: estudiante sube, tutor y coordinador pueden ver
+    import io
+    pdf_bytes = b"%PDF-1.4 test evidencia"
+    res_ev = client.post(
+        f"/api/v1/seguimientos/{seg_id}/subir-evidencia",
+        files={"archivo": ("evidencia.pdf", io.BytesIO(pdf_bytes), "application/pdf")},
+        headers={"Authorization": f"Bearer {token_est}"},
+    )
+    assert res_ev.status_code == 200
+
+    res_ver_est = client.get(
+        f"/api/v1/seguimientos/{seg_id}/evidencia",
+        headers={"Authorization": f"Bearer {token_est}"},
+    )
+    assert res_ver_est.status_code == 200
+    assert res_ver_est.content == pdf_bytes
+
+    res_ver_tut = client.get(
+        f"/api/v1/seguimientos/{seg_id}/evidencia",
+        headers={"Authorization": f"Bearer {token_tut}"},
+    )
+    assert res_ver_tut.status_code == 200

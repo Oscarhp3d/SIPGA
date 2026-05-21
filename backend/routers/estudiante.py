@@ -62,7 +62,7 @@ def registrar_actividad(
 
 @router.post("/seguimientos/{id}/evidencia")
 async def subir_evidencia(
-    id: str,
+    id: int,
     archivo: UploadFile = File(...),
     db: Session = Depends(get_db),
     current_user=Depends(solo_estudiante)
@@ -76,9 +76,13 @@ async def subir_evidencia(
     if practica.estudiante_id != current_user.id:
         raise HTTPException(status_code=403, detail="No eres dueño de este seguimiento")
 
-    ALLOWED = ["application/pdf", "image/jpeg", "image/png"]
-    if archivo.content_type not in ALLOWED:
+    ALLOWED = {"application/pdf", "image/jpeg", "image/png", "application/octet-stream"}
+    ext = os.path.splitext(archivo.filename or "")[1].lower()
+    ext_ok = ext in {".pdf", ".jpg", ".jpeg", ".png"}
+    if archivo.content_type not in ALLOWED and not ext_ok:
         raise HTTPException(status_code=400, detail="Solo se permiten PDF, JPG o PNG")
+    if not ext_ok:
+        raise HTTPException(status_code=400, detail="Extensión no permitida. Use .pdf, .jpg o .png")
 
     contenido = await archivo.read()
     if len(contenido) > settings.MAX_FILE_SIZE:

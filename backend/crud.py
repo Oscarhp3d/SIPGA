@@ -3,8 +3,8 @@ from sqlalchemy import func
 from typing import List, Optional, Dict
 import models, schemas
 import auth
-from datetime import datetime
 import uuid
+import os
 from datetime import datetime, timezone
 
 
@@ -13,6 +13,16 @@ def create_audit_log(db: Session, usuario_id: str, accion: str, ip: str) -> mode
     db.add(db_log)
     db.commit()
     return db_log
+
+
+def crear_notificacion(db: Session, usuario_id: str, titulo: str, mensaje: str):
+    if not usuario_id:
+        return
+    notif = models.Notificacion(usuario_id=usuario_id, titulo=titulo, mensaje=mensaje)
+    db.add(notif)
+    db.commit()
+    db.refresh(notif)
+    return notif
 
 
 def obtener_usuarios(db: Session) -> List[models.Usuario]:
@@ -38,6 +48,8 @@ def crear_usuario(db: Session, usuario: schemas.UsuarioCreate) -> models.Usuario
     Crea un usuario desde el panel del coordinador.
     El consentimiento se registra automáticamente porque la institución
     actúa como responsable del tratamiento al vincular al actor.
+    Si el rol es supervisor y se envía empresa_id, el vínculo empresa↔supervisor
+    se crea automáticamente.
     """
     db_usuario = models.Usuario(
         id=str(uuid.uuid4()),
@@ -53,6 +65,22 @@ def crear_usuario(db: Session, usuario: schemas.UsuarioCreate) -> models.Usuario
     db.add(db_usuario)
     db.commit()
     db.refresh(db_usuario)
+
+    # Si es supervisor y viene empresa_id, crear el vínculo automáticamente
+    if usuario.rol == models.UserRole.supervisor and usuario.empresa_id:
+        # Desactivar vínculo anterior si existe
+        db.query(models.EmpresaSupervisor).filter(
+            models.EmpresaSupervisor.supervisor_id == db_usuario.id,
+            models.EmpresaSupervisor.activo == True
+        ).update({"activo": False})
+        vinculo = models.EmpresaSupervisor(
+            empresa_id=usuario.empresa_id,
+            supervisor_id=db_usuario.id,
+            activo=True
+        )
+        db.add(vinculo)
+        db.commit()
+
     return db_usuario
 
 
@@ -111,6 +139,63 @@ def obtener_asignaciones(db: Session) -> List[models.AsignacionTutor]:
         models.AsignacionTutor.activa == True
     ).all()
 
+def eliminar_empresa(db: Session, empresa_id: int) -> bool:
+    """Elimina empresa, vínculos con supervisores y prácticas asociadas (con sus seguimientos)."""
+    empresa = db.query(models.Empresa).filter(models.Empresa.id == empresa_id).first()
+    if not empresa:
+        return False
+
+    db.query(models.EmpresaSupervisor).filter(
+        models.EmpresaSupervisor.empresa_id == empresa_id
+    ).delete(synchronize_session=False)
+
+    practicas = db.query(models.Practica).filter(
+        models.Practica.empresa_id == empresa_id
+    ).all()
+    for practica in practicas:
+        eliminar_practica(db, practica.id)
+
+    db.delete(empresa)
+    db.commit()
+    return True
+
+
+def eliminar_usuario(db: Session, usuario_id: str) -> bool:
+    """Elimina usuario y datos asociados; borra prácticas donde es estudiante."""
+    db_user = db.query(models.Usuario).filter(models.Usuario.id == usuario_id).first()
+    if not db_user:
+        return False
+
+    practicas_estudiante = db.query(models.Practica).filter(
+        models.Practica.estudiante_id == usuario_id
+    ).all()
+    for practica in practicas_estudiante:
+        eliminar_practica(db, practica.id)
+
+    db.query(models.Practica).filter(
+        models.Practica.tutor_id == usuario_id
+    ).update({models.Practica.tutor_id: None}, synchronize_session=False)
+    db.query(models.Practica).filter(
+        models.Practica.supervisor_id == usuario_id
+    ).update({models.Practica.supervisor_id: None}, synchronize_session=False)
+
+    db.query(models.AsignacionTutor).filter(
+        models.AsignacionTutor.tutor_id == usuario_id
+    ).delete(synchronize_session=False)
+    db.query(models.EmpresaSupervisor).filter(
+        models.EmpresaSupervisor.supervisor_id == usuario_id
+    ).delete(synchronize_session=False)
+    db.query(models.Notificacion).filter(
+        models.Notificacion.usuario_id == usuario_id
+    ).delete(synchronize_session=False)
+    db.query(models.AuditLog).filter(
+        models.AuditLog.usuario_id == usuario_id
+    ).delete(synchronize_session=False)
+
+    db.delete(db_user)
+    db.commit()
+    return True
+
 def obtener_tutor_por_programa(
     db: Session, programa: str
 ) -> Optional[models.Usuario]:
@@ -127,12 +212,13 @@ def obtener_tutor_por_programa(
 
 def crear_practica(db: Session, data: schemas.PracticaCreate) -> models.Practica:
     """
-    Crea una práctica. Si no se especifica tutor_id, intenta asignar 
-    automáticamente el tutor del programa del estudiante.
+    Crea una práctica.
+    - Si no se especifica tutor_id, intenta asignar automáticamente el tutor del programa.
+    - Si no se especifica supervisor_id, busca el supervisor vinculado a la empresa.
     """
     tutor_id = data.tutor_id
 
-    # Auto-asignación por programa si tutor no fue especificado
+    # Auto-asignación de tutor por programa si no se especificó
     if not tutor_id:
         estudiante = obtener_usuario_por_id(db, data.estudiante_id)
         if estudiante and estudiante.programa_academico:
@@ -140,10 +226,20 @@ def crear_practica(db: Session, data: schemas.PracticaCreate) -> models.Practica
             if tutor:
                 tutor_id = tutor.id
 
+    # Auto-asignación de supervisor por empresa si no se especificó
+    supervisor_id = data.supervisor_id
+    if not supervisor_id and data.empresa_id:
+        vinculo = db.query(models.EmpresaSupervisor).filter(
+            models.EmpresaSupervisor.empresa_id == data.empresa_id,
+            models.EmpresaSupervisor.activo == True
+        ).first()
+        if vinculo:
+            supervisor_id = vinculo.supervisor_id
+
     db_practica = models.Practica(
         estudiante_id=data.estudiante_id,
         tutor_id=tutor_id,
-        supervisor_id=data.supervisor_id,
+        supervisor_id=supervisor_id,
         empresa_id=data.empresa_id,
         horas_totales_requeridas=data.horas_totales_requeridas,
         fecha_inicio=data.fecha_inicio,
@@ -156,6 +252,47 @@ def crear_practica(db: Session, data: schemas.PracticaCreate) -> models.Practica
 
 def obtener_practica(db: Session, practica_id: int) -> Optional[models.Practica]:
     return db.query(models.Practica).filter(models.Practica.id == practica_id).first()
+
+
+def usuario_puede_ver_practica(
+    db: Session, usuario: models.Usuario, practica: models.Practica
+) -> bool:
+    """Estudiante, tutor, supervisor de la práctica, coordinador o supervisor de la empresa."""
+    rol = usuario.rol.value if hasattr(usuario.rol, "value") else usuario.rol
+    if rol == "coordinador":
+        return True
+    if usuario.id in {practica.estudiante_id, practica.tutor_id, practica.supervisor_id}:
+        return True
+    if rol == "supervisor" and practica.empresa_id:
+        vinculo = db.query(models.EmpresaSupervisor).filter(
+            models.EmpresaSupervisor.empresa_id == practica.empresa_id,
+            models.EmpresaSupervisor.supervisor_id == usuario.id,
+            models.EmpresaSupervisor.activo == True,
+        ).first()
+        return vinculo is not None
+    return False
+
+
+def seguimiento_tiene_evidencia(seg: models.Seguimiento) -> bool:
+    return bool(seg.evidencia_url or seg.archivo_evidencia)
+
+
+def obtener_ruta_evidencia_fisica(seg: models.Seguimiento) -> Optional[str]:
+    ruta = seg.evidencia_url or seg.archivo_evidencia
+    if not ruta:
+        return None
+    ruta = ruta.replace("\\", "/")
+    if os.path.isabs(ruta):
+        return ruta if os.path.isfile(ruta) else None
+    base = os.path.dirname(os.path.abspath(__file__))
+    candidatas = [
+        os.path.join(base, ruta),
+        os.path.join(base, "..", ruta),
+    ]
+    for candidata in candidatas:
+        if os.path.isfile(candidata):
+            return os.path.normpath(candidata)
+    return None
 
 def obtener_todas_practicas(db: Session) -> List[models.Practica]:
     return db.query(models.Practica).all()
@@ -189,6 +326,38 @@ def reasignar_tutor_practica(
     db.refresh(practica)
     return practica
 
+def eliminar_practica(db: Session, practica_id: int) -> bool:
+    practica = db.query(models.Practica).filter(models.Practica.id == practica_id).first()
+    if not practica:
+        return False
+    
+    from sqlalchemy import text
+    from sqlalchemy.exc import SQLAlchemyError
+    
+    # Eliminar historiales asociados a los seguimientos de esta práctica (por si existen en la BD)
+    try:
+        db.execute(text("""
+            DELETE FROM seguimientos_historial 
+            WHERE seguimiento_id IN (SELECT id FROM seguimientos WHERE practica_id = :practica_id)
+        """), {"practica_id": practica_id})
+    except SQLAlchemyError:
+        db.rollback() # Ignorar si la tabla no existe
+        
+    try:
+        db.execute(text("""
+            DELETE FROM historial_seguimientos 
+            WHERE seguimiento_id IN (SELECT id FROM seguimientos WHERE practica_id = :practica_id)
+        """), {"practica_id": practica_id})
+    except SQLAlchemyError:
+        db.rollback() # Ignorar si la tabla no existe
+
+    # Eliminar seguimientos asociados
+    db.query(models.Seguimiento).filter(models.Seguimiento.practica_id == practica_id).delete(synchronize_session=False)
+    
+    db.delete(practica)
+    db.commit()
+    return True
+
 
 def registrar_seguimiento(
     db: Session, seguimiento: schemas.SeguimientoCreate
@@ -203,6 +372,15 @@ def registrar_seguimiento(
     db.add(db_seg)
     db.commit()
     db.refresh(db_seg)
+
+    # Notificar al supervisor o tutor cuando se crea el seguimiento
+    practica = obtener_practica(db, seguimiento.practica_id)
+    if practica:
+        if practica.supervisor_id:
+            crear_notificacion(db, practica.supervisor_id, "Nuevo seguimiento", f"El estudiante ha reportado {seguimiento.horas_realizadas} horas para validación.")
+        elif practica.tutor_id:
+            crear_notificacion(db, practica.tutor_id, "Nuevo seguimiento", f"El estudiante ha reportado {seguimiento.horas_realizadas} horas para validación.")
+
     return db_seg
 
 def obtener_seguimientos_practica(
@@ -223,22 +401,28 @@ def obtener_seguimiento(
 def obtener_seguimientos_pendientes_tutor(
     db: Session, tutor_id: str
 ) -> List[models.Seguimiento]:
-    """Seguimientos en estado 'enviado' de las prácticas del tutor."""
-    practicas_ids = [
-        p.id for p in db.query(models.Practica).filter(
-            models.Practica.tutor_id == tutor_id
-        ).all()
-    ]
-    return db.query(models.Seguimiento).filter(
-        models.Seguimiento.practica_id.in_(practicas_ids),
-        models.Seguimiento.estado == models.StatusEnum.enviado,
-        models.Seguimiento.is_deleted == False
+    """Seguimientos aprobados por el supervisor (pendiente_tutor) que el tutor debe revisar.
+    O seguimientos 'enviados' de prácticas que no tienen supervisor asignado."""
+    from sqlalchemy import or_, and_
+    return db.query(models.Seguimiento).join(
+        models.Practica, models.Seguimiento.practica_id == models.Practica.id
+    ).filter(
+        models.Practica.tutor_id == tutor_id,
+        models.Seguimiento.is_deleted == False,
+        or_(
+            models.Seguimiento.estado == models.StatusEnum.pendiente_tutor,
+            and_(
+                models.Seguimiento.estado == models.StatusEnum.enviado,
+                models.Practica.supervisor_id == None
+            )
+        )
     ).all()
 
 def obtener_seguimientos_pendientes_supervisor(
     db: Session, supervisor_id: str
 ) -> List[models.Seguimiento]:
-    """Seguimientos enviados de las prácticas donde el supervisor está asignado."""
+    """Seguimientos enviados por el estudiante que el supervisor debe revisar primero.
+    FLUJO: supervisor es la primera línea de validación."""
     practicas_ids = [
         p.id for p in db.query(models.Practica).filter(
             models.Practica.supervisor_id == supervisor_id
@@ -250,10 +434,77 @@ def obtener_seguimientos_pendientes_supervisor(
         models.Seguimiento.is_deleted == False
     ).all()
 
+def supervisor_aprobar_seguimiento(
+    db: Session,
+    seguimiento_id: int,
+    supervisor_id: str,
+    observaciones: str,
+    ip: str
+) -> Optional[models.Seguimiento]:
+    """El supervisor aprueba las horas → pasan a pendiente_tutor para revisión del tutor."""
+    db_seg = db.query(models.Seguimiento).filter(
+        models.Seguimiento.id == seguimiento_id
+    ).first()
+    if not db_seg:
+        return None
+
+    db_seg.estado = models.StatusEnum.pendiente_tutor
+    db_seg.validado_supervisor = True
+    if observaciones:
+        db_seg.observaciones_tutor = observaciones
+
+    db.commit()
+    db.refresh(db_seg)
+    create_audit_log(
+        db, supervisor_id,
+        f"SUPERVISOR APROBÓ seguimiento={seguimiento_id} → pendiente tutor",
+        ip
+    )
+    
+    practica = obtener_practica(db, db_seg.practica_id)
+    if practica and practica.tutor_id:
+        crear_notificacion(db, practica.tutor_id, "Seguimiento pre-aprobado", "El supervisor ha aprobado un seguimiento y requiere tu validación.")
+    if practica and practica.estudiante_id:
+        crear_notificacion(db, practica.estudiante_id, "Seguimiento validado", "Tu seguimiento ha sido aprobado por el supervisor.")
+        
+    return db_seg
+
+def supervisor_rechazar_seguimiento(
+    db: Session,
+    seguimiento_id: int,
+    supervisor_id: str,
+    observaciones: str,
+    ip: str
+) -> Optional[models.Seguimiento]:
+    """El supervisor rechaza las horas → vuelven al estudiante con observaciones."""
+    db_seg = db.query(models.Seguimiento).filter(
+        models.Seguimiento.id == seguimiento_id
+    ).first()
+    if not db_seg:
+        return None
+
+    db_seg.estado = models.StatusEnum.rechazado
+    db_seg.validado_supervisor = False
+    db_seg.observaciones_tutor = observaciones
+
+    db.commit()
+    db.refresh(db_seg)
+    create_audit_log(
+        db, supervisor_id,
+        f"SUPERVISOR RECHAZÓ seguimiento={seguimiento_id}: {observaciones[:80]}",
+        ip
+    )
+    
+    practica = obtener_practica(db, db_seg.practica_id)
+    if practica and practica.estudiante_id:
+        crear_notificacion(db, practica.estudiante_id, "Seguimiento rechazado", "Tu seguimiento ha sido rechazado por el supervisor.")
+        
+    return db_seg
+
 def validar_seguimiento(
     db: Session,
     seguimiento_id: int,
-    estado: models.StatusEnum,
+    estado_solicitado: models.StatusEnum,
     revisor_id: str,
     observaciones: str,
     ip: str
@@ -264,36 +515,109 @@ def validar_seguimiento(
     if not db_seg:
         return None
 
-    db_seg.estado = estado
+    estado_anterior = db_seg.estado
+    revisor = obtener_usuario_por_id(db, revisor_id)
+    if not revisor:
+        return None
+
+    nuevo_estado = estado_solicitado
+
+    if revisor.rol == models.UserRole.supervisor:
+        if estado_solicitado == models.StatusEnum.aprobado:
+            nuevo_estado = models.StatusEnum.pendiente_tutor
+            db_seg.validado_supervisor = True
+        elif estado_solicitado == models.StatusEnum.rechazado:
+            nuevo_estado = models.StatusEnum.rechazado
+            db_seg.validado_supervisor = False
+            
+    elif revisor.rol == models.UserRole.tutor:
+        if estado_solicitado == models.StatusEnum.aprobado:
+            nuevo_estado = models.StatusEnum.aprobado
+            db_seg.validado_tutor = True
+        elif estado_solicitado == models.StatusEnum.rechazado:
+            nuevo_estado = models.StatusEnum.rechazado
+            db_seg.validado_tutor = False
+            
+    elif revisor.rol == models.UserRole.coordinador:
+        if estado_solicitado == models.StatusEnum.aprobado:
+            db_seg.validado_supervisor = True
+            db_seg.validado_tutor = True
+        nuevo_estado = estado_solicitado
+
+    db_seg.estado = nuevo_estado
     db_seg.observaciones_tutor = observaciones
 
-    revisor = obtener_usuario_por_id(db, revisor_id)
-    if revisor:
-        if revisor.rol == models.UserRole.tutor:
-            db_seg.validado_tutor = (estado == models.StatusEnum.aprobado)
-            if estado == models.StatusEnum.aprobado:
-                practica = obtener_practica(db, db_seg.practica_id)
-                if practica:
-                    practica.horas_acumuladas = (practica.horas_acumuladas or 0) + db_seg.horas_realizadas
-        elif revisor.rol == models.UserRole.supervisor:
-            db_seg.validado_supervisor = (estado == models.StatusEnum.aprobado)
-            # Al aprobar el supervisor, actualizar horas acumuladas en la práctica
-            if estado == models.StatusEnum.aprobado:
-                practica = obtener_practica(db, db_seg.practica_id)
-                if practica:
-                    practica.horas_acumuladas = (practica.horas_acumuladas or 0) + db_seg.horas_realizadas
-        elif revisor.rol == models.UserRole.coordinador:
-            db_seg.validado_tutor = (estado == models.StatusEnum.aprobado)
-            db_seg.validado_supervisor = (estado == models.StatusEnum.aprobado)
+    # Sumar horas solo si acaba de pasar a estado aprobado de forma definitiva
+    if nuevo_estado == models.StatusEnum.aprobado and estado_anterior != models.StatusEnum.aprobado:
+        practica = obtener_practica(db, db_seg.practica_id)
+        if practica:
+            practica.horas_acumuladas = (practica.horas_acumuladas or 0) + db_seg.horas_realizadas
+            if practica.horas_acumuladas >= practica.horas_totales_requeridas:
+                practica.estado = "finalizada"
 
     db.commit()
     db.refresh(db_seg)
     create_audit_log(
         db, revisor_id,
-        f"VALIDACIÓN [{estado.value.upper()}] seguimiento={seguimiento_id}",
+        f"VALIDACIÓN [{nuevo_estado.value.upper()}] seguimiento={seguimiento_id}",
         ip
     )
+    
+    practica = obtener_practica(db, db_seg.practica_id)
+    if practica and practica.estudiante_id:
+        estado_texto = "aprobado" if nuevo_estado in [models.StatusEnum.aprobado, models.StatusEnum.pendiente_tutor] else "rechazado"
+        crear_notificacion(db, practica.estudiante_id, f"Seguimiento {estado_texto}", f"Tu seguimiento ahora tiene estado: {estado_texto}.")
+        
     return db_seg
+
+# ── EMPRESA–SUPERVISOR (vínculo empresa ↔ supervisor) ─────────────────────────
+
+def asignar_supervisor_empresa(
+    db: Session, data: "schemas.EmpresaSupervisorCreate"
+) -> models.EmpresaSupervisor:
+    """Vincula un supervisor con una empresa. Desactiva el vínculo anterior si existía."""
+    db.query(models.EmpresaSupervisor).filter(
+        models.EmpresaSupervisor.supervisor_id == data.supervisor_id,
+        models.EmpresaSupervisor.activo == True
+    ).update({"activo": False})
+
+    nueva = models.EmpresaSupervisor(
+        empresa_id=data.empresa_id,
+        supervisor_id=data.supervisor_id,
+        activo=True
+    )
+    db.add(nueva)
+    db.commit()
+    db.refresh(nueva)
+    return nueva
+
+def obtener_supervisores_empresa(
+    db: Session, empresa_id: int
+) -> List[models.EmpresaSupervisor]:
+    return db.query(models.EmpresaSupervisor).filter(
+        models.EmpresaSupervisor.empresa_id == empresa_id,
+        models.EmpresaSupervisor.activo == True
+    ).all()
+
+def obtener_empresa_del_supervisor(
+    db: Session, supervisor_id: str
+) -> Optional[models.EmpresaSupervisor]:
+    return db.query(models.EmpresaSupervisor).filter(
+        models.EmpresaSupervisor.supervisor_id == supervisor_id,
+        models.EmpresaSupervisor.activo == True
+    ).first()
+
+def asignar_supervisor_a_practica(
+    db: Session, practica_id: int, supervisor_id: str
+) -> Optional[models.Practica]:
+    """Asigna directamente un supervisor a una práctica específica."""
+    practica = obtener_practica(db, practica_id)
+    if not practica:
+        return None
+    practica.supervisor_id = supervisor_id
+    db.commit()
+    db.refresh(practica)
+    return practica
 
 def eliminar_seguimiento_logico(
     db: Session, seguimiento_id: int
@@ -310,8 +634,9 @@ def actualizar_evidencia(
 ) -> Optional[models.Seguimiento]:
     db_seg = obtener_seguimiento(db, seguimiento_id)
     if db_seg:
-        db_seg.archivo_evidencia = ruta_archivo
-        db_seg.evidencia_url = ruta_archivo
+        ruta_norm = ruta_archivo.replace("\\", "/")
+        db_seg.archivo_evidencia = ruta_norm
+        db_seg.evidencia_url = ruta_norm
         db.commit()
         db.refresh(db_seg)
     return db_seg
@@ -376,21 +701,51 @@ def dashboard_tutor(db: Session, tutor_id: str) -> dict:
         "total_horas_validadas": total_horas
     }
 
+def dashboard_supervisor(db: Session, supervisor_id: str) -> dict:
+    practicas = obtener_practicas_por_usuario(db, supervisor_id, "supervisor")
+    pendientes = len(obtener_seguimientos_pendientes_supervisor(db, supervisor_id))
+    total_horas = sum(p.horas_acumuladas or 0 for p in practicas)
+    return {
+        "mis_practicantes": practicas,
+        "seguimientos_pendientes": pendientes,
+        "total_horas_en_practicas": total_horas,
+    }
+
 def dashboard_estudiante(db: Session, estudiante_id: str) -> dict:
+    from sqlalchemy import func
+    from datetime import date
+
     practicas = obtener_practicas_por_usuario(db, estudiante_id, "estudiante")
     practica = practicas[0] if practicas else None
     horas_acum = practica.horas_acumuladas if practica else 0.0
     horas_req = practica.horas_totales_requeridas if practica else 320
     porcentaje = round((horas_acum / horas_req) * 100, 1) if horas_req > 0 else 0.0
+    horas_hoy = 0.0
 
     seguimientos_recientes = []
     if practica:
-        seguimientos_recientes = obtener_seguimientos_practica(db, practica.id)[-5:]
+        hoy = date.today()
+        horas_hoy = db.query(func.sum(models.Seguimiento.horas_realizadas)).filter(
+            models.Seguimiento.practica_id == practica.id,
+            models.Seguimiento.is_deleted == False,
+            func.date(models.Seguimiento.fecha_actividad) == hoy,
+        ).scalar() or 0.0
+        seguimientos_recientes = (
+            db.query(models.Seguimiento)
+            .filter(
+                models.Seguimiento.practica_id == practica.id,
+                models.Seguimiento.is_deleted == False,
+            )
+            .order_by(models.Seguimiento.fecha_actividad.desc())
+            .limit(5)
+            .all()
+        )
 
     return {
         "practica": practica,
+        "horas_hoy": round(float(horas_hoy), 1),
         "horas_acumuladas": horas_acum,
         "horas_requeridas": horas_req,
         "porcentaje_avance": porcentaje,
-        "seguimientos_recientes": seguimientos_recientes
+        "seguimientos_recientes": seguimientos_recientes,
     }

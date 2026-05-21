@@ -72,16 +72,22 @@ def actualizar_usuario(
     db.refresh(db_user)
     return db_user
 
-@router.delete("/{usuario_id}")
+@router.delete("/{usuario_id}", status_code=status.HTTP_204_NO_CONTENT)
 def eliminar_usuario(
     usuario_id: str,
     db: Session = Depends(get_db),
-    admin=Depends(auth.verificar_rol(["coordinador"]))
+    current_user: models.Usuario = Depends(auth.verificar_rol(["coordinador"])),
 ):
-    """Eliminar usuario (Solo Coordinador)."""
-    db_user = db.query(models.Usuario).filter(models.Usuario.id == usuario_id).first()
-    if not db_user:
-        raise HTTPException(status_code=404, detail="Usuario no encontrado")
-    db.delete(db_user)
-    db.commit()
-    return {"message": "Usuario eliminado correctamente"}
+    """Elimina un usuario y sus datos asociados (solo coordinador)."""
+    if usuario_id == current_user.id:
+        raise HTTPException(
+            status_code=400,
+            detail="No puedes eliminar tu propia cuenta mientras estás conectado.",
+        )
+    try:
+        if not crud.eliminar_usuario(db, usuario_id):
+            raise HTTPException(status_code=404, detail="Usuario no encontrado")
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=str(e))
+    return None

@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Request, status
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, Response
 import logging
 import os
 import time
@@ -14,7 +14,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 import models
 from database import engine
 from config import settings
-from routers import auth_router, usuarios, practicas, seguimientos, empresas, coordinador, tutor, estudiante, supervisor
+from routers import auth_router, usuarios, practicas, seguimientos, empresas, coordinador, tutor, estudiante, supervisor, notificaciones
 
 # Asegurar que el directorio de logs existe
 LOGS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "logs")
@@ -28,7 +28,8 @@ logging.basicConfig(
 )
 
 
-models.Base.metadata.create_all(bind=engine)
+if "pytest" not in sys.modules:
+    models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -82,6 +83,7 @@ app.include_router(practicas.router,    prefix=settings.API_V1_STR)
 app.include_router(seguimientos.router, prefix=settings.API_V1_STR)
 app.include_router(empresas.router,     prefix=settings.API_V1_STR)
 app.include_router(dashboard.router, prefix=settings.API_V1_STR)
+app.include_router(notificaciones.router, prefix=settings.API_V1_STR)
 # 7. INCLUSIÓN DE ROUTERS — por rol
 app.include_router(coordinador.router,  prefix=settings.API_V1_STR)
 app.include_router(tutor.router,        prefix=settings.API_V1_STR)
@@ -95,6 +97,25 @@ if os.path.exists(frontend_path):
     # Montar carpetas individuales para compatibilidad con rutas relativas
     app.mount("/js", StaticFiles(directory=os.path.join(frontend_path, "js")), name="js")
     app.mount("/static", StaticFiles(directory=frontend_path), name="static")
+    js_path = os.path.join(frontend_path, "js")
+    if os.path.exists(js_path):
+        app.mount("/js", StaticFiles(directory=js_path), name="frontend_js")
+
+os.makedirs(settings.UPLOAD_DIR, exist_ok=True)
+app.mount(f"/{settings.UPLOAD_DIR}", StaticFiles(directory=settings.UPLOAD_DIR), name="evidencias")
+
+@app.get("/favicon.ico", include_in_schema=False)
+def favicon():
+    icon_path = os.path.join(frontend_path, "favicon.ico")
+    if os.path.exists(icon_path):
+        return FileResponse(icon_path)
+    return Response(status_code=204)
+
+
+@app.get("/health", include_in_schema=False)
+def health_check():
+    return {"status": "ok", "api": settings.API_V1_STR}
+
 
 @app.get("/")
 def read_index():
@@ -111,4 +132,3 @@ def read_page(page: str):
     return JSONResponse(status_code=404, content={"detail": "Page not found"})
 
 
-os.makedirs(settings.UPLOAD_DIR, exist_ok=True)

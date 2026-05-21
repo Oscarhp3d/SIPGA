@@ -43,8 +43,6 @@ class Usuario(Base):
 
     audit_logs = relationship(
         "AuditLog",
-        primaryjoin="Usuario.id == AuditLog.usuario_id",
-        foreign_keys="[AuditLog.usuario_id]",
         back_populates="usuario"
     )
 
@@ -75,7 +73,6 @@ class AsignacionTutor(Base):
 class Practica(Base):
     __tablename__ = "practicas"
 
-    # ← Cambiado: Integer autoincremental en lugar de UUID
     id                       = Column(Integer, primary_key=True, index=True, autoincrement=True)
     estudiante_id            = Column(String, ForeignKey("usuarios.id"))
     tutor_id                 = Column(String, ForeignKey("usuarios.id"), nullable=True)
@@ -97,52 +94,55 @@ class Practica(Base):
 class Seguimiento(Base):
     __tablename__ = "seguimientos"
 
-    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-
-    practica_id = Column(Integer, ForeignKey("practicas.id"))
-
-    fecha_actividad = Column(
-        DateTime,
-        default=lambda: datetime.datetime.now(datetime.timezone.utc)
-    )
-
-    descripcion = Column(Text, nullable=False)
-
+    id              = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    practica_id     = Column(Integer, ForeignKey("practicas.id"))
+    fecha_actividad = Column(DateTime, default=lambda: datetime.datetime.now(datetime.timezone.utc))
+    descripcion     = Column(Text, nullable=False)
     horas_realizadas = Column(Float, nullable=False)
+    estado          = Column(statusenum_type, default=StatusEnum.borrador)
+    validado_tutor       = Column(Boolean, default=False)
+    validado_supervisor  = Column(Boolean, default=False)
+    observaciones_tutor  = Column(Text, nullable=True)
+    evidencia_url        = Column(String, nullable=True)
+    archivo_evidencia    = Column(String, nullable=True)
+    is_deleted           = Column(Boolean, default=False)
 
-    estado = Column(
-        statusenum_type,
-        default=StatusEnum.borrador
-    )
+    practica = relationship("Practica", back_populates="seguimientos")
 
-    validado_tutor = Column(Boolean, default=False)
 
-    validado_supervisor = Column(Boolean, default=False)
+class EmpresaSupervisor(Base):
+    """Vincula un supervisor (usuario de la empresa) con una empresa específica."""
+    __tablename__ = "empresa_supervisores"
 
-    observaciones_tutor = Column(Text, nullable=True)
+    id               = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    empresa_id       = Column(Integer, ForeignKey("empresas.id"), nullable=False)
+    supervisor_id    = Column(String, ForeignKey("usuarios.id"), nullable=False)
+    activo           = Column(Boolean, default=True)
+    fecha_asignacion = Column(DateTime, default=lambda: datetime.datetime.now(datetime.timezone.utc))
 
-    evidencia_url = Column(String, nullable=True)
+    empresa    = relationship("Empresa")
+    supervisor = relationship("Usuario", foreign_keys=[supervisor_id])
 
-    archivo_evidencia = Column(String, nullable=True)
 
-    is_deleted = Column(Boolean, default=False)
-
-    practica = relationship(
-        "Practica",
-        back_populates="seguimientos"
-    )
 class AuditLog(Base):
     __tablename__ = "logs_auditoria"
 
     id         = Column(Integer, primary_key=True, index=True)
-    usuario_id = Column(String, nullable=True)
+    usuario_id = Column(String, ForeignKey("usuarios.id"), nullable=True)
     accion     = Column(String)
     fecha      = Column(DateTime, default=lambda: datetime.datetime.now(datetime.timezone.utc))
     ip_origen  = Column(String)
 
-    usuario = relationship(
-        "Usuario",
-        primaryjoin="AuditLog.usuario_id == Usuario.id",
-        foreign_keys="[AuditLog.usuario_id]",
-        back_populates="audit_logs"
-    )
+    usuario = relationship("Usuario", back_populates="audit_logs")
+
+class Notificacion(Base):
+    __tablename__ = "notificaciones"
+
+    id             = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    usuario_id     = Column(String, ForeignKey("usuarios.id"), nullable=False)
+    titulo         = Column(String(200), nullable=False)
+    mensaje        = Column(Text, nullable=False)
+    leida          = Column(Boolean, default=False)
+    fecha_creacion = Column(DateTime, default=lambda: datetime.datetime.now(datetime.timezone.utc))
+
+    usuario = relationship("Usuario")

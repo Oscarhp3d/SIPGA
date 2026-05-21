@@ -25,3 +25,18 @@ def listar_empresas(
 ):
     """Lista todas las empresas registradas."""
     return crud.obtener_empresas(db)
+
+@router.delete("/{empresa_id}", status_code=status.HTTP_204_NO_CONTENT)
+def eliminar_empresa(
+    empresa_id: int,
+    db: Session = Depends(get_db),
+    admin=Depends(auth.verificar_rol(["coordinador"]))
+):
+    """Elimina una empresa (Solo Coordinadores)."""
+    try:
+        exito = crud.eliminar_empresa(db, empresa_id)
+        if not exito:
+            raise HTTPException(status_code=404, detail="Empresa no encontrada")
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    return None

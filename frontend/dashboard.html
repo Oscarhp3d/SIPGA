@@ -202,13 +202,24 @@
         <input type="text" id="globalSearch" placeholder="Buscar en la sección activa..." oninput="ejecutarBusquedaGlobal()"
                class="w-full pl-9 pr-4 py-2 text-sm text-slate-600 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-blue-300 transition-colors"/>
       </div>
-      <div class="flex items-center gap-3">
-        <button onclick="mostrarNotificaciones()" class="relative p-2 text-slate-400 hover:text-slate-600 transition-colors" title="Alertas de Auditoría">
+      <div class="flex items-center gap-3 relative" id="notificacionesContainer">
+        <button id="btnNotificaciones" onclick="toggleNotificaciones()" class="relative p-2 text-slate-400 hover:text-slate-600 transition-colors" title="Notificaciones">
           <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
             <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
           </svg>
-          <span id="notifDot" class="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-red-500 rounded-full"></span>
+          <span id="notificacionesBadge" class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full hidden"></span>
         </button>
+        
+        <div id="notificacionesDropdown" class="absolute top-full right-0 mt-2 w-80 bg-white rounded-xl shadow-lg border border-slate-100 hidden z-50 overflow-hidden">
+          <div class="px-4 py-3 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+            <h3 class="font-syne font-semibold text-slate-800 text-sm">Notificaciones</h3>
+            <button onclick="marcarTodasLeidas()" class="text-[10px] text-blue-600 hover:underline font-semibold">Marcar todas leídas</button>
+          </div>
+          <div id="listaNotificaciones" class="max-h-72 overflow-y-auto">
+            <div class="p-4 text-center text-xs text-slate-400">Cargando...</div>
+          </div>
+        </div>
+      </div>
         <div class="flex items-center gap-2.5 pl-3 border-l border-slate-100">
           <div class="text-right">
             <div class="text-xs font-semibold text-slate-700 leading-none" id="topbarNombre">Cargando...</div>
@@ -551,10 +562,11 @@
                 <th class="px-3 py-3 text-left text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Nombre</th>
                 <th class="px-3 py-3 text-left text-[10px] font-semibold text-slate-400 uppercase tracking-wider">NIT</th>
                 <th class="px-3 py-3 text-left text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Dirección</th>
+                <th class="px-3 py-3 text-left text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Acciones</th>
               </tr>
             </thead>
             <tbody id="tablaEmpresas">
-              <tr><td colspan="4" class="px-5 py-8 text-center text-sm text-slate-400">Cargando...</td></tr>
+              <tr><td colspan="5" class="px-5 py-8 text-center text-sm text-slate-400">Cargando...</td></tr>
             </tbody>
           </table>
         </div>
@@ -1106,228 +1118,159 @@ const token = getToken();
   }
 
 
- function abrirModalUsuario() {
-
-  document.getElementById('modalTitulo')
-    .textContent = 'Nuevo Usuario';
-
-  document.getElementById('modalContenido')
-    .innerHTML = `
-
+function abrirModalUsuario() {
+  document.getElementById('modalTitulo').textContent = 'Nuevo Usuario';
+  document.getElementById('modalContenido').innerHTML = `
     <div class="space-y-4">
-
       <input type="hidden" id="usuarioId"/>
-
       <div>
-        <label class="block text-xs mb-1">Nombre</label>
-
-        <input
-          type="text"
-          id="nuNombre"
-          class="w-full px-3 py-2 border rounded-xl"
-        />
+        <label class="block text-xs font-semibold text-slate-500 mb-1">Nombre completo</label>
+        <input type="text" id="nuNombre" placeholder="Ej: María García" class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm outline-none focus:border-blue-300"/>
       </div>
-
       <div>
-        <label class="block text-xs mb-1">Correo</label>
-
-        <input
-          type="email"
-          id="nuCorreo"
-          class="w-full px-3 py-2 border rounded-xl"
-        />
+        <label class="block text-xs font-semibold text-slate-500 mb-1">Correo electrónico</label>
+        <input type="email" id="nuCorreo" placeholder="correo@institución.edu.co" class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm outline-none focus:border-blue-300"/>
       </div>
-
       <div>
-        <label class="block text-xs mb-1">Contraseña</label>
-
-        <input
-          type="password"
-          id="nuPassword"
-          class="w-full px-3 py-2 border rounded-xl"
-        />
+        <label class="block text-xs font-semibold text-slate-500 mb-1">Contraseña</label>
+        <input type="password" id="nuPassword" placeholder="Mínimo 8 caracteres" class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm outline-none focus:border-blue-300"/>
       </div>
-
       <div>
-        <label class="block text-xs mb-1">Rol</label>
-
-        <select
-          id="nuRol"
-          class="w-full px-3 py-2 border rounded-xl">
-
+        <label class="block text-xs font-semibold text-slate-500 mb-1">Rol</label>
+        <select id="nuRol" onchange="toggleEmpresaSelector()" class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm outline-none focus:border-blue-300">
           <option value="estudiante">Estudiante</option>
           <option value="tutor">Tutor</option>
           <option value="supervisor">Supervisor</option>
           <option value="coordinador">Coordinador</option>
-
         </select>
       </div>
-
+      <!-- Campo empresa: solo visible cuando rol = supervisor -->
+      <div id="campoEmpresaSupervisor" style="display:none;">
+        <label class="block text-xs font-semibold text-slate-500 mb-1">Empresa que supervisará <span class="text-red-500">*</span></label>
+        <select id="nuEmpresaId" class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm outline-none focus:border-blue-300">
+          <option value="">Cargando empresas...</option>
+        </select>
+        <p class="text-[10px] text-slate-400 mt-1">El supervisor quedará vinculado únicamente a esta empresa.</p>
+      </div>
       <div>
-        <label class="block text-xs mb-1">
-          Programa Académico
-        </label>
-
-        <input
-          type="text"
-          id="nuPrograma"
-          class="w-full px-3 py-2 border rounded-xl"
-        />
+        <label class="block text-xs font-semibold text-slate-500 mb-1">Programa Académico</label>
+        <input type="text" id="nuPrograma" placeholder="Ej: Ingeniería de Sistemas" class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm outline-none focus:border-blue-300"/>
       </div>
-
-      <div id="nuError"
-           class="text-xs text-red-500 hidden">
-      </div>
-
+      <div id="nuError" class="text-xs text-red-500 hidden"></div>
       <div class="bg-blue-50 border border-blue-200 text-blue-800 rounded-xl p-3">
         <p class="text-xs leading-relaxed">
           <strong>Aviso de tratamiento de datos personales:</strong><br>
-          Al crear este usuario, la institución certifica que el titular ha sido informado
-          sobre el tratamiento de sus datos personales conforme a la Ley 1581 de 2012
-          y las políticas de privacidad institucionales.
+          Al crear este usuario, la institución certifica que el titular ha sido informado sobre el tratamiento de sus datos personales conforme a la Ley 1581 de 2012.
         </p>
       </div>
-      <div class="flex items-start gap-2 mt-3">
-  <input
-    type="checkbox"
-    id="nuAceptaDatos"
-    class="mt-1"
-  />
-
-  <label
-    for="nuAceptaDatos"
-    class="text-xs text-slate-600 leading-relaxed">
-
-    La institución certifica que el titular fue informado
-    sobre el tratamiento de sus datos personales conforme
-    a la Ley 1581 de 2012.
-
-  </label>
-</div>
-
-      <div class="flex gap-3 pt-2 justify-end">
-
-        <button
-          onclick="cerrarModal()"
-          class="px-4 py-1.5 text-sm border rounded-lg">
-          Cancelar
-        </button>
-
-        <button
-          onclick="crearUsuario()"
-          class="px-4 py-1.5 text-sm rounded-lg text-white"
-          style="background:#0d1b2e;">
-          Guardar
-        </button>
-
+      <div class="flex items-start gap-2">
+        <input type="checkbox" id="nuAceptaDatos" class="mt-1"/>
+        <label for="nuAceptaDatos" class="text-xs text-slate-600 leading-relaxed">
+          La institución certifica que el titular fue informado sobre el tratamiento de sus datos personales conforme a la Ley 1581 de 2012.
+        </label>
       </div>
-
+      <div class="flex gap-3 pt-2 justify-end">
+        <button onclick="cerrarModal()" class="px-4 py-1.5 text-sm border border-slate-200 rounded-xl hover:bg-slate-50">Cancelar</button>
+        <button onclick="crearUsuario()" id="btnGuardarUsuario" class="px-4 py-1.5 text-sm rounded-xl text-white" style="background:#0d1b2e;">Guardar</button>
+      </div>
     </div>
   `;
-
   abrirModal();
+}
+
+async function toggleEmpresaSelector() {
+  const rol = document.getElementById('nuRol').value;
+  const campo = document.getElementById('campoEmpresaSupervisor');
+  if (rol === 'supervisor') {
+    campo.style.display = 'block';
+    const sel = document.getElementById('nuEmpresaId');
+    sel.innerHTML = '<option value="">Cargando...</option>';
+    try {
+      const res = await fetch(`${API_URL}/empresas/`, { headers: { Authorization: `Bearer ${getToken()}` } });
+      if (res.ok) {
+        const empresas = await res.json();
+        if (empresas.length === 0) {
+          sel.innerHTML = '<option value="">No hay empresas registradas</option>';
+        } else {
+          sel.innerHTML = '<option value="">— Seleccione empresa —</option>' +
+            empresas.map(e => `<option value="${e.id}">${escapeHTML(e.nombre)} (NIT: ${escapeHTML(e.nit)})</option>`).join('');
+        }
+      }
+    } catch { sel.innerHTML = '<option value="">Error al cargar empresas</option>'; }
+  } else {
+    campo.style.display = 'none';
+  }
 }
 
  
 
 async function crearUsuario() {
-
   const err = document.getElementById('nuError');
+  const btn = document.getElementById('btnGuardarUsuario');
+  err.classList.add('hidden');
 
-  const aceptaDatos =
-    document.getElementById('nuAceptaDatos').checked;
-
-  if (!aceptaDatos) {
-    alert('Debe confirmar el tratamiento de datos.');
+  // Validar checkbox de datos
+  if (!document.getElementById('nuAceptaDatos').checked) {
+    err.textContent = 'Debe confirmar el tratamiento de datos personales.';
+    err.classList.remove('hidden');
     return;
-    const err = document.getElementById('nuError');
-    const btn = document.querySelector('button[onclick="crearUsuario()"]');
-    if (btn) { btn.disabled = true; btn.innerHTML = 'Guardando...'; btn.classList.add('opacity-50'); }
-
-    const body = {
-      nombre: document.getElementById('nuNombre').value.trim(),
-      correo: document.getElementById('nuCorreo').value.trim(),
-      password: document.getElementById('nuPassword').value,
-      rol: document.getElementById('nuRol').value,
-      programa_academico: document.getElementById('nuPrograma').value.trim()
-    };
-
-    if (body.nombre.length < 3 || body.nombre.length > 150) { err.textContent = 'El nombre debe tener entre 3 y 150 caracteres.'; err.classList.remove('hidden'); return; }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(body.correo) || body.correo.length > 255) { err.textContent = 'Correo inválido o demasiado largo.'; err.classList.remove('hidden'); return; }
-    if (body.password.length < 8 || body.password.length > 64) { err.textContent = 'La contraseña debe tener entre 8 y 64 caracteres.'; err.classList.remove('hidden'); return; }
-    if (body.programa_academico && (body.programa_academico.length < 3 || body.programa_academico.length > 150)) { err.textContent = 'Programa académico inválido (3-150 caracteres).'; err.classList.remove('hidden'); return; }
-
-    try {
-
-      const res = await fetch(`${API_URL}/usuarios/`, {
-        method: 'POST',
-
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
-        },
-
-        body: JSON.stringify(body)
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        err.textContent = data.detail || 'Error';
-        err.classList.remove('hidden');
-        return;
-      }
-
-      cerrarModal();
-
-      cargarTablaUsuarios();
-
-    } catch (error) {
-
-      err.textContent = 'Error de conexión';
-      err.classList.remove('hidden');
-    } finally {
-      if (btn) { btn.disabled = false; btn.innerHTML = 'Guardar'; btn.classList.remove('opacity-50'); }
-    }
   }
 
-  const body = {
-    nombre: document.getElementById('nuNombre').value,
-    correo: document.getElementById('nuCorreo').value,
-    password: document.getElementById('nuPassword').value,
-    rol: document.getElementById('nuRol').value,
-    programa_academico: document.getElementById('nuPrograma').value
-  };
+  const rol = document.getElementById('nuRol').value;
+  const nombre = document.getElementById('nuNombre').value.trim();
+  const correo = document.getElementById('nuCorreo').value.trim();
+  const password = document.getElementById('nuPassword').value;
+  const programa = document.getElementById('nuPrograma').value.trim();
 
+  // Validaciones frontend
+  if (nombre.length < 3 || nombre.length > 150) {
+    err.textContent = 'El nombre debe tener entre 3 y 150 caracteres.'; err.classList.remove('hidden'); return;
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo) || correo.length > 255) {
+    err.textContent = 'Correo inválido o demasiado largo.'; err.classList.remove('hidden'); return;
+  }
+  if (password.length < 8 || password.length > 64) {
+    err.textContent = 'La contraseña debe tener entre 8 y 64 caracteres.'; err.classList.remove('hidden'); return;
+  }
+  if (programa && (programa.length < 3 || programa.length > 150)) {
+    err.textContent = 'Programa académico inválido (3-150 caracteres).'; err.classList.remove('hidden'); return;
+  }
+
+  // Si el rol es supervisor, empresa_id es obligatorio
+  let empresa_id = null;
+  if (rol === 'supervisor') {
+    const empVal = document.getElementById('nuEmpresaId')?.value;
+    if (!empVal) {
+      err.textContent = 'Debe seleccionar una empresa para el supervisor.'; err.classList.remove('hidden'); return;
+    }
+    empresa_id = parseInt(empVal);
+  }
+
+  const body = { nombre, correo, password, rol };
+  if (programa) body.programa_academico = programa;
+  if (empresa_id) body.empresa_id = empresa_id;
+
+  if (btn) { btn.disabled = true; btn.textContent = 'Guardando...'; btn.classList.add('opacity-60'); }
   try {
-
     const res = await fetch(`${API_URL}/usuarios/`, {
       method: 'POST',
-
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${getToken()}`
-      },
-
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getToken()}` },
       body: JSON.stringify(body)
     });
-
     const data = await res.json();
-
     if (!res.ok) {
-      err.textContent = data.detail || 'Error';
+      err.textContent = data.detail || 'Error al crear usuario.';
       err.classList.remove('hidden');
       return;
     }
-
     cerrarModal();
-
     cargarTablaUsuarios();
-
+    Toast.fire({ icon: 'success', title: `Usuario ${data.nombre} creado correctamente` });
   } catch (error) {
-
-    err.textContent = 'Error de conexión';
+    err.textContent = 'Error de conexión con el servidor.';
     err.classList.remove('hidden');
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = 'Guardar'; btn.classList.remove('opacity-60'); }
   }
 }
   async function editarUsuario(id) {
@@ -1472,18 +1415,22 @@ async function crearUsuario() {
 
 
   async function eliminarUsuario(id) {
+    const confirm = await Swal.fire({
+      title: '¿Eliminar usuario?',
+      text: "Esta acción no se puede deshacer.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#ef4444'
+    });
 
-    if (!confirm('¿Eliminar usuario?')) return;
+    if (!confirm.isConfirmed) return;
 
     try {
-
       const res = await fetch(`${API_URL}/usuarios/${id}`, {
-
         method: 'DELETE',
-
-        headers: {
-          Authorization: `Bearer ${getToken()}`
-        }
+        headers: { Authorization: `Bearer ${getToken()}` }
       });
 
       if (!res.ok) {
@@ -1492,10 +1439,10 @@ async function crearUsuario() {
         return;
       }
 
+      Toast.fire({icon: 'success', title: 'Usuario eliminado'});
       cargarTablaUsuarios();
 
     } catch (error) {
-
       Toast.fire({icon: 'error', title: 'Error de conexión'});
     }
   }
@@ -1614,6 +1561,8 @@ async function crearUsuario() {
         });
         if (resP.ok) {
           const practicas = await resP.json();
+          // Ordenar por id descendente para tomar siempre la práctica más reciente
+          practicas.sort((a, b) => b.id - a.id);
           const miPractica = practicas.find(p => p.estudiante_id === window.currentUserId) || practicas[0];
           if (miPractica) _miPracticaId = miPractica.id;
         }
@@ -1663,6 +1612,7 @@ async function crearUsuario() {
             <span class="px-2 py-1 rounded-full text-[10px] font-semibold ${badge}">${s.estado}</span>
           </td>
           <td class="px-3 py-3">
+            ${s.evidencia_url ? `<a href="${API_URL.replace('/api/v1', '')}/${s.evidencia_url}" target="_blank" title="Ver Evidencia" class="px-2 py-1 mr-2 rounded-lg text-[10px] font-semibold bg-blue-100 text-blue-700 hover:bg-blue-200 transition-colors">📎 Evidencia</a>` : ''}
             ${s.estado === 'borrador' || s.estado === 'rechazado'
               ? `<button data-id="${s.id}" class="btn-log-enviar text-[10px] font-semibold text-blue-600 hover:text-blue-800 mr-2">Enviar</button>`
               : ''}
@@ -1803,7 +1753,6 @@ async function crearUsuario() {
         if (btn) { btn.disabled = false; btn.innerHTML = 'Guardar Actividad'; btn.classList.remove('opacity-50'); }
         return;
       }
-
       // Si hay archivo, subirlo
       const fileInput = document.getElementById('logArchivo');
       if (fileInput && fileInput.files.length > 0) {
@@ -1886,7 +1835,11 @@ async function crearUsuario() {
       const todos = resultados.flat();
 
 
-      _seguimientosPendientes = todos.filter(s => s.estado === 'enviado');
+      _seguimientosPendientes = todos.filter(s => {
+        if (window.currentUserRol === 'supervisor') return s.estado === 'enviado';
+        if (window.currentUserRol === 'tutor') return s.estado === 'pendiente_tutor';
+        return s.estado === 'enviado' || s.estado === 'pendiente_tutor';
+      });
 
       renderTablaValidacion(_seguimientosPendientes, practicas);
 
@@ -1920,8 +1873,8 @@ async function crearUsuario() {
 
     tbody.innerHTML = lista.map(s => {
       const practica = practicaMapa[s.practica_id];
-      const estudiante = practica ? _usuariosMapa[practica.estudiante_id] : null;
-      const nombreEst = estudiante ? estudiante.nombre : 'Desconocido';
+      const estudiante = (practica && practica.estudiante) ? practica.estudiante : (practica ? _usuariosMapa[practica.estudiante_id] : null);
+      const nombreEst = estudiante ? estudiante.nombre : (practica ? practica.estudiante_id : 'Desconocido');
       const fecha = new Date(s.fecha_actividad).toLocaleDateString('es-CO');
       return `
         <tr class="border-b border-slate-50 hover:bg-slate-50/50 transition-colors">
@@ -1931,6 +1884,7 @@ async function crearUsuario() {
           <td class="px-3 py-3 text-xs font-semibold text-slate-700">${s.horas_realizadas}h</td>
           <td class="px-3 py-3 text-xs text-slate-500">${fecha}</td>
           <td class="px-3 py-3 flex items-center gap-2">
+            ${s.evidencia_url ? `<a href="${API_URL.replace('/api/v1', '')}/${s.evidencia_url}" target="_blank" title="Ver Evidencia" class="px-2 py-1 rounded-lg text-[10px] font-semibold bg-blue-100 text-blue-700 hover:bg-blue-200 transition-colors">📎 Evidencia</a>` : ''}
             <button data-id="${s.id}" class="btn-val-aprobar px-2.5 py-1 rounded-lg text-[10px] font-semibold bg-emerald-100 text-emerald-700 hover:bg-emerald-200 transition-colors">✓ Aprobar</button>
             <button data-id="${s.id}" class="btn-val-rechazar px-2.5 py-1 rounded-lg text-[10px] font-semibold bg-red-100 text-red-600 hover:bg-red-200 transition-colors">✗ Rechazar</button>
           </td>
@@ -2056,8 +2010,42 @@ async function crearUsuario() {
         <td class="px-3 py-3 text-xs font-medium text-slate-700">${escapeHTML(e.nombre)}</td>
         <td class="px-3 py-3 text-xs text-slate-500">${escapeHTML(e.nit)}</td>
         <td class="px-3 py-3 text-xs text-slate-500">${escapeHTML(e.direccion)}</td>
+        <td class="px-3 py-3">
+          ${window.currentUserRol === 'coordinador' 
+            ? `<button onclick="eliminarEmpresa(${e.id})" class="text-[10px] font-semibold text-red-600 hover:text-red-800">Eliminar</button>` 
+            : ''}
+        </td>
       </tr>
     `).join('');
+  }
+
+  async function eliminarEmpresa(id) {
+    const confirm = await Swal.fire({
+      title: '¿Eliminar empresa?',
+      text: "No se podrá eliminar si tiene prácticas asociadas.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#ef4444'
+    });
+    if (confirm.isConfirmed) {
+      try {
+        const res = await fetch(`${API_URL}/empresas/${id}`, {
+          method: 'DELETE',
+          headers: { Authorization: `Bearer ${getToken()}` }
+        });
+        if (res.ok) {
+          Toast.fire({icon: 'success', title: 'Empresa eliminada'});
+          cargarEmpresas();
+        } else {
+          const data = await res.json();
+          Toast.fire({icon: 'error', title: data.detail || 'Error al eliminar'});
+        }
+      } catch (e) {
+        Toast.fire({icon: 'error', title: 'Error de conexión'});
+      }
+    }
   }
 
   function abrirModalEmpresa() {
@@ -2240,6 +2228,7 @@ async function crearUsuario() {
                       class="btn-practica text-[10px] font-semibold text-purple-600 hover:text-purple-800">Finalizar</button>
               ` : (p.estado === 'activa' ? '<span class="text-[10px] text-slate-400 italic">En progreso</span>' : '')}
             ` : '<span class="text-[10px] text-slate-400 italic">Sin acciones</span>'}
+            ${window.currentUserRol === 'coordinador' ? `<button onclick="eliminarPractica(${p.id})" class="text-[10px] font-semibold text-red-600 hover:text-red-800">Eliminar</button>` : ''}
           </td>
         </tr>`;
     }).join('');
@@ -2639,8 +2628,37 @@ async function crearUsuario() {
     });
   }
 
-  async function cargarKPIs() {
+  async function eliminarPractica(id) {
+    const confirm = await Swal.fire({
+      title: '¿Eliminar práctica?',
+      text: "Se eliminarán también todos los seguimientos asociados.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#ef4444'
+    });
+    if (confirm.isConfirmed) {
+      try {
+        const res = await fetch(`${API_URL}/practicas/${id}`, {
+          method: 'DELETE',
+          headers: { Authorization: `Bearer ${getToken()}` }
+        });
+        if (res.ok) {
+          Toast.fire({icon: 'success', title: 'Práctica eliminada'});
+          cargarPracticas();
+        } else {
+          const data = await res.json();
+          Toast.fire({icon: 'error', title: data.detail || 'Error al eliminar'});
+        }
+      } catch (e) {
+        Toast.fire({icon: 'error', title: 'Error de red'});
+      }
+    }
+  }
 
+  async function cargarKPIs() {
+    if (window.currentUserRol === 'estudiante') return;
   try {
 
     const res = await fetch(
@@ -2773,7 +2791,6 @@ document.addEventListener('keydown', function(e) {
       const blob = await res.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
-      a.href = url;
       a.download = `Reporte_SIPGA_${id}.pdf`;
       document.body.appendChild(a);
       a.click();
@@ -2833,34 +2850,55 @@ document.addEventListener('keydown', function(e) {
     }
   }
 
-  function mostrarNotificaciones() {
-    const pendientes = document.getElementById('kpiValidaciones')?.textContent || '0';
-    const totalPrac = document.getElementById('kpiPasantias')?.textContent || '0';
-    
-    let html = `
-      <div class="text-left space-y-4">
-        <div class="p-3 bg-slate-50 rounded-xl border border-slate-100">
-          <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Estado de Auditoría</p>
-          <p class="text-sm text-slate-700">El sistema reporta <span class="font-bold text-blue-600">${pendientes}</span> seguimientos esperando validación.</p>
-        </div>
-        <div class="p-3 bg-blue-50 rounded-xl border border-blue-100">
-          <p class="text-[10px] font-bold text-blue-400 uppercase mb-1">Resumen de Prácticas</p>
-          <p class="text-sm text-slate-700">Hay un total de <span class="font-bold">${totalPrac}</span> expedientes activos en plataforma.</p>
-        </div>
-        <p class="text-[10px] text-center text-slate-300">Auditoría SIPGA v1.2 — IP: ${window.location.hostname}</p>
-      </div>
-    `;
+  // --- NOTIFICACIONES ---
+  async function cargarNotificaciones() {
+    try {
+      const res = await fetch(`${API_URL}/notificaciones/`, {
+        headers: { Authorization: `Bearer ${getToken()}` }
+      });
+      if (res.ok) {
+        const notifs = await res.json();
+        const lista = document.getElementById('listaNotificaciones');
+        const badge = document.getElementById('notificacionesBadge');
+        if (!lista || !badge) return;
+        
+        const noLeidas = notifs.filter(n => !n.leida).length;
+        
+        if (noLeidas > 0) {
+          badge.classList.remove('hidden');
+        } else {
+          badge.classList.add('hidden');
+        }
+        
+        if (notifs.length === 0) {
+          lista.innerHTML = '<div class="p-4 text-center text-xs text-slate-400">No hay notificaciones</div>';
+          return;
+        }
+        
+        lista.innerHTML = notifs.map(n => `
+          <div class="px-4 py-3 border-b border-slate-50 hover:bg-slate-50 transition-colors ${!n.leida ? 'bg-blue-50/30' : ''}">
+            <div class="flex justify-between items-start mb-1">
+              <span class="text-xs font-semibold ${!n.leida ? 'text-blue-700' : 'text-slate-700'}">${n.titulo}</span>
+              <span class="text-[9px] text-slate-400">${new Date(n.fecha_creacion).toLocaleDateString()}</span>
+            </div>
+            <p class="text-[11px] text-slate-500">${n.mensaje}</p>
+            ${!n.leida ? `<button onclick="marcarLeida(${n.id})" class="text-[9px] text-blue-500 hover:underline mt-1">Marcar leída</button>` : ''}
+          </div>
+        `).join('');
+      }
+    } catch (e) {
+      console.error('Error cargando notificaciones:', e);
+    }
+  }
 
-    Swal.fire({
-      title: 'Alertas del Sistema',
-      html: html,
-      icon: parseInt(pendientes) > 0 ? 'warning' : 'success',
-      confirmButtonText: 'Entendido',
-      confirmButtonColor: '#0d1b2e'
-    });
-    
-    // Ocultar el punto rojo tras leer
-    document.getElementById('notifDot').style.display = 'none';
+  function toggleNotificaciones() {
+    const d = document.getElementById('notificacionesDropdown');
+    if (d) {
+      d.classList.toggle('hidden');
+      if (!d.classList.contains('hidden')) {
+        cargarNotificaciones();
+      }
+    }
   }
 
   let _chartPasantias = null;
@@ -2897,6 +2935,41 @@ document.addEventListener('keydown', function(e) {
     }
   }
 
+  async function marcarLeida(id) {
+    try {
+      await fetch(`${API_URL}/notificaciones/${id}/leer`, {
+        method: 'PUT',
+        headers: { Authorization: `Bearer ${getToken()}` }
+      });
+      cargarNotificaciones();
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  async function marcarTodasLeidas() {
+    try {
+      await fetch(`${API_URL}/notificaciones/leer-todas`, {
+        method: 'PUT',
+        headers: { Authorization: `Bearer ${getToken()}` }
+      });
+      cargarNotificaciones();
+    } catch (e) {
+      console.error(e);
+    }
+  }
+  
+  // Ocultar dropdown al hacer click afuera
+  document.addEventListener('click', (e) => {
+    const container = document.getElementById('notificacionesContainer');
+    const dropdown = document.getElementById('notificacionesDropdown');
+    if (container && dropdown && !container.contains(e.target)) {
+      dropdown.classList.add('hidden');
+    }
+  });
+
+  // Call once to set badge state
+  setTimeout(cargarNotificaciones, 1000);
 </script>
 </body>
 </html>

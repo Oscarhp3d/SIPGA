@@ -12,9 +12,12 @@ class UsuarioBase(BaseModel):
 
 class UsuarioCreate(UsuarioBase):
     password: str = Field(..., min_length=8, max_length=64)
+    empresa_id: Optional[int] = Field(None, description="Solo para rol supervisor: empresa que va a supervisar.")
     """
     Usado por el coordinador para crear usuarios internamente.
     El consentimiento queda registrado automáticamente en nombre de la institución.
+    Si el rol es supervisor y se envía empresa_id, el vínculo empresa↔supervisor
+    se crea automáticamente.
     """
 
 class RegistroPublicoCreate(BaseModel):
@@ -30,6 +33,11 @@ class RegistroPublicoCreate(BaseModel):
         default="v1.0",
         description="Versión del documento de política aceptado."
     )
+    """
+    Endpoint público POST /auth/registro.
+    El usuario se registra por cuenta propia y DEBE aceptar explícitamente
+    la política de tratamiento de datos (Ley 1581/2012 + Decreto 1377/2013).
+    """
 
     @field_validator("acepto_politica")
     @classmethod
@@ -135,13 +143,10 @@ class SeguimientoBase(BaseModel):
     @classmethod
     def validar_fecha(cls, v):
         now = datetime.now(timezone.utc)
-        # Normalizar v a timezone-aware si viene sin timezone
         if v.tzinfo is None:
             v = v.replace(tzinfo=timezone.utc)
         if v > now:
             raise ValueError("La fecha de la actividad no puede ser futura")
-        if v.year != now.year:
-            raise ValueError("El año de la actividad debe ser el año actual")
         return v
 
 class SeguimientoCreate(SeguimientoBase):
@@ -153,6 +158,14 @@ class SeguimientoUpdate(BaseModel):
     evidencia_url: Optional[str] = None
     validado_tutor: Optional[bool] = None
     validado_supervisor: Optional[bool] = None
+
+    @model_validator(mode="before")
+    @classmethod
+    def map_observaciones(cls, data: any) -> any:
+        if isinstance(data, dict):
+            if "observaciones" in data and "observaciones_tutor" not in data:
+                data["observaciones_tutor"] = data["observaciones"]
+        return data
 
 class SeguimientoResponse(SeguimientoBase):
     id: int                          # ← cambiado: str → int
@@ -196,9 +209,28 @@ class DashboardTutor(BaseModel):
     seguimientos_pendientes: int
     total_horas_validadas: float
 
+class DashboardSupervisor(BaseModel):
+    mis_practicantes: List[PracticaResponse]
+    seguimientos_pendientes: int
+    total_horas_en_practicas: float
+
 class DashboardEstudiante(BaseModel):
     practica: Optional[PracticaResponse]
+    horas_hoy: float
     horas_acumuladas: float
     horas_requeridas: int
     porcentaje_avance: float
     seguimientos_recientes: List[SeguimientoResponse]
+
+class NotificacionBase(BaseModel):
+    titulo: str = Field(..., max_length=200)
+    mensaje: str
+
+class NotificacionCreate(NotificacionBase):
+    usuario_id: str
+
+class NotificacionResponse(NotificacionBase):
+    id: int
+    leida: bool
+    fecha_creacion: datetime
+    model_config = {"from_attributes": True}
