@@ -14,7 +14,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 import models
 from database import engine
 from config import settings
-from routers import auth_router, usuarios, practicas, seguimientos, empresas, coordinador, tutor, estudiante, supervisor
+from routers import auth_router, usuarios, practicas, seguimientos, empresas, coordinador, tutor, estudiante, supervisor, notificaciones
 
 logging.basicConfig(
     filename='auditoria_sipga.log',
@@ -71,6 +71,7 @@ app.include_router(practicas.router,    prefix=settings.API_V1_STR)
 app.include_router(seguimientos.router, prefix=settings.API_V1_STR)
 app.include_router(empresas.router,     prefix=settings.API_V1_STR)
 app.include_router(dashboard.router, prefix=settings.API_V1_STR)
+app.include_router(notificaciones.router, prefix=settings.API_V1_STR)
 # 7. INCLUSIÓN DE ROUTERS — por rol
 app.include_router(coordinador.router,  prefix=settings.API_V1_STR)
 app.include_router(tutor.router,        prefix=settings.API_V1_STR)
@@ -82,6 +83,9 @@ app.include_router(supervisor.router,   prefix=settings.API_V1_STR)
 frontend_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "frontend")
 if os.path.exists(frontend_path):
     app.mount("/static", StaticFiles(directory=frontend_path), name="static")
+
+os.makedirs(settings.UPLOAD_DIR, exist_ok=True)
+app.mount(f"/{settings.UPLOAD_DIR}", StaticFiles(directory=settings.UPLOAD_DIR), name="evidencias")
 
 @app.get("/")
 def read_index():
@@ -97,5 +101,4 @@ def read_page(page: str):
         return FileResponse(page_path)
     return JSONResponse(status_code=404, content={"detail": "Page not found"})
 
-
-os.makedirs(settings.UPLOAD_DIR, exist_ok=True)
+

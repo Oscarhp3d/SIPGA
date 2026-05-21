@@ -143,19 +143,19 @@ def descargar_reporte(
         raise HTTPException(status_code=403, detail="No tiene permisos para este reporte")
 
     from reportes import generar_pdf_practica
-    from fastapi.responses import StreamingResponse
+    from fastapi import Response
 
     seguimientos = crud.obtener_seguimientos_practica(db, practica_id=practica_id)
 
     pdf_buffer = generar_pdf_practica(
-        practica.estudiante.nombre,
+        practica.estudiante.nombre if practica.estudiante else "Desconocido",
         practica.empresa.nombre if practica.empresa else "Sin asignar",
         practica.tutor.nombre if practica.tutor else "Sin asignar",
         seguimientos
     )
 
-    return StreamingResponse(
-        pdf_buffer,
+    return Response(
+        content=pdf_buffer.getvalue(),
         media_type="application/pdf",
         headers={"Content-Disposition": f"attachment; filename=Reporte_SIPGA_{practica_id}.pdf"}
     )

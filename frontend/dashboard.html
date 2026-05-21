@@ -175,13 +175,24 @@
         <input type="text" placeholder="Buscar expedientes, alumnos o reportes..."
                class="w-full pl-9 pr-4 py-2 text-sm text-slate-600 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-blue-300 transition-colors"/>
       </div>
-      <div class="flex items-center gap-3">
-        <button class="relative p-2 text-slate-400 hover:text-slate-600 transition-colors">
+      <div class="flex items-center gap-3 relative" id="notificacionesContainer">
+        <button id="btnNotificaciones" onclick="toggleNotificaciones()" class="relative p-2 text-slate-400 hover:text-slate-600 transition-colors">
           <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
             <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
           </svg>
-          <span class="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-red-500 rounded-full"></span>
+          <span id="notificacionesBadge" class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full hidden"></span>
         </button>
+        
+        <div id="notificacionesDropdown" class="absolute top-full right-0 mt-2 w-80 bg-white rounded-xl shadow-lg border border-slate-100 hidden z-50 overflow-hidden">
+          <div class="px-4 py-3 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+            <h3 class="font-syne font-semibold text-slate-800 text-sm">Notificaciones</h3>
+            <button onclick="marcarTodasLeidas()" class="text-[10px] text-blue-600 hover:underline font-semibold">Marcar todas leídas</button>
+          </div>
+          <div id="listaNotificaciones" class="max-h-72 overflow-y-auto">
+            <div class="p-4 text-center text-xs text-slate-400">Cargando...</div>
+          </div>
+        </div>
+      </div>
         <div class="flex items-center gap-2.5 pl-3 border-l border-slate-100">
           <div class="text-right">
             <div class="text-xs font-semibold text-slate-700 leading-none" id="topbarNombre">Cargando...</div>
@@ -1570,6 +1581,7 @@ async function crearUsuario() {
             <span class="px-2 py-1 rounded-full text-[10px] font-semibold ${badge}">${s.estado}</span>
           </td>
           <td class="px-3 py-3">
+            ${s.evidencia_url ? `<a href="${API_URL.replace('/api/v1', '')}/${s.evidencia_url}" target="_blank" title="Ver Evidencia" class="px-2 py-1 mr-2 rounded-lg text-[10px] font-semibold bg-blue-100 text-blue-700 hover:bg-blue-200 transition-colors">📎 Evidencia</a>` : ''}
             ${s.estado === 'borrador' || s.estado === 'rechazado'
               ? `<button data-id="${s.id}" class="btn-log-enviar text-[10px] font-semibold text-blue-600 hover:text-blue-800 mr-2">Enviar</button>`
               : ''}
@@ -1641,6 +1653,10 @@ async function crearUsuario() {
                    value="${new Date().toISOString().split('T')[0]}"/>
           </div>
         </div>
+        <div>
+          <label class="block text-xs mb-1">Evidencia (PDF o Imagen) <span class="text-slate-400">(Opcional)</span></label>
+          <input type="file" id="logArchivo" accept=".pdf,image/jpeg,image/png" class="w-full px-3 py-2 border rounded-xl text-sm outline-none focus:border-blue-300 bg-slate-50"/>
+        </div>
         <div id="logError" class="text-xs text-red-500 hidden"></div>
         <div class="flex gap-3 pt-2">
           <button onclick="cerrarModal()" class="flex-1 py-2 border rounded-xl text-xs">Cancelar</button>
@@ -1704,6 +1720,25 @@ async function crearUsuario() {
         err.classList.remove('hidden');
         return;
       }
+      
+      const archivoInput = document.getElementById('logArchivo');
+      if (archivoInput && archivoInput.files.length > 0) {
+        const formData = new FormData();
+        formData.append('archivo', archivoInput.files[0]);
+        try {
+          const resFile = await fetch(`${API_URL}/estudiante/seguimientos/${data.id}/evidencia`, {
+            method: 'POST',
+            headers: { Authorization: `Bearer ${getToken()}` },
+            body: formData
+          });
+          if (!resFile.ok) {
+             console.warn("No se pudo subir la evidencia.");
+          }
+        } catch(fe) {
+           console.error("Error al subir archivo", fe);
+        }
+      }
+
       cerrarModal();
       cargarLog();
     } catch (e) {
@@ -1812,6 +1847,7 @@ async function crearUsuario() {
           <td class="px-3 py-3 text-xs font-semibold text-slate-700">${s.horas_realizadas}h</td>
           <td class="px-3 py-3 text-xs text-slate-500">${fecha}</td>
           <td class="px-3 py-3 flex items-center gap-2">
+            ${s.evidencia_url ? `<a href="${API_URL.replace('/api/v1', '')}/${s.evidencia_url}" target="_blank" title="Ver Evidencia" class="px-2 py-1 rounded-lg text-[10px] font-semibold bg-blue-100 text-blue-700 hover:bg-blue-200 transition-colors">📎 Evidencia</a>` : ''}
             <button data-id="${s.id}" class="btn-val-aprobar px-2.5 py-1 rounded-lg text-[10px] font-semibold bg-emerald-100 text-emerald-700 hover:bg-emerald-200 transition-colors">✓ Aprobar</button>
             <button data-id="${s.id}" class="btn-val-rechazar px-2.5 py-1 rounded-lg text-[10px] font-semibold bg-red-100 text-red-600 hover:bg-red-200 transition-colors">✗ Rechazar</button>
           </td>
@@ -2581,7 +2617,7 @@ async function crearUsuario() {
   }
 
   async function cargarKPIs() {
-
+    if (window.currentUserRol === 'estudiante') return;
   try {
 
     const res = await fetch(
@@ -2711,7 +2747,6 @@ document.addEventListener('keydown', function(e) {
       const blob = await res.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
-      a.href = url;
       a.download = `Reporte_SIPGA_${id}.pdf`;
       document.body.appendChild(a);
       a.click();
@@ -2723,6 +2758,92 @@ document.addEventListener('keydown', function(e) {
     }
   }
 
+  // --- NOTIFICACIONES ---
+  async function cargarNotificaciones() {
+    try {
+      const res = await fetch(`${API_URL}/notificaciones/`, {
+        headers: { Authorization: `Bearer ${getToken()}` }
+      });
+      if (res.ok) {
+        const notifs = await res.json();
+        const lista = document.getElementById('listaNotificaciones');
+        const badge = document.getElementById('notificacionesBadge');
+        if (!lista || !badge) return;
+        
+        const noLeidas = notifs.filter(n => !n.leida).length;
+        
+        if (noLeidas > 0) {
+          badge.classList.remove('hidden');
+        } else {
+          badge.classList.add('hidden');
+        }
+        
+        if (notifs.length === 0) {
+          lista.innerHTML = '<div class="p-4 text-center text-xs text-slate-400">No hay notificaciones</div>';
+          return;
+        }
+        
+        lista.innerHTML = notifs.map(n => `
+          <div class="px-4 py-3 border-b border-slate-50 hover:bg-slate-50 transition-colors ${!n.leida ? 'bg-blue-50/30' : ''}">
+            <div class="flex justify-between items-start mb-1">
+              <span class="text-xs font-semibold ${!n.leida ? 'text-blue-700' : 'text-slate-700'}">${n.titulo}</span>
+              <span class="text-[9px] text-slate-400">${new Date(n.fecha_creacion).toLocaleDateString()}</span>
+            </div>
+            <p class="text-[11px] text-slate-500">${n.mensaje}</p>
+            ${!n.leida ? `<button onclick="marcarLeida(${n.id})" class="text-[9px] text-blue-500 hover:underline mt-1">Marcar leída</button>` : ''}
+          </div>
+        `).join('');
+      }
+    } catch (e) {
+      console.error('Error cargando notificaciones:', e);
+    }
+  }
+
+  function toggleNotificaciones() {
+    const d = document.getElementById('notificacionesDropdown');
+    if (d) {
+      d.classList.toggle('hidden');
+      if (!d.classList.contains('hidden')) {
+        cargarNotificaciones();
+      }
+    }
+  }
+
+  async function marcarLeida(id) {
+    try {
+      await fetch(`${API_URL}/notificaciones/${id}/leer`, {
+        method: 'PUT',
+        headers: { Authorization: `Bearer ${getToken()}` }
+      });
+      cargarNotificaciones();
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  async function marcarTodasLeidas() {
+    try {
+      await fetch(`${API_URL}/notificaciones/leer-todas`, {
+        method: 'PUT',
+        headers: { Authorization: `Bearer ${getToken()}` }
+      });
+      cargarNotificaciones();
+    } catch (e) {
+      console.error(e);
+    }
+  }
+  
+  // Ocultar dropdown al hacer click afuera
+  document.addEventListener('click', (e) => {
+    const container = document.getElementById('notificacionesContainer');
+    const dropdown = document.getElementById('notificacionesDropdown');
+    if (container && dropdown && !container.contains(e.target)) {
+      dropdown.classList.add('hidden');
+    }
+  });
+
+  // Call once to set badge state
+  setTimeout(cargarNotificaciones, 1000);
 </script>
 </body>
 </html>

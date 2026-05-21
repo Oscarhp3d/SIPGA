@@ -14,6 +14,16 @@ def create_audit_log(db: Session, usuario_id: str, accion: str, ip: str) -> mode
     return db_log
 
 
+def crear_notificacion(db: Session, usuario_id: str, titulo: str, mensaje: str):
+    if not usuario_id:
+        return
+    notif = models.Notificacion(usuario_id=usuario_id, titulo=titulo, mensaje=mensaje)
+    db.add(notif)
+    db.commit()
+    db.refresh(notif)
+    return notif
+
+
 def obtener_usuarios(db: Session) -> List[models.Usuario]:
     return db.query(models.Usuario).all()
 
@@ -276,6 +286,15 @@ def registrar_seguimiento(
     db.add(db_seg)
     db.commit()
     db.refresh(db_seg)
+
+    # Notificar al supervisor o tutor cuando se crea el seguimiento
+    practica = obtener_practica(db, seguimiento.practica_id)
+    if practica:
+        if practica.supervisor_id:
+            crear_notificacion(db, practica.supervisor_id, "Nuevo seguimiento", f"El estudiante ha reportado {seguimiento.horas_realizadas} horas para validación.")
+        elif practica.tutor_id:
+            crear_notificacion(db, practica.tutor_id, "Nuevo seguimiento", f"El estudiante ha reportado {seguimiento.horas_realizadas} horas para validación.")
+
     return db_seg
 
 def obtener_seguimientos_practica(
@@ -351,6 +370,13 @@ def supervisor_aprobar_seguimiento(
         f"SUPERVISOR APROBÓ seguimiento={seguimiento_id} → pendiente tutor",
         ip
     )
+    
+    practica = obtener_practica(db, db_seg.practica_id)
+    if practica and practica.tutor_id:
+        crear_notificacion(db, practica.tutor_id, "Seguimiento pre-aprobado", "El supervisor ha aprobado un seguimiento y requiere tu validación.")
+    if practica and practica.estudiante_id:
+        crear_notificacion(db, practica.estudiante_id, "Seguimiento validado", "Tu seguimiento ha sido aprobado por el supervisor.")
+        
     return db_seg
 
 def supervisor_rechazar_seguimiento(
@@ -378,6 +404,11 @@ def supervisor_rechazar_seguimiento(
         f"SUPERVISOR RECHAZÓ seguimiento={seguimiento_id}: {observaciones[:80]}",
         ip
     )
+    
+    practica = obtener_practica(db, db_seg.practica_id)
+    if practica and practica.estudiante_id:
+        crear_notificacion(db, practica.estudiante_id, "Seguimiento rechazado", "Tu seguimiento ha sido rechazado por el supervisor.")
+        
     return db_seg
 
 def validar_seguimiento(
@@ -441,6 +472,12 @@ def validar_seguimiento(
         f"VALIDACIÓN [{nuevo_estado.value.upper()}] seguimiento={seguimiento_id}",
         ip
     )
+    
+    practica = obtener_practica(db, db_seg.practica_id)
+    if practica and practica.estudiante_id:
+        estado_texto = "aprobado" if nuevo_estado in [models.StatusEnum.aprobado, models.StatusEnum.pendiente_tutor] else "rechazado"
+        crear_notificacion(db, practica.estudiante_id, f"Seguimiento {estado_texto}", f"Tu seguimiento ahora tiene estado: {estado_texto}.")
+        
     return db_seg
 
 # ── EMPRESA–SUPERVISOR (vínculo empresa ↔ supervisor) ─────────────────────────

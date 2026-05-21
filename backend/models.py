@@ -133,3 +133,15 @@ class AuditLog(Base):
     ip_origen  = Column(String)
 
     usuario = relationship("Usuario", back_populates="audit_logs")
+
+class Notificacion(Base):
+    __tablename__ = "notificaciones"
+
+    id             = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    usuario_id     = Column(String, ForeignKey("usuarios.id"), nullable=False)
+    titulo         = Column(String(200), nullable=False)
+    mensaje        = Column(Text, nullable=False)
+    leida          = Column(Boolean, default=False)
+    fecha_creacion = Column(DateTime, default=lambda: datetime.datetime.now(datetime.timezone.utc))
+
+    usuario = relationship("Usuario")

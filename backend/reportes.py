@@ -36,7 +36,8 @@ def generar_pdf_practica(estudiante_nombre: str, empresa: str, tutor_nombre: str
             p.showPage()
             y = height - 50
         
-        p.drawString(50, y, str(s.fecha_actividad.date()))
+        fecha_str = str(s.fecha_actividad.date()) if hasattr(s.fecha_actividad, 'date') else str(s.fecha_actividad).split(' ')[0].split('T')[0]
+        p.drawString(50, y, fecha_str)
         desc = (s.descripcion[:55] + '..') if len(s.descripcion) > 55 else s.descripcion
         p.drawString(120, y, desc)
         p.drawString(410, y, f"{s.horas_realizadas}h")

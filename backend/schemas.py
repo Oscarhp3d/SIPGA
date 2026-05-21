@@ -210,3 +210,16 @@ class DashboardEstudiante(BaseModel):
     horas_requeridas: int
     porcentaje_avance: float
     seguimientos_recientes: List[SeguimientoResponse]
+
+class NotificacionBase(BaseModel):
+    titulo: str = Field(..., max_length=200)
+    mensaje: str
+
+class NotificacionCreate(NotificacionBase):
+    usuario_id: str
+
+class NotificacionResponse(NotificacionBase):
+    id: int
+    leida: bool
+    fecha_creacion: datetime
+    model_config = {"from_attributes": True}
