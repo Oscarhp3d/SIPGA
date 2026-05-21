@@ -16,7 +16,7 @@ def test_flujo_completo_practica(client, db):
     token = res_login.json()["access_token"]
 
     # 2. Crear Empresa
-    res_emp = client.post("/api/v1/empresas/", json={"nombre": "Empresa Test", "nit": "123", "direccion": "Calle 1"}, headers={"Authorization": f"Bearer {token}"})
+    res_emp = client.post("/api/v1/empresas/", json={"nombre": "Empresa Test", "nit": "12345", "direccion": "Calle 1"}, headers={"Authorization": f"Bearer {token}"})
     emp_id = res_emp.json()["id"]
 
     # 3. Crear Práctica
@@ -54,6 +54,43 @@ def test_flujo_completo_practica(client, db):
     
     # 6. Verificar horas acumuladas en la práctica
     res_check = client.get(f"/api/v1/practicas/{prac_id}", headers={"Authorization": f"Bearer {token}"})
-    # Nota: En la lógica actual, el supervisor es quien suele sumar horas si está configurado, 
-    # pero vamos a verificar según la implementación de crud.py
-    # En crud.py, validar_seguimiento suma horas si el revisor es supervisor o coordinador.
+    assert res_check.status_code == 200
+
+    # 7. Generar reporte PDF (coordinador y estudiante)
+    res_pdf_admin = client.get(
+        f"/api/v1/practicas/{prac_id}/reporte-pdf",
+        headers={"Authorization": f"Bearer {token}"},
+    )
+    assert res_pdf_admin.status_code == 200
+    assert res_pdf_admin.headers["content-type"] == "application/pdf"
+    assert res_pdf_admin.content[:4] == b"%PDF"
+
+    res_pdf_est = client.get(
+        f"/api/v1/practicas/{prac_id}/reporte-pdf",
+        headers={"Authorization": f"Bearer {token_est}"},
+    )
+    assert res_pdf_est.status_code == 200
+    assert res_pdf_est.content[:4] == b"%PDF"
+
+    # 8. Evidencia: estudiante sube, tutor y coordinador pueden ver
+    import io
+    pdf_bytes = b"%PDF-1.4 test evidencia"
+    res_ev = client.post(
+        f"/api/v1/seguimientos/{seg_id}/subir-evidencia",
+        files={"archivo": ("evidencia.pdf", io.BytesIO(pdf_bytes), "application/pdf")},
+        headers={"Authorization": f"Bearer {token_est}"},
+    )
+    assert res_ev.status_code == 200
+
+    res_ver_est = client.get(
+        f"/api/v1/seguimientos/{seg_id}/evidencia",
+        headers={"Authorization": f"Bearer {token_est}"},
+    )
+    assert res_ver_est.status_code == 200
+    assert res_ver_est.content == pdf_bytes
+
+    res_ver_tut = client.get(
+        f"/api/v1/seguimientos/{seg_id}/evidencia",
+        headers={"Authorization": f"Bearer {token_tut}"},
+    )
+    assert res_ver_tut.status_code == 200

@@ -143,13 +143,10 @@ class SeguimientoBase(BaseModel):
     @classmethod
     def validar_fecha(cls, v):
         now = datetime.now(timezone.utc)
-        # Normalizar v a timezone-aware si viene sin timezone
         if v.tzinfo is None:
             v = v.replace(tzinfo=timezone.utc)
         if v > now:
             raise ValueError("La fecha de la actividad no puede ser futura")
-        if v.year != now.year:
-            raise ValueError("El año de la actividad debe ser el año actual")
         return v
 
 class SeguimientoCreate(SeguimientoBase):
@@ -161,6 +158,14 @@ class SeguimientoUpdate(BaseModel):
     evidencia_url: Optional[str] = None
     validado_tutor: Optional[bool] = None
     validado_supervisor: Optional[bool] = None
+
+    @model_validator(mode="before")
+    @classmethod
+    def map_observaciones(cls, data: any) -> any:
+        if isinstance(data, dict):
+            if "observaciones" in data and "observaciones_tutor" not in data:
+                data["observaciones_tutor"] = data["observaciones"]
+        return data
 
 class SeguimientoResponse(SeguimientoBase):
     id: int                          # ← cambiado: str → int
@@ -204,8 +209,14 @@ class DashboardTutor(BaseModel):
     seguimientos_pendientes: int
     total_horas_validadas: float
 
+class DashboardSupervisor(BaseModel):
+    mis_practicantes: List[PracticaResponse]
+    seguimientos_pendientes: int
+    total_horas_en_practicas: float
+
 class DashboardEstudiante(BaseModel):
     practica: Optional[PracticaResponse]
+    horas_hoy: float
     horas_acumuladas: float
     horas_requeridas: int
     porcentaje_avance: float

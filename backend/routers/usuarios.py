@@ -72,39 +72,22 @@ def actualizar_usuario(
     db.refresh(db_user)
     return db_user
 
-@router.delete("/{usuario_id}")
+@router.delete("/{usuario_id}", status_code=status.HTTP_204_NO_CONTENT)
 def eliminar_usuario(
     usuario_id: str,
     db: Session = Depends(get_db),
-    admin=Depends(auth.verificar_rol(["coordinador"]))
+    current_user: models.Usuario = Depends(auth.verificar_rol(["coordinador"])),
 ):
-    """Eliminar usuario (Solo Coordinador)."""
-    db_user = db.query(models.Usuario).filter(models.Usuario.id == usuario_id).first()
-    if not db_user:
-        raise HTTPException(status_code=404, detail="Usuario no encontrado")
-    
-    # Check for constraints
+    """Elimina un usuario y sus datos asociados (solo coordinador)."""
+    if usuario_id == current_user.id:
+        raise HTTPException(
+            status_code=400,
+            detail="No puedes eliminar tu propia cuenta mientras estás conectado.",
+        )
     try:
-        # Check if user is in empresa_supervisores
-        db.query(models.EmpresaSupervisor).filter(models.EmpresaSupervisor.supervisor_id == usuario_id).delete()
-        
-        # Check if user has practicas (as student, tutor or supervisor)
-        practicas = db.query(models.Practica).filter(
-            (models.Practica.estudiante_id == usuario_id) |
-            (models.Practica.tutor_id == usuario_id) |
-            (models.Practica.supervisor_id == usuario_id)
-        ).first()
-        
-        if practicas:
-            raise ValueError("No se puede eliminar el usuario porque está asignado a prácticas activas. Debes eliminar las prácticas primero.")
-            
-        db.delete(db_user)
-        db.commit()
-    except ValueError as e:
-        db.rollback()
-        raise HTTPException(status_code=400, detail=str(e))
+        if not crud.eliminar_usuario(db, usuario_id):
+            raise HTTPException(status_code=404, detail="Usuario no encontrado")
     except Exception as e:
         db.rollback()
-        raise HTTPException(status_code=400, detail="Error de integridad: El usuario tiene datos asociados.")
-        
-    return {"message": "Usuario eliminado correctamente"}
+        raise HTTPException(status_code=400, detail=str(e))
+    return None

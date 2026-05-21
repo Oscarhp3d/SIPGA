@@ -1,5 +1,5 @@
-from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
+from fastapi import APIRouter, Depends, HTTPException, status, Response
+from sqlalchemy.orm import Session, joinedload
 from typing import List
 import models, schemas, crud
 import sys, os
@@ -74,8 +74,7 @@ def obtener_practica(
     if not practica:
         raise HTTPException(status_code=404, detail="Práctica no encontrada")
 
-    ids_permitidos = [practica.estudiante_id, practica.tutor_id, practica.supervisor_id]
-    if current_user.rol != models.UserRole.coordinador and current_user.id not in ids_permitidos:
+    if not crud.usuario_puede_ver_practica(db, current_user, practica):
         raise HTTPException(status_code=403, detail="No tiene acceso a esta práctica")
 
     return practica
@@ -134,30 +133,44 @@ def descargar_reporte(
     current_user: models.Usuario = Depends(auth.get_current_user)
 ):
     """Genera y descarga el reporte PDF de una práctica."""
-    practica = crud.obtener_practica(db, practica_id)
+    practica = (
+        db.query(models.Practica)
+        .options(
+            joinedload(models.Practica.estudiante),
+            joinedload(models.Practica.empresa),
+            joinedload(models.Practica.tutor),
+        )
+        .filter(models.Practica.id == practica_id)
+        .first()
+    )
     if not practica:
         raise HTTPException(status_code=404, detail="Práctica no encontrada")
 
-    ids_permitidos = [practica.estudiante_id, practica.tutor_id, practica.supervisor_id]
-    if current_user.rol != models.UserRole.coordinador and current_user.id not in ids_permitidos:
+    if not crud.usuario_puede_ver_practica(db, current_user, practica):
         raise HTTPException(status_code=403, detail="No tiene permisos para este reporte")
 
     from reportes import generar_pdf_practica
-    from fastapi import Response
 
     seguimientos = crud.obtener_seguimientos_practica(db, practica_id=practica_id)
+    estudiante = practica.estudiante
+    programa = getattr(estudiante, "programa_academico", None) if estudiante else None
 
     pdf_buffer = generar_pdf_practica(
-        practica.estudiante.nombre if practica.estudiante else "Desconocido",
+        estudiante.nombre if estudiante else "Desconocido",
         practica.empresa.nombre if practica.empresa else "Sin asignar",
         practica.tutor.nombre if practica.tutor else "Sin asignar",
-        seguimientos
+        seguimientos,
+        horas_acumuladas=practica.horas_acumuladas or 0.0,
+        horas_requeridas=practica.horas_totales_requeridas or 0,
+        programa=programa or "",
     )
 
     return Response(
         content=pdf_buffer.getvalue(),
         media_type="application/pdf",
-        headers={"Content-Disposition": f"attachment; filename=Reporte_SIPGA_{practica_id}.pdf"}
+        headers={
+            "Content-Disposition": f'attachment; filename="Reporte_SIPGA_{practica_id}.pdf"'
+        },
     )
 
 @router.delete("/{practica_id}", status_code=status.HTTP_204_NO_CONTENT)

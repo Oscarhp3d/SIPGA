@@ -42,7 +42,7 @@ def seguimientos_pendientes(
 
 @router.patch("/seguimientos/{id}/validar", response_model=schemas.SeguimientoResponse)
 def validar_seguimiento(
-    id: str,
+    id: int,
     update_data: schemas.SeguimientoUpdate,
     request: Request,
     db: Session = Depends(get_db),

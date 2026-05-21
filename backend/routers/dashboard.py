@@ -4,8 +4,8 @@ Endpoints consumidos directamente por el frontend de SIPRA.
 """
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from sqlalchemy import func
-from datetime import datetime, date, timedelta
+from sqlalchemy import func, or_
+from datetime import datetime, date, timedelta, timezone
 
 import models
 import auth
@@ -31,8 +31,11 @@ def dashboard_resumen(
     ).scalar() or 0.0
 
     validaciones_pendientes = db.query(models.Seguimiento).filter(
-        models.Seguimiento.estado == models.StatusEnum.enviado,
-        models.Seguimiento.is_deleted == False
+        models.Seguimiento.is_deleted == False,
+        or_(
+            models.Seguimiento.estado == models.StatusEnum.enviado,
+            models.Seguimiento.estado == models.StatusEnum.pendiente_tutor,
+        ),
     ).count()
 
     return {
@@ -48,49 +51,62 @@ def progreso_pasantias(
     db: Session = Depends(get_db),
     _=Depends(auth.verificar_rol(["coordinador", "tutor"]))
 ):
-    hoy = datetime.utcnow()
-    meses = []
-    for i in range(5, -1, -1):
-        primer_dia = (hoy.replace(day=1) - timedelta(days=30 * i)).replace(day=1)
-        meses.append(primer_dia)
-
+    hoy = datetime.now(timezone.utc)
     MESES_ES = ["Ene", "Feb", "Mar", "Abr", "May", "Jun",
                 "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"]
-    labels = [MESES_ES[m.month - 1] for m in meses]
-    claves_mes = [m.strftime("%Y-%m") for m in meses]
 
-    practicas = db.query(models.Practica).filter(
-        models.Practica.fecha_inicio != None
-    ).all()
+    claves_mes = []
+    labels = []
+    year, month = hoy.year, hoy.month
+    for i in range(5, -1, -1):
+        m = month - i
+        y = year
+        while m <= 0:
+            m += 12
+            y -= 1
+        claves_mes.append(f"{y}-{m:02d}")
+        labels.append(f"{MESES_ES[m - 1]} {str(y)[2:]}")
 
     programas: dict = {}
     totales = {c: 0 for c in claves_mes}
 
-    for p in practicas:
-        clave = p.fecha_inicio.strftime("%Y-%m") if p.fecha_inicio else None
-        if clave and clave in totales:
-            totales[clave] += 1
+    seguimientos = (
+        db.query(models.Seguimiento)
+        .join(models.Practica, models.Seguimiento.practica_id == models.Practica.id)
+        .filter(
+            models.Seguimiento.is_deleted == False,
+            models.Seguimiento.estado == models.StatusEnum.aprobado,
+        )
+        .all()
+    )
 
-        if not p.estudiante or not p.estudiante.programa_academico:
+    for s in seguimientos:
+        if not s.fecha_actividad:
             continue
-        prog = p.estudiante.programa_academico
+        clave = s.fecha_actividad.strftime("%Y-%m")
+        if clave not in totales:
+            continue
+        totales[clave] += 1
+
+        prog = "Sin programa"
+        if s.practica and s.practica.estudiante and s.practica.estudiante.programa_academico:
+            prog = s.practica.estudiante.programa_academico
         if prog not in programas:
             programas[prog] = {c: 0 for c in claves_mes}
-        if clave and clave in programas[prog]:
-            programas[prog][clave] += 1
+        programas[prog][clave] += 1
 
     colores = ["#0d1b2e", "#1d4ed8", "#16a34a", "#d97706", "#9333ea", "#ef4444"]
     datasets = []
     for idx, (prog, conteos) in enumerate(programas.items()):
         datasets.append({
-            "label": prog,
+            "label": prog[:28],
             "data": [conteos.get(c, 0) for c in claves_mes],
             "backgroundColor": colores[idx % len(colores)],
         })
 
     if not datasets:
         datasets = [{
-            "label": "Pasantías iniciadas",
+            "label": "Horas aprobadas (registros)",
             "data": [totales.get(c, 0) for c in claves_mes],
             "backgroundColor": "#0d1b2e",
         }]
@@ -124,7 +140,8 @@ def actividad_reciente(
         practica = s.practica
         nombre = practica.estudiante.nombre if practica and practica.estudiante else "Estudiante"
         empresa = practica.empresa.nombre if practica and practica.empresa else "Empresa"
-        accion = estado_labels.get(s.estado, "actualizó seguimiento")
+        estado_val = s.estado.value if hasattr(s.estado, "value") else str(s.estado)
+        accion = estado_labels.get(estado_val, "actualizó seguimiento")
         actividades.append({
             "descripcion": f"{nombre} {accion}",
             "empresa": empresa,
