@@ -51,7 +51,14 @@ def seed():
         db_usuarios = {}
         for user in usuarios_data:
             existente = db.query(models.Usuario).filter(models.Usuario.correo == user["correo"]).first()
-            if not existente:
+            if existente:
+                existente.password_hash = password
+                existente.rol = user["rol"]
+                existente.nombre = user["nombre"]
+                existente.programa_academico = user["programa"]
+                db_usuarios[user["correo"]] = existente
+                print(f"Usuario actualizado: {user['nombre']}")
+            else:
                 nuevo = models.Usuario(
                     nombre=user["nombre"],
                     correo=user["correo"],
@@ -62,8 +69,6 @@ def seed():
                 db.add(nuevo)
                 db_usuarios[user["correo"]] = nuevo
                 print(f"Usuario creado: {user['nombre']} ({user['rol']})")
-            else:
-                db_usuarios[user["correo"]] = existente
 
         db.commit()
 

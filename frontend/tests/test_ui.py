@@ -20,7 +20,7 @@ def test_login_fallido_mock(page: Page):
     page.goto(LOGIN_URL, wait_until="domcontentloaded")
     page.locator("input[type='email']").fill("admin@sipga.com")
     page.locator("input[type='password']").fill("clave")
-    page.locator("button", has_text="Ingresar al Sistema").click()
+    page.locator("button", has_text="Iniciar Sesión").click()
     
     expect(page.locator("#errorMsg")).to_have_text("Credenciales inválidas", timeout=5000)
 
@@ -30,7 +30,7 @@ def test_dashboard_proteccion_rutas(page: Page):
 
 def test_dashboard_doble_submit(page: Page):
     page.add_init_script("localStorage.setItem('token', 'fake'); localStorage.setItem('user', JSON.stringify({rol: 'coordinador', id: '1'}));")
-    page.route("**/api/v1/usuarios/me", lambda route: route.fulfill(status=200, json={"id": "1", "rol": "coordinador"}))
+    page.route("**/api/v1/usuarios/me", lambda route: route.fulfill(status=200, json={"id": "1", "rol": "coordinador", "nombre": "Admin"}))
     page.route("**/api/v1/coordinador/dashboard", lambda route: route.fulfill(status=200, json={}))
     
     page.goto(DASHBOARD_URL, wait_until="domcontentloaded")
