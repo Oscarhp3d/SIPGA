@@ -42,6 +42,21 @@ Sistema integral para el seguimiento, control y validación de horas de práctic
 * [Manual de Usuario](manual_usuario.md) — Guía detallada para Estudiantes, Tutores y Coordinadores.
 * [Manual Técnico](backend/manual_tecnico.md) — Arquitectura, modelo de datos relacional y configuración del servidor API.
 
+## 🧪 Pruebas Automatizadas
+El sistema incluye pruebas backend (FastAPI/pytest) y frontend (Playwright).
+
+Para ejecutar todas las pruebas:
+1. Asegurar que las dependencias estén instaladas y el servidor local de desarrollo esté corriendo para las pruebas de interfaz.
+2. Ejecutar desde el directorio `SIPGA`:
+   ```bash
+   # En Windows (PowerShell):
+   $env:PYTHONPATH="backend;."
+   pytest
+
+   # En macOS/Linux:
+   PYTHONPATH=backend:. pytest
+   ```
+
 ## ✨ Características Principales
 * **RBAC (Control de Acceso Basado en Roles):** Vistas y permisos diferenciados para Coordinador, Tutor, Supervisor y Estudiante.
 * **Seguridad y Cifrado:** Autenticación robusta basada en JWT y cifrado de contraseñas con bcrypt.
