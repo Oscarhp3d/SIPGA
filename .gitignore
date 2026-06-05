@@ -1,17 +1,58 @@
-# Entorno virtual
+# ─────────────────────────────────────────
+# Entornos virtuales de Python
+# ─────────────────────────────────────────
 venv/
 env/
+.venv/
+
+# ─────────────────────────────────────────
+# Compilados y caché de Python
+# ─────────────────────────────────────────
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+.pytest_cache/
 
-
-# Variables sensibles (Seguridad Ley 1581)
+# ─────────────────────────────────────────
+# Variables de entorno y secretos
+# (Seguridad - Ley 1581 de Protección de Datos)
+# ─────────────────────────────────────────
 .env
+.env.*
+!.env.example
 
-# Archivos de base de datos local y evidencias
+# ─────────────────────────────────────────
+# Bases de datos locales
+# ─────────────────────────────────────────
 *.sqlite3
-evidencias/
-.vscode/
-
-*.log
 *.db
+
+# ─────────────────────────────────────────
+# Archivos generados en tiempo de ejecución
+# ─────────────────────────────────────────
+*.log
+logs/
+backend/evidencias/
+
+# ─────────────────────────────────────────
+# Editores e IDEs
+# ─────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ─────────────────────────────────────────
+# Sistema operativo
+# ─────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ─────────────────────────────────────────
+# Documentos personales / académicos
+# ─────────────────────────────────────────
+*.docx
+*.pptx
+*.xlsx
