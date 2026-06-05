@@ -68,12 +68,16 @@ class EmpresaBase(BaseModel):
     nombre: str = Field(..., min_length=3, max_length=150, json_schema_extra={"examples": ["Tech Solutions S.A.S."]})
     nit: str = Field(..., min_length=5, max_length=20, pattern=r"^[0-9A-Za-z\.-]+$", json_schema_extra={"examples": ["900.123.456-1"]})
     direccion: str = Field(..., min_length=5, max_length=255, json_schema_extra={"examples": ["Calle 100 #15-20"]})
+    fecha_inicio_convenio: Optional[datetime] = None
+    fecha_fin_convenio: Optional[datetime] = None
+    cupos_totales: Optional[int] = 0
 
 class EmpresaCreate(EmpresaBase):
     pass
 
 class EmpresaResponse(EmpresaBase):
     id: int
+    cupos_ocupados: int = 0
     model_config = {"from_attributes": True}
 
 
@@ -120,6 +124,9 @@ class PracticaResponse(PracticaBase):
     id: int                          # ← cambiado: str → int
     estado: str
     horas_acumuladas: float = 0.0
+    calificacion: float = 0.0
+    codigo_certificado: Optional[str] = None
+    alerta_progreso: Optional[str] = "ok"
     estudiante: Optional[UsuarioResponse] = None
     tutor: Optional[UsuarioResponse] = None
     empresa: Optional[EmpresaResponse] = None
@@ -129,14 +136,14 @@ class PracticaResponse(PracticaBase):
 class SeguimientoBase(BaseModel):
     practica_id: int
     descripcion: str = Field(..., min_length=15, max_length=2000)
-    horas_realizadas: float = Field(..., gt=0, le=12)
+    horas_realizadas: float = Field(..., gt=0, le=8)
     fecha_actividad: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
     @field_validator('horas_realizadas')
     @classmethod
     def validar_horas(cls, v):
-        if v <= 0:
-            raise ValueError("Las horas deben ser mayores a cero")
+        if v <= 0 or v > 8:
+            raise ValueError("Las horas individuales reportadas deben estar entre 0.1 y 8 horas")
         return v
 
     @field_validator('fecha_actividad')
@@ -158,6 +165,8 @@ class SeguimientoUpdate(BaseModel):
     evidencia_url: Optional[str] = None
     validado_tutor: Optional[bool] = None
     validado_supervisor: Optional[bool] = None
+    calificacion_tutor: Optional[float] = None
+    calificacion_supervisor: Optional[float] = None
 
     @model_validator(mode="before")
     @classmethod
@@ -167,6 +176,12 @@ class SeguimientoUpdate(BaseModel):
                 data["observaciones_tutor"] = data["observaciones"]
         return data
 
+class SeguimientoLoteUpdate(BaseModel):
+    ids: List[int]
+    estado: StatusEnum
+    calificacion: Optional[float] = None
+    observaciones: Optional[str] = None
+
 class SeguimientoResponse(SeguimientoBase):
     id: int                          # ← cambiado: str → int
     estado: StatusEnum
@@ -175,6 +190,11 @@ class SeguimientoResponse(SeguimientoBase):
     observaciones_tutor: Optional[str] = None
     evidencia_url: Optional[str] = None
     archivo_evidencia: Optional[str] = None
+    calificacion_tutor: Optional[float] = None
+    calificacion_supervisor: Optional[float] = None
+    fecha_envio: Optional[datetime] = None
+    fecha_preaprobacion: Optional[datetime] = None
+    fecha_aprobacion: Optional[datetime] = None
     model_config = {"from_attributes": True}
 
 
@@ -233,4 +253,58 @@ class NotificacionResponse(NotificacionBase):
     id: int
     leida: bool
     fecha_creacion: datetime
+    model_config = {"from_attributes": True}
+
+
+# ── SCHEMAS DE ANALÍTICA PARA EL COORDINADOR ───────────────────
+
+class ProgramMetrics(BaseModel):
+    programa: str
+    total_estudiantes: int
+    total_horas_acumuladas: float
+    promedio_horas: float
+    promedio_porcentaje_avance: float = 0.0
+    estudiantes_completados: int = 0
+
+class PracticanteRanking(BaseModel):
+    posicion: int
+    estudiante_id: str
+    practica_id: int = 0
+    nombre: str
+    programa: str
+    horas_acumuladas: float
+    porcentaje_avance: float
+    calificacion: float = 0.0
+    tasa_rechazo: float = 0.0
+    seguimientos_totales: int = 0
+
+class TutorMetrics(BaseModel):
+    tutor_id: str
+    nombre: str
+    estudiantes_asignados: int
+    seguimientos_validados: int
+    horas_promedio_validadas: float
+    seguimientos_rechazados: int = 0
+
+class AnaliticaCoordinadorResponse(BaseModel):
+    comparativa_programas: List[ProgramMetrics]
+    podio_practicantes: List[PracticanteRanking]
+    desempeno_tutores: List[TutorMetrics]
+    promedio_horas_preaprobacion: float = 0.0
+    promedio_horas_aprobacion: float = 0.0
+
+
+class EvaluacionPracticaBase(BaseModel):
+    practica_id: int
+    tipo: str  # "parcial" o "final"
+    evaluador_rol: str  # "supervisor" o "tutor"
+    calificaciones_items: str  # JSON, ej: {"tecnico": 5, "puntualidad": 4}
+    observaciones: Optional[str] = None
+
+class EvaluacionPracticaCreate(EvaluacionPracticaBase):
+    pass
+
+class EvaluacionPracticaResponse(EvaluacionPracticaBase):
+    id: int
+    fecha: datetime
     model_config = {"from_attributes": True}

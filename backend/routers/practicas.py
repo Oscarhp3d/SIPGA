@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Response
+from fastapi import APIRouter, Depends, HTTPException, status, Response, Request
 from sqlalchemy.orm import Session, joinedload
 from typing import List
 import models, schemas, crud
@@ -139,6 +139,7 @@ def descargar_reporte(
             joinedload(models.Practica.estudiante),
             joinedload(models.Practica.empresa),
             joinedload(models.Practica.tutor),
+            joinedload(models.Practica.supervisor),
         )
         .filter(models.Practica.id == practica_id)
         .first()
@@ -156,13 +157,14 @@ def descargar_reporte(
     programa = getattr(estudiante, "programa_academico", None) if estudiante else None
 
     pdf_buffer = generar_pdf_practica(
-        estudiante.nombre if estudiante else "Estudiante Desconocido",
-        practica.empresa.nombre if practica.empresa else "Sin asignar",
-        practica.tutor.nombre if practica.tutor else "Sin asignar",
-        seguimientos,
+        estudiante_nombre=estudiante.nombre if estudiante else "Estudiante Desconocido",
+        empresa=practica.empresa.nombre if practica.empresa else "Sin asignar",
+        tutor_nombre=practica.tutor.nombre if practica.tutor else "Sin asignar",
+        seguimientos=seguimientos,
         horas_acumuladas=practica.horas_acumuladas or 0.0,
         horas_requeridas=practica.horas_totales_requeridas or 0,
         programa=programa or "",
+        supervisor_nombre=practica.supervisor.nombre if practica.supervisor else "Sin asignar",
     )
 
     return Response(
@@ -184,3 +186,134 @@ def eliminar_practica(
     if not exito:
         raise HTTPException(status_code=404, detail="Práctica no encontrada")
     return None
+
+
+@router.get("/{practica_id}/certificado")
+def descargar_certificado(
+    practica_id: int,
+    request: Request,
+    db: Session = Depends(get_db),
+    current_user: models.Usuario = Depends(auth.get_current_user)
+):
+    """Genera y descarga el certificado oficial de finalización de práctica con código QR."""
+    practica = (
+        db.query(models.Practica)
+        .options(
+            joinedload(models.Practica.estudiante),
+            joinedload(models.Practica.empresa),
+            joinedload(models.Practica.tutor),
+            joinedload(models.Practica.supervisor),
+        )
+        .filter(models.Practica.id == practica_id)
+        .first()
+    )
+    if not practica:
+        raise HTTPException(status_code=404, detail="Práctica no encontrada")
+        
+    if not crud.usuario_puede_ver_practica(db, current_user, practica):
+        raise HTTPException(status_code=403, detail="No tiene permisos para este recurso")
+        
+    # Verificar que esté finalizada o cumpla con las horas
+    if practica.estado != "finalizada" and (practica.horas_acumuladas or 0.0) < (practica.horas_totales_requeridas or 320):
+        raise HTTPException(status_code=400, detail="La práctica aún no ha sido completada ni finalizada")
+        
+    # Generar código único si no existe
+    if not practica.codigo_certificado:
+        import uuid
+        codigo = f"RN-{uuid.uuid4().hex[:4].upper()}-{uuid.uuid4().hex[-4:].upper()}"
+        practica.codigo_certificado = codigo
+        db.commit()
+        db.refresh(practica)
+        
+    from reportes import generar_certificado_pdf
+    
+    url_verificacion = f"{request.base_url}verificar.html?codigo={practica.codigo_certificado}"
+    
+    pdf_buffer = generar_certificado_pdf(
+        estudiante_nombre=practica.estudiante.nombre if practica.estudiante else "Estudiante",
+        estudiante_correo=practica.estudiante.correo if practica.estudiante else "",
+        programa=practica.estudiante.programa_academico if practica.estudiante else "Programa General",
+        empresa=practica.empresa.nombre if practica.empresa else "Empresa",
+        tutor_nombre=practica.tutor.nombre if practica.tutor else "Tutor Evaluador",
+        horas_acumuladas=practica.horas_acumuladas or 0.0,
+        calificacion=practica.calificacion,
+        codigo_seguridad=practica.codigo_certificado,
+        url_verificacion=url_verificacion,
+        supervisor_nombre=practica.supervisor.nombre if practica.supervisor else "Supervisor de Empresa",
+    )
+    
+    return Response(
+        content=pdf_buffer.getvalue(),
+        media_type="application/pdf",
+        headers={
+            "Content-Disposition": f'inline; filename="Certificado_SIPGA_{practica.codigo_certificado}.pdf"'
+        },
+    )
+
+
+# RUTA PÚBLICA PARA VERIFICACIÓN DE CERTIFICADO (Escaneo de QR)
+@router.get("/verificar-certificado/{codigo_certificado}")
+def verificar_certificado_publico(
+    codigo_certificado: str,
+    db: Session = Depends(get_db)
+):
+    """Permite verificar públicamente la autenticidad de un certificado de práctica."""
+    practica = db.query(models.Practica).filter(
+        models.Practica.codigo_certificado == codigo_certificado
+    ).first()
+    if not practica:
+        raise HTTPException(status_code=404, detail="Código de certificado no válido o inexistente")
+        
+    return {
+        "status": "valid",
+        "estudiante": practica.estudiante.nombre if practica.estudiante else "Desconocido",
+        "programa": practica.estudiante.programa_academico if practica.estudiante else "Desconocido",
+        "empresa": practica.empresa.nombre if practica.empresa else "Desconocido",
+        "horas_acumuladas": practica.horas_acumuladas,
+        "calificacion_final": practica.calificacion,
+        "fecha_terminacion": practica.fecha_fin.date().isoformat() if practica.fecha_fin else None
+    }
+
+
+@router.post("/{practica_id}/evaluacion", response_model=schemas.EvaluacionPracticaResponse, status_code=201)
+def registrar_evaluacion(
+    practica_id: int,
+    data: schemas.EvaluacionPracticaCreate,
+    db: Session = Depends(get_db),
+    current_user: models.Usuario = Depends(auth.get_current_user)
+):
+    """Registra una evaluación de rúbrica (parcial o final) de la práctica."""
+    practica = crud.obtener_practica(db, practica_id)
+    if not practica:
+        raise HTTPException(status_code=404, detail="Práctica no encontrada")
+        
+    rol = current_user.rol.value if hasattr(current_user.rol, "value") else current_user.rol
+    if rol == "tutor" and practica.tutor_id != current_user.id:
+        raise HTTPException(status_code=403, detail="No eres el tutor asignado a esta práctica")
+    if rol == "supervisor" and practica.supervisor_id != current_user.id:
+        raise HTTPException(status_code=403, detail="No eres el supervisor asignado a esta práctica")
+    if rol not in ("tutor", "supervisor", "coordinador"):
+        raise HTTPException(status_code=403, detail="No tienes permisos para registrar evaluaciones de desempeño")
+        
+    # Validar que los datos correspondan a la práctica
+    if data.practica_id != practica_id:
+        raise HTTPException(status_code=400, detail="El ID de práctica no coincide con la ruta")
+        
+    return crud.registrar_evaluacion_practica(db, data)
+
+
+@router.get("/{practica_id}/evaluaciones", response_model=List[schemas.EvaluacionPracticaResponse])
+def listar_evaluaciones(
+    practica_id: int,
+    db: Session = Depends(get_db),
+    current_user: models.Usuario = Depends(auth.get_current_user)
+):
+    """Consulta las evaluaciones registradas de una práctica."""
+    practica = crud.obtener_practica(db, practica_id)
+    if not practica:
+        raise HTTPException(status_code=404, detail="Práctica no encontrada")
+        
+    if not crud.usuario_puede_ver_practica(db, current_user, practica):
+        raise HTTPException(status_code=403, detail="Acceso denegado a este recurso")
+        
+    return crud.obtener_evaluaciones_practica(db, practica_id)

@@ -5,7 +5,7 @@ import models, schemas
 import auth
 import uuid
 import os
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 
 
 def create_audit_log(db: Session, usuario_id: str, accion: str, ip: str) -> models.AuditLog:
@@ -236,6 +236,16 @@ def crear_practica(db: Session, data: schemas.PracticaCreate) -> models.Practica
         if vinculo:
             supervisor_id = vinculo.supervisor_id
 
+    # Validar vigencia de convenio de la empresa si existe
+    if data.empresa_id:
+        empresa = db.query(models.Empresa).filter(models.Empresa.id == data.empresa_id).first()
+        if empresa and (empresa.fecha_inicio_convenio or empresa.fecha_fin_convenio):
+            hoy = datetime.now()
+            if empresa.fecha_inicio_convenio and hoy < empresa.fecha_inicio_convenio:
+                raise ValueError("El convenio marco con la empresa aún no ha iniciado.")
+            if empresa.fecha_fin_convenio and hoy > empresa.fecha_fin_convenio:
+                raise ValueError("El convenio marco con la empresa ha expirado.")
+
     db_practica = models.Practica(
         estudiante_id=data.estudiante_id,
         tutor_id=tutor_id,
@@ -362,12 +372,43 @@ def eliminar_practica(db: Session, practica_id: int) -> bool:
 def registrar_seguimiento(
     db: Session, seguimiento: schemas.SeguimientoCreate
 ) -> models.Seguimiento:
+    # 1. Validar límite diario (<= 8 horas)
+    fecha_act = seguimiento.fecha_actividad
+    if fecha_act.tzinfo is None:
+        fecha_act = fecha_act.replace(tzinfo=timezone.utc)
+    
+    inicio_dia = datetime(fecha_act.year, fecha_act.month, fecha_act.day, 0, 0, 0, tzinfo=timezone.utc)
+    fin_dia = datetime(fecha_act.year, fecha_act.month, fecha_act.day, 23, 59, 59, tzinfo=timezone.utc)
+    
+    horas_hoy = db.query(func.sum(models.Seguimiento.horas_realizadas)).filter(
+        models.Seguimiento.practica_id == seguimiento.practica_id,
+        models.Seguimiento.is_deleted == False,
+        models.Seguimiento.fecha_actividad >= inicio_dia.replace(tzinfo=None),
+        models.Seguimiento.fecha_actividad <= fin_dia.replace(tzinfo=None)
+    ).scalar() or 0.0
+    
+    if horas_hoy + seguimiento.horas_realizadas > 8.0:
+        raise ValueError(f"Límite diario excedido. Ya tienes {horas_hoy:g}h reportadas para este día. El reporte diario no puede exceder 8h.")
+        
+    # 2. Validar límite semanal (<= 48 horas en los últimos 7 días)
+    inicio_semana = fecha_act - timedelta(days=7)
+    horas_semana = db.query(func.sum(models.Seguimiento.horas_realizadas)).filter(
+        models.Seguimiento.practica_id == seguimiento.practica_id,
+        models.Seguimiento.is_deleted == False,
+        models.Seguimiento.fecha_actividad >= inicio_semana.replace(tzinfo=None),
+        models.Seguimiento.fecha_actividad <= fecha_act.replace(tzinfo=None)
+    ).scalar() or 0.0
+    
+    if horas_semana + seguimiento.horas_realizadas > 48.0:
+        raise ValueError(f"Límite semanal excedido. Tienes {horas_semana:g}h reportadas en los últimos 7 días. El total no puede exceder 48h semanales.")
+
     db_seg = models.Seguimiento(
         practica_id=seguimiento.practica_id,
         descripcion=seguimiento.descripcion,
         horas_realizadas=seguimiento.horas_realizadas,
         fecha_actividad=seguimiento.fecha_actividad,
-        estado=models.StatusEnum.enviado
+        estado=models.StatusEnum.enviado,
+        fecha_envio=datetime.now(timezone.utc)
     )
     db.add(db_seg)
     db.commit()
@@ -450,6 +491,7 @@ def supervisor_aprobar_seguimiento(
 
     db_seg.estado = models.StatusEnum.pendiente_tutor
     db_seg.validado_supervisor = True
+    db_seg.fecha_preaprobacion = datetime.now(timezone.utc)
     if observaciones:
         db_seg.observaciones_tutor = observaciones
 
@@ -507,7 +549,9 @@ def validar_seguimiento(
     estado_solicitado: models.StatusEnum,
     revisor_id: str,
     observaciones: str,
-    ip: str
+    ip: str,
+    calificacion_tutor: Optional[float] = None,
+    calificacion_supervisor: Optional[float] = None
 ) -> Optional[models.Seguimiento]:
     db_seg = db.query(models.Seguimiento).filter(
         models.Seguimiento.id == seguimiento_id
@@ -526,6 +570,9 @@ def validar_seguimiento(
         if estado_solicitado == models.StatusEnum.aprobado:
             nuevo_estado = models.StatusEnum.pendiente_tutor
             db_seg.validado_supervisor = True
+            db_seg.fecha_preaprobacion = datetime.now(timezone.utc)
+            if calificacion_supervisor is not None:
+                db_seg.calificacion_supervisor = calificacion_supervisor
         elif estado_solicitado == models.StatusEnum.rechazado:
             nuevo_estado = models.StatusEnum.rechazado
             db_seg.validado_supervisor = False
@@ -534,6 +581,9 @@ def validar_seguimiento(
         if estado_solicitado == models.StatusEnum.aprobado:
             nuevo_estado = models.StatusEnum.aprobado
             db_seg.validado_tutor = True
+            db_seg.fecha_aprobacion = datetime.now(timezone.utc)
+            if calificacion_tutor is not None:
+                db_seg.calificacion_tutor = calificacion_tutor
         elif estado_solicitado == models.StatusEnum.rechazado:
             nuevo_estado = models.StatusEnum.rechazado
             db_seg.validado_tutor = False
@@ -542,6 +592,12 @@ def validar_seguimiento(
         if estado_solicitado == models.StatusEnum.aprobado:
             db_seg.validado_supervisor = True
             db_seg.validado_tutor = True
+            db_seg.fecha_preaprobacion = db_seg.fecha_preaprobacion or datetime.now(timezone.utc)
+            db_seg.fecha_aprobacion = datetime.now(timezone.utc)
+            if calificacion_tutor is not None:
+                db_seg.calificacion_tutor = calificacion_tutor
+            if calificacion_supervisor is not None:
+                db_seg.calificacion_supervisor = calificacion_supervisor
         nuevo_estado = estado_solicitado
 
     db_seg.estado = nuevo_estado
@@ -569,6 +625,42 @@ def validar_seguimiento(
         crear_notificacion(db, practica.estudiante_id, f"Seguimiento {estado_texto}", f"Tu seguimiento ahora tiene estado: {estado_texto}.")
         
     return db_seg
+
+def validar_seguimientos_lote(
+    db: Session,
+    seguimiento_ids: List[int],
+    estado_solicitado: models.StatusEnum,
+    revisor_id: str,
+    observaciones: str,
+    ip: str,
+    calificacion: Optional[float] = None
+) -> List[models.Seguimiento]:
+    res = []
+    revisor = obtener_usuario_por_id(db, revisor_id)
+    if not revisor:
+        return res
+        
+    calificacion_tutor = None
+    calificacion_supervisor = None
+    
+    rol = revisor.rol.value if hasattr(revisor.rol, 'value') else revisor.rol
+    if rol == "tutor":
+        calificacion_tutor = calificacion
+    elif rol == "supervisor":
+        calificacion_supervisor = calificacion
+    elif rol == "coordinador":
+        calificacion_tutor = calificacion
+        calificacion_supervisor = calificacion
+
+    for s_id in seguimiento_ids:
+        seg = validar_seguimiento(
+            db, s_id, estado_solicitado, revisor_id, observaciones, ip,
+            calificacion_tutor=calificacion_tutor,
+            calificacion_supervisor=calificacion_supervisor
+        )
+        if seg:
+            res.append(seg)
+    return res
 
 # ── EMPRESA–SUPERVISOR (vínculo empresa ↔ supervisor) ─────────────────────────
 
@@ -648,7 +740,10 @@ def crear_empresa(db: Session, empresa: schemas.EmpresaCreate) -> models.Empresa
     db_empresa = models.Empresa(
         nombre=empresa.nombre,
         nit=empresa.nit,
-        direccion=empresa.direccion
+        direccion=empresa.direccion,
+        fecha_inicio_convenio=empresa.fecha_inicio_convenio,
+        fecha_fin_convenio=empresa.fecha_fin_convenio,
+        cupos_totales=empresa.cupos_totales
     )
     db.add(db_empresa)
     db.commit()
@@ -656,7 +751,14 @@ def crear_empresa(db: Session, empresa: schemas.EmpresaCreate) -> models.Empresa
     return db_empresa
 
 def obtener_empresas(db: Session) -> List[models.Empresa]:
-    return db.query(models.Empresa).all()
+    empresas = db.query(models.Empresa).all()
+    for emp in empresas:
+        ocupados = db.query(models.Practica).filter(
+            models.Practica.empresa_id == emp.id,
+            models.Practica.estado == "activa"
+        ).count()
+        emp.cupos_ocupados = ocupados
+    return empresas
 
 
 def dashboard_coordinador(db: Session) -> dict:
@@ -748,4 +850,346 @@ def dashboard_estudiante(db: Session, estudiante_id: str) -> dict:
         "horas_requeridas": horas_req,
         "porcentaje_avance": porcentaje,
         "seguimientos_recientes": seguimientos_recientes,
+    }
+
+
+def obtener_analitica_coordinador(db: Session) -> dict:
+    """
+    Genera métricas analíticas avanzadas para el coordinador.
+    - Comparativa de programas académicos (horas totales y promedio).
+    - Ranking/Podio de los 10 mejores estudiantes basados en horas acumuladas.
+    - Desempeño y estadísticas de validación de los tutores asignados.
+    """
+    from collections import defaultdict
+
+    # 1. Comparativa de Programas
+    practicas = db.query(models.Practica).all()
+    programa_data = defaultdict(lambda: {
+        "total_estudiantes": 0,
+        "total_horas_acumuladas": 0.0,
+        "total_porcentaje": 0.0,
+        "completados": 0
+    })
+    
+    for p in practicas:
+        if p.estudiante and p.estudiante.programa_academico:
+            prog = p.estudiante.programa_academico
+            programa_data[prog]["total_estudiantes"] += 1
+            programa_data[prog]["total_horas_acumuladas"] += (p.horas_acumuladas or 0.0)
+            
+            horas_req = p.horas_totales_requeridas or 320
+            horas_acum = p.horas_acumuladas or 0.0
+            porcentaje = round((horas_acum / horas_req) * 100, 1) if horas_req > 0 else 0.0
+            programa_data[prog]["total_porcentaje"] += porcentaje
+            if porcentaje >= 100.0:
+                programa_data[prog]["completados"] += 1
+            
+    comparativa_programas = []
+    for prog, data in programa_data.items():
+        total_est = data["total_estudiantes"]
+        total_h = data["total_horas_acumuladas"]
+        promedio = round(total_h / total_est, 1) if total_est > 0 else 0.0
+        promedio_progreso = round(data["total_porcentaje"] / total_est, 1) if total_est > 0 else 0.0
+        comparativa_programas.append({
+            "programa": prog,
+            "total_estudiantes": total_est,
+            "total_horas_acumuladas": total_h,
+            "promedio_horas": promedio,
+            "promedio_porcentaje_avance": promedio_progreso,
+            "estudiantes_completados": data["completados"]
+        })
+    comparativa_programas.sort(key=lambda x: x["total_horas_acumuladas"], reverse=True)
+
+    # 2. Podio para los mejores practicantes
+    practicas_ordenadas = sorted(
+        practicas, 
+        key=lambda x: (x.calificacion or 0.0, x.horas_acumuladas or 0.0), 
+        reverse=True
+    )
+    
+    podio_practicantes = []
+    posicion = 1
+    for p in practicas_ordenadas:
+        if p.estudiante:
+            horas_req = p.horas_totales_requeridas or 320
+            horas_acum = p.horas_acumuladas or 0.0
+            porcentaje = round((horas_acum / horas_req) * 100, 1) if horas_req > 0 else 0.0
+            
+            calif = p.calificacion
+
+            # Contar total de logs y rechazados
+            logs_est = db.query(models.Seguimiento).filter(
+                models.Seguimiento.practica_id == p.id,
+                models.Seguimiento.is_deleted == False
+            ).all()
+            tot_logs = len(logs_est)
+            rechazados = sum(1 for l in logs_est if l.estado == models.StatusEnum.rechazado)
+            tasa_rech = round((rechazados / tot_logs) * 100, 1) if tot_logs > 0 else 0.0
+
+            podio_practicantes.append({
+                "posicion": posicion,
+                "estudiante_id": p.estudiante_id,
+                "practica_id": p.id,
+                "nombre": p.estudiante.nombre,
+                "programa": p.estudiante.programa_academico or "No asignado",
+                "horas_acumuladas": horas_acum,
+                "porcentaje_avance": porcentaje,
+                "calificacion": calif,
+                "tasa_rechazo": tasa_rech,
+                "seguimientos_totales": tot_logs
+            })
+            posicion += 1
+            if posicion > 10:
+                break
+
+    # 3. Desempeño de los Tutores
+    tutores = obtener_tutores(db)
+    desempeno_tutores = []
+    
+    for t in tutores:
+        estudiantes_asig = db.query(models.Practica).filter(models.Practica.tutor_id == t.id).count()
+        
+        seguimientos_validados = db.query(models.Seguimiento).join(
+            models.Practica, models.Seguimiento.practica_id == models.Practica.id
+        ).filter(
+            models.Practica.tutor_id == t.id,
+            models.Seguimiento.validado_tutor == True,
+            models.Seguimiento.is_deleted == False
+        ).count()
+
+        seguimientos_rechazados = db.query(models.Seguimiento).join(
+            models.Practica, models.Seguimiento.practica_id == models.Practica.id
+        ).filter(
+            models.Practica.tutor_id == t.id,
+            models.Seguimiento.estado == models.StatusEnum.rechazado,
+            models.Seguimiento.is_deleted == False
+        ).count()
+        
+        horas_validadas = db.query(func.sum(models.Seguimiento.horas_realizadas)).join(
+            models.Practica, models.Seguimiento.practica_id == models.Practica.id
+        ).filter(
+            models.Practica.tutor_id == t.id,
+            models.Seguimiento.validado_tutor == True,
+            models.Seguimiento.is_deleted == False
+        ).scalar() or 0.0
+        
+        promedio_val = round(horas_validadas / estudiantes_asig, 1) if estudiantes_asig > 0 else 0.0
+        
+        desempeno_tutores.append({
+            "tutor_id": t.id,
+            "nombre": t.nombre,
+            "estudiantes_asignados": estudiantes_asig,
+            "seguimientos_validados": seguimientos_validados,
+            "horas_promedio_validadas": promedio_val,
+            "seguimientos_rechazados": seguimientos_rechazados
+        })
+    desempeno_tutores.sort(key=lambda x: x["seguimientos_validados"], reverse=True)
+
+    # 4. Tiempos de Ciclo de Aprobación
+    segs_aprobados = db.query(models.Seguimiento).filter(
+        models.Seguimiento.estado == models.StatusEnum.aprobado,
+        models.Seguimiento.is_deleted == False
+    ).all()
+    
+    tiempos_preaprobacion = []
+    tiempos_aprobacion_final = []
+    
+    for s in segs_aprobados:
+        if s.fecha_envio and s.fecha_preaprobacion:
+            diff = (s.fecha_preaprobacion - s.fecha_envio).total_seconds() / 3600.0
+            tiempos_preaprobacion.append(diff)
+        if s.fecha_preaprobacion and s.fecha_aprobacion:
+            diff = (s.fecha_aprobacion - s.fecha_preaprobacion).total_seconds() / 3600.0
+            tiempos_aprobacion_final.append(diff)
+            
+    avg_pre = round(sum(tiempos_preaprobacion) / len(tiempos_preaprobacion), 1) if tiempos_preaprobacion else 0.0
+    avg_aprob = round(sum(tiempos_aprobacion_final) / len(tiempos_aprobacion_final), 1) if tiempos_aprobacion_final else 0.0
+
+    return {
+        "comparativa_programas": comparativa_programas,
+        "podio_practicantes": podio_practicantes,
+        "desempeno_tutores": desempeno_tutores,
+        "promedio_horas_preaprobacion": avg_pre,
+        "promedio_horas_aprobacion": avg_aprob
+    }
+
+
+def editar_seguimiento(
+    db: Session,
+    seguimiento_id: int,
+    nueva_descripcion: str,
+    nuevas_horas: float,
+    usuario_id: str
+) -> models.Seguimiento:
+    db_seg = db.query(models.Seguimiento).filter(models.Seguimiento.id == seguimiento_id).first()
+    if not db_seg:
+        return None
+
+    fecha_act = db_seg.fecha_actividad
+    if fecha_act.tzinfo is None:
+        fecha_act = fecha_act.replace(tzinfo=timezone.utc)
+    
+    inicio_dia = datetime(fecha_act.year, fecha_act.month, fecha_act.day, 0, 0, 0, tzinfo=timezone.utc)
+    fin_dia = datetime(fecha_act.year, fecha_act.month, fecha_act.day, 23, 59, 59, tzinfo=timezone.utc)
+    
+    horas_hoy = db.query(func.sum(models.Seguimiento.horas_realizadas)).filter(
+        models.Seguimiento.practica_id == db_seg.practica_id,
+        models.Seguimiento.is_deleted == False,
+        models.Seguimiento.id != seguimiento_id,
+        models.Seguimiento.fecha_actividad >= inicio_dia.replace(tzinfo=None),
+        models.Seguimiento.fecha_actividad <= fin_dia.replace(tzinfo=None)
+    ).scalar() or 0.0
+    
+    if horas_hoy + nuevas_horas > 8.0:
+        raise ValueError(f"Límite diario excedido. Ya tienes {horas_hoy:g}h reportadas para este día. El total no puede exceder 8h.")
+    
+    inicio_semana = fecha_act - timedelta(days=7)
+    horas_semana = db.query(func.sum(models.Seguimiento.horas_realizadas)).filter(
+        models.Seguimiento.practica_id == db_seg.practica_id,
+        models.Seguimiento.is_deleted == False,
+        models.Seguimiento.id != seguimiento_id,
+        models.Seguimiento.fecha_actividad >= inicio_semana.replace(tzinfo=None),
+        models.Seguimiento.fecha_actividad <= fecha_act.replace(tzinfo=None)
+    ).scalar() or 0.0
+    
+    if horas_semana + nuevas_horas > 48.0:
+        raise ValueError(f"Límite semanal excedido. Tienes {horas_semana:g}h reportadas en los últimos 7 días. El total no puede exceder 48h semanales.")
+
+    if db_seg.estado == models.StatusEnum.rechazado:
+        historial = models.HistorialSeguimiento(
+            seguimiento_id=db_seg.id,
+            descripcion_anterior=db_seg.descripcion,
+            horas_anteriores=db_seg.horas_realizadas,
+            usuario_id=usuario_id
+        )
+        db.add(historial)
+
+    db_seg.descripcion = nueva_descripcion
+    db_seg.horas_realizadas = nuevas_horas
+    db_seg.estado = models.StatusEnum.enviado
+    db_seg.fecha_envio = datetime.now(timezone.utc)
+    
+    db.commit()
+    db.refresh(db_seg)
+    return db_seg
+
+
+def registrar_evaluacion_practica(
+    db: Session, eval_data: schemas.EvaluacionPracticaCreate
+) -> models.EvaluacionPractica:
+    db_eval = models.EvaluacionPractica(
+        practica_id=eval_data.practica_id,
+        tipo=eval_data.tipo,
+        evaluador_rol=eval_data.evaluador_rol,
+        calificaciones_items=eval_data.calificaciones_items,
+        observaciones=eval_data.observaciones
+    )
+    db.add(db_eval)
+    db.commit()
+    db.refresh(db_eval)
+    return db_eval
+
+
+def obtener_evaluaciones_practica(
+    db: Session, practica_id: int
+) -> List[models.EvaluacionPractica]:
+    return db.query(models.EvaluacionPractica).filter(
+        models.EvaluacionPractica.practica_id == practica_id
+    ).all()
+
+
+def obtener_alertas_criticas(db: Session) -> dict:
+    hoy = datetime.now()
+    
+    # 1 y 2. Retrasos e Inactividades
+    retrasos = []
+    inactividades = []
+    
+    practicas = db.query(models.Practica).filter(models.Practica.estado == "activa").all()
+    for p in practicas:
+        alerta = p.alerta_progreso
+        nombre_est = p.estudiante.nombre if p.estudiante else f"Estudiante #{p.estudiante_id}"
+        programa = p.estudiante.programa_academico or "N/A"
+        
+        if alerta == "retraso":
+            retrasos.append({
+                "id": p.id,
+                "estudiante": nombre_est,
+                "programa": programa,
+                "horas_acumuladas": p.horas_acumuladas or 0.0,
+                "horas_requeridas": p.horas_totales_requeridas,
+                "fecha_fin": p.fecha_fin.strftime("%Y-%m-%d") if p.fecha_fin else "N/A"
+            })
+        elif alerta == "inactividad":
+            # Calcular última fecha
+            ultima_fecha = "N/A"
+            if p.seguimientos:
+                segs = sorted([s for s in p.seguimientos if not s.is_deleted], key=lambda x: x.fecha_actividad or datetime.min, reverse=True)
+                if segs and segs[0].fecha_actividad:
+                    ultima_fecha = segs[0].fecha_actividad.strftime("%Y-%m-%d")
+            elif p.fecha_inicio:
+                ultima_fecha = p.fecha_inicio.strftime("%Y-%m-%d")
+                
+            inactividades.append({
+                "id": p.id,
+                "estudiante": nombre_est,
+                "programa": programa,
+                "ultima_actividad": ultima_fecha
+            })
+            
+    # 3. Convenios por vencer
+    convenios_vencer = []
+    empresas = db.query(models.Empresa).all()
+    for emp in empresas:
+        if emp.fecha_fin_convenio:
+            # Quitamos tz para restar con datetime.now() local
+            fecha_fin = emp.fecha_fin_convenio.replace(tzinfo=None)
+            dias_restantes = (fecha_fin - hoy).days
+            if 0 <= dias_restantes <= 60:
+                convenios_vencer.append({
+                    "id": emp.id,
+                    "empresa": emp.nombre,
+                    "fecha_fin": fecha_fin.strftime("%Y-%m-%d"),
+                    "dias_restantes": dias_restantes,
+                    "vencido": False
+                })
+            elif dias_restantes < 0:
+                convenios_vencer.append({
+                    "id": emp.id,
+                    "empresa": emp.nombre,
+                    "fecha_fin": fecha_fin.strftime("%Y-%m-%d"),
+                    "dias_restantes": abs(dias_restantes),
+                    "vencido": True
+                })
+                
+    # 4. Cuellos de botella
+    cuellos_botella = []
+    limite = hoy - timedelta(days=5)
+    segs_pendientes = db.query(models.Seguimiento).filter(
+        models.Seguimiento.estado.in_([models.StatusEnum.enviado, models.StatusEnum.pendiente_tutor]),
+        models.Seguimiento.is_deleted == False
+    ).all()
+    
+    for s in segs_pendientes:
+        f_envio = s.fecha_envio
+        if f_envio:
+            f_envio_naive = f_envio.replace(tzinfo=None)
+            if f_envio_naive <= limite:
+                nombre_est = s.practica.estudiante.nombre if s.practica and s.practica.estudiante else "Estudiante"
+                pendiente_de = "Tutor" if s.estado == models.StatusEnum.pendiente_tutor else "Supervisor"
+                dias_retraso = (hoy - f_envio_naive).days
+                cuellos_botella.append({
+                    "seguimiento_id": s.id,
+                    "estudiante": nombre_est,
+                    "horas": s.horas_realizadas,
+                    "pendiente_de": pendiente_de,
+                    "fecha_envio": f_envio_naive.strftime("%Y-%m-%d"),
+                    "dias_retraso": dias_retraso
+                })
+                
+    return {
+        "retrasos": retrasos,
+        "inactividades": inactividades,
+        "convenios_vencer": convenios_vencer,
+        "cuellos_botella": cuellos_botella
     }

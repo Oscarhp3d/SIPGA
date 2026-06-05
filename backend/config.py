@@ -1,7 +1,7 @@
 import os
 from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from typing import List, Any
+from typing import List, Any, Optional
 
 class Settings(BaseSettings):
     PROJECT_NAME: str = "SIPGA API"
@@ -13,6 +13,12 @@ class Settings(BaseSettings):
     SECRET_KEY: str
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
+    
+    SMTP_HOST: str = "smtp.gmail.com"
+    SMTP_PORT: int = 587
+    SMTP_USERNAME: Optional[str] = None
+    SMTP_PASSWORD: Optional[str] = None
+    SMTP_FROM: str = "no-reply@universidad.edu.co"
 
 
     ALLOWED_ORIGINS: Any = ["http://localhost:5500", "http://127.0.0.1:5500", "http://localhost:3000"]

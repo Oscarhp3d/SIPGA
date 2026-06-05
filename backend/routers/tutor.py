@@ -62,5 +62,6 @@ def validar_seguimiento(
 
     return crud.validar_seguimiento(
         db, id, update_data.estado, current_user.id,
-        update_data.observaciones_tutor or "", request.client.host
+        update_data.observaciones_tutor or "", request.client.host,
+        calificacion_tutor=update_data.calificacion_tutor
     )
